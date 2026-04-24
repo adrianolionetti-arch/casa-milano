@@ -1,0 +1,108 @@
+{
+  "meta": {
+    "creato": "2026-04-24",
+    "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
+    "ultima_sessione": "2026-04-24T10:00:00"
+  },
+  "annunci": [
+    {
+      "id": "gazzetta-10592267",
+      "url": "https://www.gazzettaimmobiliare.net/dettagli_annuncio.php?id=10592267",
+      "titolo": "Trilocale Via Lepontina 11, Isola",
+      "prezzo": 430000,
+      "zona": "Isola",
+      "mq": 78,
+      "punteggio": 5.0,
+      "data_vista": "2026-04-24",
+      "notificato": true
+    },
+    {
+      "id": "gohome-col-di-lana-navigli",
+      "url": "https://www.immobiliare.it",
+      "titolo": "Trilocale Viale Col di Lana, Bocconi-Navigli",
+      "prezzo": 399000,
+      "zona": "Navigli",
+      "mq": 75,
+      "punteggio": 5.5,
+      "data_vista": "2026-04-24",
+      "notificato": true
+    },
+    {
+      "id": "gohome-imperia-21-romolo",
+      "url": "https://www.idealista.it",
+      "titolo": "Trilocale Via Imperia 21, zona Romolo",
+      "prezzo": 425000,
+      "zona": "Navigli/Romolo",
+      "mq": 85,
+      "punteggio": 5.0,
+      "data_vista": "2026-04-24",
+      "notificato": true
+    },
+    {
+      "id": "gohome-brunacci-7-navigli",
+      "url": "https://www.immobiliare.it",
+      "titolo": "Trilocale Via Vincenzo Brunacci 7, Naviglio Pavese",
+      "prezzo": 399000,
+      "zona": "Navigli/Pavese",
+      "mq": 75,
+      "punteggio": 4.5,
+      "data_vista": "2026-04-24",
+      "notificato": true
+    },
+    {
+      "id": "immobiliare-127839652",
+      "url": "https://www.immobiliare.it/annunci/127839652/",
+      "titolo": "Trilocale Via Teodosio, Città Studi — 3° piano ascensore",
+      "prezzo": 348000,
+      "zona": "Città Studi",
+      "mq": 75,
+      "punteggio": 5.0,
+      "data_vista": "2026-04-24",
+      "notificato": true
+    },
+    {
+      "id": "immobiliare-121828000",
+      "url": "https://www.immobiliare.it/annunci/121828000/",
+      "titolo": "Trilocale Via Campiglio 13, Città Studi",
+      "prezzo": 392000,
+      "zona": "Città Studi",
+      "mq": 75,
+      "punteggio": 3.5,
+      "data_vista": "2026-04-24",
+      "notificato": true
+    },
+    {
+      "id": "idealista-35235777",
+      "url": "https://www.idealista.it/immobile/35235777/",
+      "titolo": "Trilocale 90mq, 5° piano, 2 camere, balcone — Città Studi",
+      "prezzo": 448000,
+      "zona": "Città Studi",
+      "mq": 90,
+      "punteggio": 5.0,
+      "data_vista": "2026-04-24",
+      "notificato": true
+    },
+    {
+      "id": "idealista-34702136",
+      "url": "https://www.idealista.it/immobile/34702136/",
+      "titolo": "Trilocale 85mq Lambrate",
+      "prezzo": 335000,
+      "zona": "Lambrate",
+      "mq": 85,
+      "punteggio": 4.0,
+      "data_vista": "2026-04-24",
+      "notificato": true
+    },
+    {
+      "id": "idealista-35442927",
+      "url": "https://www.idealista.it/immobile/35442927/",
+      "titolo": "Trilocale 96mq Lambrate",
+      "prezzo": 425000,
+      "zona": "Lambrate",
+      "mq": 96,
+      "punteggio": 4.0,
+      "data_vista": "2026-04-24",
+      "notificato": true
+    }
+  ]
+}
