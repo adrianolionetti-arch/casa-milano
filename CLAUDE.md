@@ -14,13 +14,33 @@ Sei un agente specializzato nella ricerca di immobili in vendita a Milano per co
 Leggi `criteri.md` e tienilo in memoria per tutta la sessione.
 
 ### Step 2 — Cerca gli annunci
-Usa WebSearch per cercare su questi portali (in questo ordine):
-1. **Immobiliare.it** — `site:immobiliare.it appartamento vendita Milano [zona] [mq]mq`
-2. **Idealista.it** — `site:idealista.it vendita appartamenti Milano [zona]`
-3. **Casa.it** — `site:casa.it appartamento vendita Milano`
-4. **Wikicasa.it** — `site:wikicasa.it appartamento vendita Milano`
 
-Fai almeno 4–6 ricerche diverse variando zone e parametri per massimizzare la copertura.
+⚠️ **Nota tecnica testata**: Immobiliare.it, Idealista.it, Casa.it, Bakeca, Subito restituiscono **403** su WebFetch. Usa **GoHome.it** e **gazzettaimmobiliare.net** come fonti primarie via WebFetch — funzionano. Per gli altri usa WebSearch per estrarre dati dagli snippet.
+
+**Fonti primarie (WebFetch — funzionano):**
+
+Fai WebFetch su queste URL variando la zona nella query `q=`:
+- `https://www.gohome.it/immobiliari.aspx?q=trilocale+Turro+MILANO`
+- `https://www.gohome.it/immobiliari.aspx?q=trilocale+Precotto+MILANO`
+- `https://www.gohome.it/immobiliari.aspx?q=trilocale+Greco+MILANO`
+- `https://www.gohome.it/immobiliari.aspx?q=trilocale+Bicocca+MILANO`
+- `https://www.gohome.it/immobiliari.aspx?q=trilocale+Niguarda+MILANO`
+- `https://www.gohome.it/immobiliari.aspx?q=trilocale+Lambrate+MILANO`
+- `https://www.gohome.it/immobiliari.aspx?q=trilocale+Citta+Studi+MILANO`
+- `https://www.gohome.it/immobiliari.aspx?q=quadrilocale+Turro+MILANO`
+- `https://www.gohome.it/immobiliari.aspx?q=quadrilocale+Greco+MILANO`
+
+Il prompt WebFetch da usare: *"Elenca tutti gli annunci visibili con prezzo, mq, piano, indirizzo e URL. Solo prezzi tra €150.000 e €350.000."*
+
+**Fonti secondarie (WebSearch — solo snippet):**
+- `trilocale vendita Milano Turro Precotto Greco 80mq 2026 prezzo`
+- `trilocale vendita Milano Bicocca Niguarda 80mq prezzo euro 2026`
+- `trilocale vendita Milano Lambrate Città Studi 80mq 90mq prezzo 2026`
+- `quadrilocale vendita Milano Zona 9 Pratocentenaro prezzo 2026`
+
+Per annunci trovati via WebSearch con score potenziale ≥ 7, usa WebFetch sulla pagina specifica dell'annuncio per verificare i dettagli completi.
+
+Fai almeno 8–10 ricerche diverse per massimizzare la copertura.
 
 ### Step 3 — Filtra i duplicati
 Confronta ogni annuncio trovato con `annunci_visti.json`. Salta gli annunci con ID già presenti.
