@@ -68,11 +68,11 @@
 
 <header>
   <h1>🏠 Casa Milano</h1>
-  <p id="last-update">Aggiornato il 24 aprile 2026 · 9 annunci trovati</p>
+  <p id="last-update">Aggiornato il 27 aprile 2026 · 10 annunci trovati</p>
 </header>
 
 <div class="stats">
-  <div class="stat"><div class="num" id="stat-total">9</div><div class="label">Annunci totali</div></div>
+  <div class="stat"><div class="num" id="stat-total">10</div><div class="label">Annunci totali</div></div>
   <div class="stat"><div class="num" id="stat-new">0</div><div class="label">Nuovi oggi</div></div>
   <div class="stat"><div class="num" id="stat-budget">€350k</div><div class="label">Budget max</div></div>
   <div class="stat"><div class="num" id="stat-best">5.5</div><div class="label">Score migliore</div></div>
@@ -84,6 +84,7 @@
   <button class="filter-btn" onclick="filterZone('Città Studi')">Città Studi</button>
   <button class="filter-btn" onclick="filterZone('Navigli')">Navigli</button>
   <button class="filter-btn" onclick="filterZone('Isola')">Isola</button>
+  <button class="filter-btn" onclick="filterZone('Bicocca')">Bicocca</button>
 </div>
 
 <div class="grid" id="grid"></div>
@@ -197,6 +198,18 @@ const annunci = [
     url: "https://www.immobiliare.it/annunci/121828000/",
     note: "Edificio anni '50 con ascensore · cortile interno",
     nuovo: false
+  },
+  {
+    id: "immobiliare-127309421",
+    titolo: "Trilocale Via Ernesto Breda 37",
+    zona: "Bicocca",
+    prezzo: 319000,
+    mq: 80,
+    punteggio: 4.5,
+    data_vista: "2026-04-27",
+    url: "https://www.immobiliare.it/annunci/127309421/",
+    note: "1° piano con ascensore · terrazzo · 2 bagni · trovato manualmente",
+    nuovo: true
   }
 ];
 

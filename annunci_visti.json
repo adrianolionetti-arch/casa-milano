@@ -103,6 +103,22 @@
       "punteggio": 4.0,
       "data_vista": "2026-04-24",
       "notificato": true
+    },
+    {
+      "id": "immobiliare-127309421",
+      "url": "https://www.immobiliare.it/annunci/127309421/",
+      "titolo": "Trilocale Via Ernesto Breda 37, Bicocca",
+      "prezzo": 319000,
+      "zona": "Bicocca",
+      "mq": 80,
+      "piano": 1,
+      "ascensore": true,
+      "terrazzo": true,
+      "bagni": 2,
+      "punteggio": 4.5,
+      "data_vista": "2026-04-27",
+      "notificato": false,
+      "note": "1° piano con ascensore · terrazzo · 2 bagni · trovato manualmente"
     }
   ]
 }

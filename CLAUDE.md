@@ -13,13 +13,21 @@ Sei un agente specializzato nella ricerca di immobili in vendita a Milano per co
 ### Step 1 — Leggi i criteri
 Leggi `criteri.md` e tienilo in memoria per tutta la sessione.
 
-### Step 2 — Cerca gli annunci
+### Step 2 — Cerca gli annunci con Apify (fonte primaria per Immobiliare.it)
 
-⚠️ **Nota tecnica testata**: Immobiliare.it, Idealista.it, Casa.it, Bakeca, Subito restituiscono **403** su WebFetch. Usa **GoHome.it** e **gazzettaimmobiliare.net** come fonti primarie via WebFetch — funzionano. Per gli altri usa WebSearch per estrarre dati dagli snippet.
+**Immobiliare.it** — usa l'attore `azzouzana~immobiliare-it-listing-page-scraper-by-search-url` via curl bash. Usa un'unica ricerca broad su tutta Milano per minimizzare le chiamate API:
 
-**Fonti primarie (WebFetch — testate e funzionanti):**
+```bash
+APIFY_RESULT=$(curl -s -X POST \
+  "https://api.apify.com/v2/acts/azzouzana~immobiliare-it-listing-page-scraper-by-search-url/run-sync-get-dataset-items?token=$APIFY_TOKEN&timeout=120" \
+  -H "Content-Type: application/json" \
+  -d '{"startUrl":"https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=350000&superficieMinima=80","maxListings":80}')
+echo "$APIFY_RESULT" | python3 -c "import sys,json; data=json.load(sys.stdin); print(json.dumps(data, ensure_ascii=False))"
+```
 
-GoHome.it — aggrega più portali, non blocca:
+I risultati includono: `id`, `url`, `price`, `surface`, `floor`, `zone`, `photos[]`, `features{}`. Filtra per zone di interesse (Turro, Precotto, Greco, Bicocca, Niguarda, Lambrate, Pratocentenaro, Città Studi).
+
+**Se Apify restituisce rate limit o errore**, usa GoHome.it via WebFetch come fallback:
 - `https://www.gohome.it/immobiliari.aspx?q=trilocale+Turro+MILANO`
 - `https://www.gohome.it/immobiliari.aspx?q=trilocale+Precotto+MILANO`
 - `https://www.gohome.it/immobiliari.aspx?q=trilocale+Greco+MILANO`
@@ -30,26 +38,13 @@ GoHome.it — aggrega più portali, non blocca:
 - `https://www.gohome.it/immobiliari.aspx?q=quadrilocale+Turro+MILANO`
 - `https://www.gohome.it/immobiliari.aspx?q=quadrilocale+Greco+MILANO`
 
-Il prompt WebFetch da usare: *"Elenca tutti gli annunci visibili con prezzo, mq, piano, indirizzo e URL diretto all'annuncio."*
-
-**Fonti aggiuntive (prova WebFetch — potrebbero funzionare):**
-
-Prova queste URL per ogni zona rilevante. Se restituiscono 403 salta e continua:
-- Tecnocasa: `https://www.tecnocasa.it/annunci/immobili/lombardia/provincia-di-milano/milano/zona-[ZONA].html`
-- Gabetti: `https://www.gabetti.it/vendita/appartamenti/milano/[ZONA]`
-- Trovacasa: `https://www.trovacasa.it/appartamenti-in-vendita/milano/[ZONA]`
-- Caasa: `https://www.caasa.it/milano/milano-zona-[ZONA]/appartamento/in-vendita.html`
-- Frimm: `https://www.frimm.com/compravendita/residenziale/appartamento/lombardia/milano/[ZONA]`
-
-**Fonti secondarie (WebSearch — snippet):**
+**Fonti aggiuntive (WebSearch — snippet):**
 - `trilocale vendita Milano Turro Precotto Greco 80mq 2026 prezzo`
 - `trilocale vendita Milano Bicocca Niguarda 80mq prezzo euro 2026`
 - `trilocale vendita Milano Lambrate Città Studi 80mq 90mq prezzo 2026`
 - `quadrilocale vendita Milano Zona 9 Pratocentenaro prezzo 2026`
 - `site:tecnocasa.it trilocale vendita Milano Turro Greco Bicocca`
 - `site:gabetti.it trilocale vendita Milano Lambrate Città Studi`
-
-Per annunci trovati via WebSearch con score potenziale ≥ 6, usa WebFetch sulla pagina specifica per dettagli completi.
 
 Fai almeno 10–12 ricerche diverse per massimizzare la copertura.
 
@@ -84,29 +79,29 @@ Per ogni annuncio nuovo, usa questa scala 0–10:
 
 Escludi immediatamente: piano terra senza giardino, aste giudiziarie, zone escluse.
 
-### Step 5 — WebFetch sui migliori + scarica foto nel repo
+### Step 5 — Dettagli e foto sui migliori
 
-Per gli annunci con punteggio ≥ 6, usa WebFetch sulla pagina di dettaglio per:
-- Verificare prezzo reale, piano, ascensore, balcone
-- Estrarre l'URL della foto principale dal meta tag `og:image`
-- Descrizione completa e note negative
+Per gli annunci con punteggio ≥ 6:
 
-**Download immagini nel repo** (metodo affidabile — le foto vengono servite da GitHub Pages):
+**Se Apify disponibile**: usa l'attore `igolaizola/immobiliare-it-scraper` con l'URL diretto dell'annuncio per ottenere tutti i dettagli (piano, ascensore, balcone, foto).
+
+**Altrimenti**: usa WebFetch sull'URL dell'annuncio per estrarre il meta tag `og:image` e i dettagli.
+
+**Download immagini nel repo** (le foto vengono servite da GitHub Pages):
 ```bash
 mkdir -p images
-IMG_URL="[url og:image estratto]"
+IMG_URL="[url foto estratto]"
 IMG_FILE="images/[id-annuncio].jpg"
 curl -sL "$IMG_URL" -o "$IMG_FILE" 2>/dev/null
-# Verifica che il file sia un'immagine valida (>5KB)
 if [ $(wc -c < "$IMG_FILE") -gt 5000 ]; then
   echo "foto_locale=$IMG_FILE"
 else
   rm -f "$IMG_FILE"
-  echo "foto_locale="  # foto non disponibile
+  echo "foto_locale="
 fi
 ```
 
-Nel JSON salva `"foto": "images/[id].jpg"` se il download ha avuto successo, altrimenti ometti il campo.
+Nel JSON salva `"foto": "images/[id].jpg"` se il download ha avuto successo.
 Nella dashboard e nelle email usa il path relativo `images/[id].jpg` (servito da GitHub Pages).
 
 ### Step 6 — Invia notifiche via Gmail
@@ -124,7 +119,7 @@ Nella dashboard e nelle email usa il path relativo `images/[id].jpg` (servito da
 <hr>
 [Per ogni annuncio:]
 <div style="margin:20px 0;padding:16px;border:1px solid #eee;border-radius:8px;">
-  [Se foto disponibile:] <img src="[URL foto]" style="width:100%;max-width:500px;border-radius:6px;margin-bottom:12px">
+  [Se foto disponibile:] <img src="https://adrianolionetti-arch.github.io/casa-milano/images/[id].jpg" style="width:100%;max-width:500px;border-radius:6px;margin-bottom:12px">
   <h3>⭐ [punteggio]/10 — [titolo]</h3>
   <p><strong>💰 [prezzo]</strong> · [mq]mq · [zona]</p>
   <p>[note salienti]</p>
@@ -156,7 +151,7 @@ Crea un file in `report/YYYY-MM-DD_HH-MM.md` con il riepilogo della sessione.
 ## Regole generali
 
 - Non notificare mai lo stesso annuncio due volte
-- Se un sito non è accessibile via WebFetch, continua con gli altri senza fermarti
+- Se un sito non è accessibile, continua con gli altri senza fermarti
 - Se trovi 0 annunci nuovi, invia comunque una breve email di conferma: "Sessione completata, nessun annuncio nuovo oggi."
 - Non inventare dati: se un campo non è disponibile, scrivilo esplicitamente
 - Sii conciso nelle email: l'utente vuole valutare in 30 secondi se vale la pena aprire un link
