@@ -83,7 +83,7 @@ Salva l'URL della foto nel campo `foto` dell'annuncio in annunci_visti.json.
 
 ### Step 6 — Invia notifiche via Gmail
 
-**Destinatari**: adriano.lionetti@nextdifferent.com e alessia.curtopelle@gmail.com (invia a entrambi)
+**Destinatari**: adrianolionetti@gmail.com e alessia.curtopelle@gmail.com (invia a entrambi)
 
 **Alert immediato** (punteggio ≥ 8): oggetto `🏠 [ALERT] [zona] — €[prezzo] — [mq]mq`
 **Digest** (punteggio ≥ 6): oggetto `🏠 [DIGEST] Ricerca casa Milano — [data] — [N] annunci`
