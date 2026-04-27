@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏠 Casa Milano — Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f7; color: #1d1d1f; }
+
+    header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 20px 24px; position: sticky; top: 0; z-index: 10; }
+    header h1 { font-size: 1.4rem; font-weight: 700; }
+    header p { font-size: 0.85rem; color: #888; margin-top: 4px; }
+
+    .stats { display: flex; gap: 16px; padding: 20px 24px; flex-wrap: wrap; }
+    .stat { background: #fff; border-radius: 12px; padding: 14px 20px; flex: 1; min-width: 120px; box-shadow: 0 1px 4px rgba(0,0,0,0.07); }
+    .stat .num { font-size: 1.8rem; font-weight: 700; color: #0071e3; }
+    .stat .label { font-size: 0.78rem; color: #888; margin-top: 2px; }
+
+    .filters { padding: 0 24px 16px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-btn { background: #fff; border: 1px solid #ddd; border-radius: 20px; padding: 6px 14px; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; }
+    .filter-btn:hover, .filter-btn.active { background: #0071e3; color: #fff; border-color: #0071e3; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; padding: 0 24px 40px; }
+
+    .card { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+
+    .card-image { width: 100%; height: 180px; background: linear-gradient(135deg, #e8f0fe, #d2e3fc); display: flex; align-items: center; justify-content: center; font-size: 3rem; position: relative; }
+    .card-image img { width: 100%; height: 100%; object-fit: cover; }
+
+    .score-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: #fff; border-radius: 20px; padding: 4px 10px; font-size: 0.8rem; font-weight: 600; }
+    .score-high { background: #34c759; }
+    .score-mid { background: #ff9500; }
+    .score-low { background: #8e8e93; }
+
+    .new-badge { position: absolute; top: 10px; left: 10px; background: #ff3b30; color: #fff; border-radius: 20px; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; }
+
+    .card-body { padding: 16px; }
+    .card-zone { font-size: 0.78rem; font-weight: 600; color: #0071e3; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .card-title { font-size: 0.95rem; font-weight: 600; line-height: 1.3; margin-bottom: 12px; color: #1d1d1f; }
+
+    .card-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .meta-item { background: #f5f5f7; border-radius: 8px; padding: 8px 10px; }
+    .meta-item .val { font-size: 1rem; font-weight: 700; }
+    .meta-item .key { font-size: 0.72rem; color: #888; margin-top: 1px; }
+
+    .price-item { grid-column: 1 / -1; background: #f0f7ff; }
+    .price-item .val { color: #0071e3; font-size: 1.15rem; }
+
+    .card-link { display: block; text-align: center; background: #0071e3; color: #fff; padding: 10px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 600; transition: background 0.2s; }
+    .card-link:hover { background: #0058b0; }
+    .card-link.disabled { background: #c7c7cc; cursor: default; }
+
+    .date-chip { display: inline-block; background: #f5f5f7; border-radius: 20px; padding: 3px 10px; font-size: 0.75rem; color: #888; margin-bottom: 10px; }
+
+    .empty { text-align: center; padding: 60px 20px; color: #888; grid-column: 1 / -1; }
+    .empty .icon { font-size: 3rem; margin-bottom: 12px; }
+
+    @media (max-width: 600px) {
+      .stats { gap: 10px; }
+      .grid { grid-template-columns: 1fr; padding: 0 16px 40px; }
+      header { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🏠 Casa Milano</h1>
+  <p id="last-update">Aggiornato il 24 aprile 2026 · 9 annunci trovati</p>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="num" id="stat-total">9</div><div class="label">Annunci totali</div></div>
+  <div class="stat"><div class="num" id="stat-new">0</div><div class="label">Nuovi oggi</div></div>
+  <div class="stat"><div class="num" id="stat-budget">€350k</div><div class="label">Budget max</div></div>
+  <div class="stat"><div class="num" id="stat-best">5.5</div><div class="label">Score migliore</div></div>
+</div>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filterZone('tutti')">Tutti</button>
+  <button class="filter-btn" onclick="filterZone('Lambrate')">Lambrate</button>
+  <button class="filter-btn" onclick="filterZone('Città Studi')">Città Studi</button>
+  <button class="filter-btn" onclick="filterZone('Navigli')">Navigli</button>
+  <button class="filter-btn" onclick="filterZone('Isola')">Isola</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const annunci = [
+  {
+    id: "gohome-col-di-lana-navigli",
+    titolo: "Trilocale Viale Col di Lana",
+    zona: "Navigli",
+    prezzo: 399000,
+    mq: 75,
+    punteggio: 5.5,
+    data_vista: "2026-04-24",
+    url: "https://www.immobiliare.it",
+    note: "Prezzo ribassato da €449.000 — segnale di trattabilità",
+    nuovo: false
+  },
+  {
+    id: "gazzetta-10592267",
+    titolo: "Trilocale Via Lepontina 11",
+    zona: "Isola",
+    prezzo: 430000,
+    mq: 78,
+    punteggio: 5.0,
+    data_vista: "2026-04-24",
+    url: "https://www.gazzettaimmobiliare.net/dettagli_annuncio.php?id=10592267",
+    note: "Edificio 1930, 5 piani, portiere, ottime condizioni",
+    nuovo: false
+  },
+  {
+    id: "immobiliare-127839652",
+    titolo: "Trilocale Via Teodosio",
+    zona: "Città Studi",
+    prezzo: 348000,
+    mq: 75,
+    punteggio: 5.0,
+    data_vista: "2026-04-24",
+    url: "https://www.immobiliare.it/annunci/127839652/",
+    note: "3° piano con ascensore · doppia esposizione · luminoso",
+    nuovo: false
+  },
+  {
+    id: "gohome-imperia-21-romolo",
+    titolo: "Trilocale Via Imperia 21",
+    zona: "Navigli/Romolo",
+    prezzo: 425000,
+    mq: 85,
+    punteggio: 5.0,
+    data_vista: "2026-04-24",
+    url: "https://www.idealista.it",
+    note: "Completamente ristrutturato · annuncio recente",
+    nuovo: false
+  },
+  {
+    id: "idealista-35235777",
+    titolo: "Trilocale 90mq 5° piano",
+    zona: "Città Studi",
+    prezzo: 448000,
+    mq: 90,
+    punteggio: 5.0,
+    data_vista: "2026-04-24",
+    url: "https://www.idealista.it/immobile/35235777/",
+    note: "5° piano · balcone · 2 camere da letto · cucina a vista",
+    nuovo: false
+  },
+  {
+    id: "gohome-brunacci-7-navigli",
+    titolo: "Trilocale Via Brunacci 7",
+    zona: "Navigli/Pavese",
+    prezzo: 399000,
+    mq: 75,
+    punteggio: 4.5,
+    data_vista: "2026-04-24",
+    url: "https://www.immobiliare.it",
+    note: "Luminoso · vicino Naviglio Pavese",
+    nuovo: false
+  },
+  {
+    id: "idealista-34702136",
+    titolo: "Trilocale 85mq Lambrate",
+    zona: "Lambrate",
+    prezzo: 335000,
+    mq: 85,
+    punteggio: 4.0,
+    data_vista: "2026-04-24",
+    url: "https://www.idealista.it/immobile/34702136/",
+    note: "Miglior prezzo/mq della selezione",
+    nuovo: false
+  },
+  {
+    id: "idealista-35442927",
+    titolo: "Trilocale 96mq Lambrate",
+    zona: "Lambrate",
+    prezzo: 425000,
+    mq: 96,
+    punteggio: 4.0,
+    data_vista: "2026-04-24",
+    url: "https://www.idealista.it/immobile/35442927/",
+    note: "96mq · spazioso",
+    nuovo: false
+  },
+  {
+    id: "immobiliare-121828000",
+    titolo: "Trilocale Via Campiglio 13",
+    zona: "Città Studi",
+    prezzo: 392000,
+    mq: 75,
+    punteggio: 3.5,
+    data_vista: "2026-04-24",
+    url: "https://www.immobiliare.it/annunci/121828000/",
+    note: "Edificio anni '50 con ascensore · cortile interno",
+    nuovo: false
+  }
+];
+
+function scoreBadgeClass(s) {
+  if (s >= 8) return 'score-high';
+  if (s >= 6) return 'score-mid';
+  return 'score-low';
+}
+
+function formatPrice(p) {
+  return '€' + p.toLocaleString('it-IT');
+}
+
+function renderCards(items) {
+  const grid = document.getElementById('grid');
+  if (items.length === 0) {
+    grid.innerHTML = '<div class="empty"><div class="icon">🔍</div><p>Nessun annuncio per questa zona.</p></div>';
+    return;
+  }
+  grid.innerHTML = items.sort((a,b) => b.punteggio - a.punteggio).map(a => `
+    <div class="card" data-zona="${a.zona}">
+      <div class="card-image">
+        🏠
+        <span class="score-badge ${scoreBadgeClass(a.punteggio)}">⭐ ${a.punteggio}/10</span>
+        ${a.nuovo ? '<span class="new-badge">NUOVO</span>' : ''}
+      </div>
+      <div class="card-body">
+        <div class="card-zone">${a.zona}</div>
+        <div class="card-title">${a.titolo}</div>
+        <span class="date-chip">Trovato il ${new Date(a.data_vista).toLocaleDateString('it-IT', {day:'numeric',month:'long',year:'numeric'})}</span>
+        <div class="card-meta">
+          <div class="meta-item price-item">
+            <div class="val">${formatPrice(a.prezzo)}</div>
+            <div class="key">Prezzo · €${Math.round(a.prezzo/a.mq).toLocaleString('it-IT')}/mq</div>
+          </div>
+          <div class="meta-item">
+            <div class="val">${a.mq} mq</div>
+            <div class="key">Superficie</div>
+          </div>
+          <div class="meta-item">
+            <div class="val">${a.punteggio}/10</div>
+            <div class="key">Punteggio</div>
+          </div>
+        </div>
+        ${a.note ? `<p style="font-size:0.82rem;color:#555;margin-bottom:12px;line-height:1.4">${a.note}</p>` : ''}
+        <a class="card-link ${a.url === 'https://www.immobiliare.it' || a.url === 'https://www.idealista.it' ? 'disabled' : ''}"
+           href="${a.url}" target="_blank" rel="noopener">
+          ${a.url === 'https://www.immobiliare.it' || a.url === 'https://www.idealista.it' ? 'Link non disponibile' : 'Vedi annuncio →'}
+        </a>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterZone(zona) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  if (zona === 'tutti') renderCards(annunci);
+  else renderCards(annunci.filter(a => a.zona.includes(zona)));
+}
+
+renderCards(annunci);
+</script>
+</body>
+</html>
