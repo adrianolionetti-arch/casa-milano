@@ -219,7 +219,10 @@ function renderCards(items) {
   grid.innerHTML = items.sort((a,b) => b.punteggio - a.punteggio).map(a => `
     <div class="card" data-zona="${a.zona}">
       <div class="card-image">
-        ${a.foto ? `<img src="${a.foto}" alt="${a.titolo}" onerror="this.parentElement.innerHTML='🏠'">` : '🏠'}
+        ${a.foto
+          ? `<img src="${a.foto}" alt="${a.titolo}" onerror="this.style.display='none';this.parentElement.querySelector('.fallback').style.display='flex'">`
+          : ''}
+        <span class="fallback" style="display:${a.foto ? 'none' : 'flex'};width:100%;height:100%;align-items:center;justify-content:center;font-size:3rem">🏠</span>
         <span class="score-badge ${scoreBadgeClass(a.punteggio)}">⭐ ${a.punteggio}/10</span>
         ${a.nuovo ? '<span class="new-badge">NUOVO</span>' : ''}
       </div>

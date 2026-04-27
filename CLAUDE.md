@@ -17,9 +17,9 @@ Leggi `criteri.md` e tienilo in memoria per tutta la sessione.
 
 ⚠️ **Nota tecnica testata**: Immobiliare.it, Idealista.it, Casa.it, Bakeca, Subito restituiscono **403** su WebFetch. Usa **GoHome.it** e **gazzettaimmobiliare.net** come fonti primarie via WebFetch — funzionano. Per gli altri usa WebSearch per estrarre dati dagli snippet.
 
-**Fonti primarie (WebFetch — funzionano):**
+**Fonti primarie (WebFetch — testate e funzionanti):**
 
-Fai WebFetch su queste URL variando la zona nella query `q=`:
+GoHome.it — aggrega più portali, non blocca:
 - `https://www.gohome.it/immobiliari.aspx?q=trilocale+Turro+MILANO`
 - `https://www.gohome.it/immobiliari.aspx?q=trilocale+Precotto+MILANO`
 - `https://www.gohome.it/immobiliari.aspx?q=trilocale+Greco+MILANO`
@@ -30,17 +30,28 @@ Fai WebFetch su queste URL variando la zona nella query `q=`:
 - `https://www.gohome.it/immobiliari.aspx?q=quadrilocale+Turro+MILANO`
 - `https://www.gohome.it/immobiliari.aspx?q=quadrilocale+Greco+MILANO`
 
-Il prompt WebFetch da usare: *"Elenca tutti gli annunci visibili con prezzo, mq, piano, indirizzo e URL. Solo prezzi tra €150.000 e €350.000."*
+Il prompt WebFetch da usare: *"Elenca tutti gli annunci visibili con prezzo, mq, piano, indirizzo e URL diretto all'annuncio."*
 
-**Fonti secondarie (WebSearch — solo snippet):**
+**Fonti aggiuntive (prova WebFetch — potrebbero funzionare):**
+
+Prova queste URL per ogni zona rilevante. Se restituiscono 403 salta e continua:
+- Tecnocasa: `https://www.tecnocasa.it/annunci/immobili/lombardia/provincia-di-milano/milano/zona-[ZONA].html`
+- Gabetti: `https://www.gabetti.it/vendita/appartamenti/milano/[ZONA]`
+- Trovacasa: `https://www.trovacasa.it/appartamenti-in-vendita/milano/[ZONA]`
+- Caasa: `https://www.caasa.it/milano/milano-zona-[ZONA]/appartamento/in-vendita.html`
+- Frimm: `https://www.frimm.com/compravendita/residenziale/appartamento/lombardia/milano/[ZONA]`
+
+**Fonti secondarie (WebSearch — snippet):**
 - `trilocale vendita Milano Turro Precotto Greco 80mq 2026 prezzo`
 - `trilocale vendita Milano Bicocca Niguarda 80mq prezzo euro 2026`
 - `trilocale vendita Milano Lambrate Città Studi 80mq 90mq prezzo 2026`
 - `quadrilocale vendita Milano Zona 9 Pratocentenaro prezzo 2026`
+- `site:tecnocasa.it trilocale vendita Milano Turro Greco Bicocca`
+- `site:gabetti.it trilocale vendita Milano Lambrate Città Studi`
 
-Per annunci trovati via WebSearch con score potenziale ≥ 7, usa WebFetch sulla pagina specifica dell'annuncio per verificare i dettagli completi.
+Per annunci trovati via WebSearch con score potenziale ≥ 6, usa WebFetch sulla pagina specifica per dettagli completi.
 
-Fai almeno 8–10 ricerche diverse per massimizzare la copertura.
+Fai almeno 10–12 ricerche diverse per massimizzare la copertura.
 
 ### Step 3 — Filtra i duplicati
 Confronta ogni annuncio trovato con `annunci_visti.json`. Salta gli annunci con ID già presenti.
@@ -73,13 +84,30 @@ Per ogni annuncio nuovo, usa questa scala 0–10:
 
 Escludi immediatamente: piano terra senza giardino, aste giudiziarie, zone escluse.
 
-### Step 5 — Usa WebFetch per i migliori + estrai foto
+### Step 5 — WebFetch sui migliori + scarica foto nel repo
+
 Per gli annunci con punteggio ≥ 6, usa WebFetch sulla pagina di dettaglio per:
 - Verificare prezzo reale, piano, ascensore, balcone
-- **Estrarre l'URL della foto principale**: cerca il meta tag `og:image` nell'HTML (`<meta property="og:image" content="URL">`) — questa è l'immagine di anteprima del portale, solitamente accessibile
+- Estrarre l'URL della foto principale dal meta tag `og:image`
 - Descrizione completa e note negative
 
-Salva l'URL della foto nel campo `foto` dell'annuncio in annunci_visti.json.
+**Download immagini nel repo** (metodo affidabile — le foto vengono servite da GitHub Pages):
+```bash
+mkdir -p images
+IMG_URL="[url og:image estratto]"
+IMG_FILE="images/[id-annuncio].jpg"
+curl -sL "$IMG_URL" -o "$IMG_FILE" 2>/dev/null
+# Verifica che il file sia un'immagine valida (>5KB)
+if [ $(wc -c < "$IMG_FILE") -gt 5000 ]; then
+  echo "foto_locale=$IMG_FILE"
+else
+  rm -f "$IMG_FILE"
+  echo "foto_locale="  # foto non disponibile
+fi
+```
+
+Nel JSON salva `"foto": "images/[id].jpg"` se il download ha avuto successo, altrimenti ometti il campo.
+Nella dashboard e nelle email usa il path relativo `images/[id].jpg` (servito da GitHub Pages).
 
 ### Step 6 — Invia notifiche via Gmail
 
