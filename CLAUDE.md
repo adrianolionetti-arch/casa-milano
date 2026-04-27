@@ -73,43 +73,38 @@ Per ogni annuncio nuovo, usa questa scala 0–10:
 
 Escludi immediatamente: piano terra senza giardino, aste giudiziarie, zone escluse.
 
-### Step 5 — Usa WebFetch per i migliori
-Per gli annunci con punteggio ≥ 7, usa WebFetch per leggere la pagina di dettaglio e verificare:
-- Foto disponibili
-- Descrizione completa
-- Prezzo reale (non solo stimato)
-- Eventuali note negative non visibili nel sommario
+### Step 5 — Usa WebFetch per i migliori + estrai foto
+Per gli annunci con punteggio ≥ 6, usa WebFetch sulla pagina di dettaglio per:
+- Verificare prezzo reale, piano, ascensore, balcone
+- **Estrarre l'URL della foto principale**: cerca il meta tag `og:image` nell'HTML (`<meta property="og:image" content="URL">`) — questa è l'immagine di anteprima del portale, solitamente accessibile
+- Descrizione completa e note negative
+
+Salva l'URL della foto nel campo `foto` dell'annuncio in annunci_visti.json.
 
 ### Step 6 — Invia notifiche via Gmail
 
-**Alert immediato** (punteggio ≥ 8):
-Invia subito una email a adriano.lionetti@nextdifferent.com con oggetto:
-`🏠 [ALERT] Nuovo annuncio top — [indirizzo/zona] — €[prezzo]`
+**Destinatari**: adriano.lionetti@nextdifferent.com e alessia.curtopelle@gmail.com (invia a entrambi)
 
-**Digest** (punteggio 6–7.9):
-Aggiungi al digest giornaliero. Se hai già annunci nel digest della giornata, accumula e invia tutto insieme alla fine della sessione con oggetto:
-`🏠 [DIGEST] Ricerca casa Milano — [data] — [N] annunci`
+**Alert immediato** (punteggio ≥ 8): oggetto `🏠 [ALERT] [zona] — €[prezzo] — [mq]mq`
+**Digest** (punteggio ≥ 6): oggetto `🏠 [DIGEST] Ricerca casa Milano — [data] — [N] annunci`
+**Nessuna novità**: oggetto `🏠 Sessione completata — nessuna novità oggi`
 
-**Formato email**:
+**Formato email HTML**:
+```html
+<h2>🏠 Ricerca Casa Milano — [DATA]</h2>
+<p>📊 <a href="https://adrianolionetti-arch.github.io/casa-milano/">Apri la dashboard completa →</a></p>
+<hr>
+[Per ogni annuncio:]
+<div style="margin:20px 0;padding:16px;border:1px solid #eee;border-radius:8px;">
+  [Se foto disponibile:] <img src="[URL foto]" style="width:100%;max-width:500px;border-radius:6px;margin-bottom:12px">
+  <h3>⭐ [punteggio]/10 — [titolo]</h3>
+  <p><strong>💰 [prezzo]</strong> · [mq]mq · [zona]</p>
+  <p>[note salienti]</p>
+  <a href="[url annuncio]" style="background:#0071e3;color:#fff;padding:8px 16px;border-radius:6px;text-decoration:none">Vedi annuncio →</a>
+</div>
 ```
-## Riepilogo sessione [data ora]
-Siti cercati: [lista]
-Annunci analizzati: [N]
-Nuovi annunci (non già visti): [N]
-Alert immediati: [N]
 
----
-
-### 🌟 [Punteggio: X/10] — [Indirizzo o zona]
-**Prezzo**: €[importo]
-**Mq**: [N] | **Camere**: [N] | **Bagni**: [N]
-**Piano**: [N] | **Ascensore**: sì/no
-**Link**: [URL diretto all'annuncio]
-**Note**: [2-3 righe con i punti salienti]
-
----
-[Ripeti per ogni annuncio]
-```
+Per inviare a più destinatari usa header `To: addr1, addr2` nel raw email.
 
 ### Step 7 — Aggiorna il database
 Aggiungi tutti gli annunci processati (qualunque punteggio) ad `annunci_visti.json`:
