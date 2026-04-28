@@ -8,16 +8,16 @@
 - Immobili residenziali (appartamenti, trilocali, quadrilocali, loft)
 
 ## Budget
-- **Massimo assoluto**: € 350.000
+- **Massimo assoluto**: € 360.000
 - **Fascia ideale**: € 230.000 – 310.000
-- **Accettabile**: € 310.000 – 350.000
+- **Accettabile**: € 310.000 – 360.000
 
 ## Caratteristiche obbligatorie
 - Superficie: minimo 80 mq, massimo 120 mq
 - Camere da letto: almeno 2
 - Bagni: almeno 1
 - **Ascensore: obbligatorio** (escludi se assente)
-- Stato: abitabile, ristrutturato o da ristrutturare — tutti accettati (valuta caso per caso)
+- Stato: abitabile, ristrutturato o da ristrutturare — tutti accettati
 - Distanza dalla MM: entro 10 minuti a piedi
 
 ## Caratteristiche preferibili (aumentano il punteggio)
@@ -32,29 +32,44 @@
 
 ## Zone di Milano — in ordine di priorità
 
-> Riferimento: l'utente abita attualmente in Via Pianell 56, Pratocentenaro (MM Turro, Zona 9).
-> Priorità al quadrante centro-nord, ma aperto a tutte le direzioni purché entro i confini comunali.
+> L'utente abita in Via Pianell 56, Pratocentenaro (MM Turro, Zona 9).
+> Priorità al corridoio nord da est a ovest, ma aperto a tutta Milano.
 
-1. **Zona 1 (top)**: Pratocentenaro, Turro, Precotto, Gorla, Crescenzago
-2. **Zona 2 (ottima)**: Greco, Segnano, Bicocca, Niguarda, Affori
-3. **Zona 3 (buona)**: Lambrate, Udine, Città Studi, Bovisa, Dergano, Maggiolina, Pasteur
-4. **Zona 4 (accettabile)**: Sesto San Giovanni (max 5 min MM), Cimiano, Casoretto, Adriano, Bruzzano
+### Zona 1 — Top (+3 punti)
+Pratocentenaro, Turro, Precotto, Gorla, Crescenzago, Niguarda, Affori, Maggiolina, NoLo (Nord Loreto)
+
+### Zona 2 — Ottima (+2 punti)
+Greco, Segnano, Bicocca, Isola, Loreto, Cenisio, Chinatown (zona Via Procaccini / Monumentale), Cimiano, Casoretto, Viale Monza, Viale Padova, Centrale, Adriano
+
+### Zona 3 — Buona (+1 punto)
+Lambrate, Udine, Città Studi, Bovisa, Dergano, Pasteur, Bruzzano, Zara, Maciachini, Porta Garibaldi, Buenos Aires, Navigli, Porta Romana, Porta Vittoria, Prati, Certosa
+
+### Zona 4 — Accettabile (+0.5 punti)
+Qualsiasi altro quartiere del comune di Milano non escluso.
+Sesto San Giovanni solo se max 5 min a piedi da MM.
+
+## Zone di interesse speciale (difficili ma da monitorare)
+- **Via Sant'Eusebio e limitrofe** (zona NoLo/Loreto) — notifica anche se sopra budget
+- **Via Procaccini e limitrofe** (zona Cenisio/Chinatown) — notifica anche se sopra budget
 
 ## Esclusioni assolute
 - Immobili senza ascensore
 - Piano terra (salvo con giardino privato esclusivo)
 - Immobili in aste giudiziarie
-- Zone: Quarto Oggiaro, Lorenteggio, Corvetto, Gratosoglio, Stadera
+- Zone: Quarto Oggiaro, Lorenteggio, Corvetto, Gratosoglio, Stadera, Baggio
 - Fuori dal comune di Milano (salvo Sesto San Giovanni con MM a max 5 min)
 - Superficie < 80 mq o > 120 mq
 
 ## Note di contesto di mercato
-- A €350k con min 80mq, il prezzo/mq ideale è ≤ €4.000/mq
+- A €360k con min 80mq, il prezzo/mq ideale è ≤ €4.500/mq
 - Zona 9 (Pratocentenaro, Turro, Greco): €2.500–3.500/mq → ottimo rapporto qualità/prezzo
-- Lambrate: €3.500–4.500/mq → budget stretto ma fattibile
-- Zone centro/Isola/Navigli: €5.000–6.500/mq → fuori budget con 80mq
+- Lambrate: €3.500–4.500/mq → budget fattibile
+- Isola/NoLo: €4.500–5.500/mq → al limite, possibile con 80mq
+- Cenisio/Procaccini: €5.000–6.000/mq → difficile ma non impossibile con 80mq e qualche trattativa
+- Zone centro/Navigli: €5.000–6.500/mq → quasi sempre fuori budget
 
 ## Soglie di punteggio per notifica
 - **Alert immediato** (email entro 1 ora): punteggio ≥ 8/10
-- **Digest giornaliero** (email ogni mattina alle 08:30): punteggio ≥ 6/10
+- **Digest giornaliero**: punteggio ≥ 6/10
 - **Ignorato silenziosamente**: punteggio < 6/10
+- **Eccezione**: Via Sant'Eusebio e Via Procaccini notifica sempre anche sotto soglia
