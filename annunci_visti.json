@@ -2,7 +2,7 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-04-24T10:00:00"
+    "ultima_sessione": "2026-04-28T09:00:00"
   },
   "annunci": [
     {
@@ -119,6 +119,110 @@
       "data_vista": "2026-04-27",
       "notificato": false,
       "note": "1° piano con ascensore · terrazzo · 2 bagni · trovato manualmente"
+    },
+    {
+      "id": "wikicasa-15611753",
+      "url": "https://www.wikicasa.it/annuncio/15611753",
+      "titolo": "Trilocale Via Pianell 58, Pratocentenaro — ristrutturato 2019",
+      "prezzo": 315000,
+      "zona": "Pratocentenaro",
+      "mq": 85,
+      "piano": 1,
+      "ascensore": true,
+      "balcone": true,
+      "bagni": 2,
+      "portineria": true,
+      "punteggio": 6.8,
+      "data_vista": "2026-04-28",
+      "notificato": true,
+      "note": "1° piano con ascensore · 2 balconi doppia esposizione E/O · 2 bagni · portineria · completamente ristrutturato 2019 · aria condizionata · MM5 Ca' Granda 300m · prezzo da €315k (rif. T56)"
+    },
+    {
+      "id": "tecnocasa-61195106",
+      "url": "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61195106.html",
+      "titolo": "Trilocale Pratocentenaro — ultimo piano, portineria, giardino",
+      "prezzo": 345000,
+      "zona": "Pratocentenaro",
+      "mq": 85,
+      "piano": null,
+      "ascensore": true,
+      "balcone": true,
+      "bagni": 1,
+      "portineria": true,
+      "punteggio": 6.3,
+      "data_vista": "2026-04-28",
+      "notificato": true,
+      "note": "Ultimo piano con ascensore · 2 balconi · portineria · giardino condominiale · doppia esposizione · aria condizionata · MM5 Ca' Granda/Pratocentenaro 300m"
+    },
+    {
+      "id": "immobiliare-112076963",
+      "url": "https://www.immobiliare.it/annunci/112076963/",
+      "titolo": "Trilocale Via Comune Antico 52, Ca' Granda",
+      "prezzo": null,
+      "zona": "Ca' Granda / Greco",
+      "mq": 80,
+      "piano": 1,
+      "ascensore": true,
+      "balcone": true,
+      "bagni": 2,
+      "posto_auto": true,
+      "punteggio": null,
+      "data_vista": "2026-04-28",
+      "notificato": false,
+      "note": "1° piano con ascensore · balcone · posto auto · 2 bagni · tripla esposizione · riscaldamento autonomo · PREZZO NON DISPONIBILE — verificare urgentemente"
+    },
+    {
+      "id": "tecnocasa-60970604",
+      "url": "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60970604.html",
+      "titolo": "Trilocale Turro — €179.000 (anomalo)",
+      "prezzo": 179000,
+      "zona": "Turro",
+      "mq": 80,
+      "ascensore": null,
+      "punteggio": 0,
+      "data_vista": "2026-04-28",
+      "notificato": false,
+      "note": "ESCLUSO: ascensore non confermato — prezzo €179k anomalo per la zona (probabile assenza ascensore o piano terra)"
+    },
+    {
+      "id": "immobiliare-127875532",
+      "url": "https://www.immobiliare.it/annunci/127875532/",
+      "titolo": "Trilocale Via Vincenzo Russo 12, Turro — ASTA GIUDIZIARIA",
+      "prezzo": 325000,
+      "zona": "Turro",
+      "mq": 80,
+      "ascensore": true,
+      "punteggio": 0,
+      "data_vista": "2026-04-28",
+      "notificato": false,
+      "note": "ESCLUSO: asta giudiziaria prevista 21/05/2026 — criteri esclusione"
+    },
+    {
+      "id": "immobiliare-128476944",
+      "url": "https://www.immobiliare.it/annunci/128476944/",
+      "titolo": "Trilocale Via Diodoro Siculo 4, Greco-Segnano — 100mq 2 terrazzi",
+      "prezzo": 460000,
+      "zona": "Greco-Segnano",
+      "mq": 100,
+      "ascensore": true,
+      "bagni": 2,
+      "punteggio": 0,
+      "data_vista": "2026-04-28",
+      "notificato": false,
+      "note": "ESCLUSO: fuori budget €460.000 — interessante se il prezzo scende (2 terrazzi, 2 bagni, edificio 2007)"
+    },
+    {
+      "id": "immobiliare-116470373",
+      "url": "https://www.immobiliare.it/annunci/116470373/",
+      "titolo": "Trilocale Via Comune Antico 31, Greco — duplex classe A+",
+      "prezzo": 450000,
+      "zona": "Greco-Segnano",
+      "mq": 100,
+      "ascensore": true,
+      "punteggio": 0,
+      "data_vista": "2026-04-28",
+      "notificato": false,
+      "note": "ESCLUSO: fuori budget €450.000 — duplex 2017 classe A+ con terrazza, portineria part-time"
     }
   ]
 }
