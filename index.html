@@ -35,6 +35,7 @@
     .score-low { background: #8e8e93; }
 
     .new-badge { position: absolute; top: 10px; left: 10px; background: #ff3b30; color: #fff; border-radius: 20px; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; }
+    .excluded-badge { position: absolute; top: 10px; left: 10px; background: #8e8e93; color: #fff; border-radius: 20px; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; }
 
     .card-body { padding: 16px; }
     .card-zone { font-size: 0.78rem; font-weight: 600; color: #0071e3; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
@@ -57,6 +58,8 @@
     .empty { text-align: center; padding: 60px 20px; color: #888; grid-column: 1 / -1; }
     .empty .icon { font-size: 3rem; margin-bottom: 12px; }
 
+    .card.excluded { opacity: 0.55; }
+
     @media (max-width: 600px) {
       .stats { gap: 10px; }
       .grid { grid-template-columns: 1fr; padding: 0 16px 40px; }
@@ -68,29 +71,57 @@
 
 <header>
   <h1>🏠 Casa Milano</h1>
-  <p id="last-update">Aggiornato il 27 aprile 2026 · 10 annunci trovati</p>
+  <p id="last-update">Aggiornato il 28 aprile 2026 · 17 annunci processati · 2 nuovi in zona top</p>
 </header>
 
 <div class="stats">
-  <div class="stat"><div class="num" id="stat-total">10</div><div class="label">Annunci totali</div></div>
-  <div class="stat"><div class="num" id="stat-new">0</div><div class="label">Nuovi oggi</div></div>
+  <div class="stat"><div class="num" id="stat-total">17</div><div class="label">Annunci totali</div></div>
+  <div class="stat"><div class="num" id="stat-new">7</div><div class="label">Processati oggi</div></div>
   <div class="stat"><div class="num" id="stat-budget">€350k</div><div class="label">Budget max</div></div>
-  <div class="stat"><div class="num" id="stat-best">5.5</div><div class="label">Score migliore</div></div>
+  <div class="stat"><div class="num" id="stat-best">6.8</div><div class="label">Score migliore</div></div>
 </div>
 
 <div class="filters">
-  <button class="filter-btn active" onclick="filterZone('tutti')">Tutti</button>
-  <button class="filter-btn" onclick="filterZone('Lambrate')">Lambrate</button>
-  <button class="filter-btn" onclick="filterZone('Città Studi')">Città Studi</button>
-  <button class="filter-btn" onclick="filterZone('Navigli')">Navigli</button>
-  <button class="filter-btn" onclick="filterZone('Isola')">Isola</button>
-  <button class="filter-btn" onclick="filterZone('Bicocca')">Bicocca</button>
+  <button class="filter-btn active" onclick="filterZone('tutti', event)">Tutti</button>
+  <button class="filter-btn" onclick="filterZone('Pratocentenaro', event)">Pratocentenaro ⭐</button>
+  <button class="filter-btn" onclick="filterZone('Bicocca', event)">Bicocca</button>
+  <button class="filter-btn" onclick="filterZone('Lambrate', event)">Lambrate</button>
+  <button class="filter-btn" onclick="filterZone('Città Studi', event)">Città Studi</button>
+  <button class="filter-btn" onclick="filterZone('Greco', event)">Greco / Ca' Granda</button>
+  <button class="filter-btn" onclick="filterZone('Turro', event)">Turro</button>
+  <button class="filter-btn" onclick="filterZone('Navigli', event)">Navigli</button>
 </div>
 
 <div class="grid" id="grid"></div>
 
 <script>
 const annunci = [
+  {
+    id: "wikicasa-15611753",
+    titolo: "Trilocale Via Pianell 58 — ristrutturato 2019",
+    zona: "Pratocentenaro",
+    prezzo: 315000,
+    mq: 85,
+    punteggio: 6.8,
+    data_vista: "2026-04-28",
+    url: "https://www.wikicasa.it/annuncio/15611753",
+    note: "1° piano · ascensore · 2 balconi E/O · 2 bagni · portineria · ristrutturato 2019 · a/c · MM5 Ca' Granda 300m",
+    nuovo: true,
+    escluso: false
+  },
+  {
+    id: "tecnocasa-61195106",
+    titolo: "Trilocale Pratocentenaro — ultimo piano, portineria",
+    zona: "Pratocentenaro",
+    prezzo: 345000,
+    mq: 85,
+    punteggio: 6.3,
+    data_vista: "2026-04-28",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61195106.html",
+    note: "Ultimo piano · ascensore · 2 balconi · portineria · giardino condominiale · doppia esposizione · MM5 300m",
+    nuovo: true,
+    escluso: false
+  },
   {
     id: "gohome-col-di-lana-navigli",
     titolo: "Trilocale Viale Col di Lana",
@@ -101,19 +132,8 @@ const annunci = [
     data_vista: "2026-04-24",
     url: "https://www.immobiliare.it",
     note: "Prezzo ribassato da €449.000 — segnale di trattabilità",
-    nuovo: false
-  },
-  {
-    id: "gazzetta-10592267",
-    titolo: "Trilocale Via Lepontina 11",
-    zona: "Isola",
-    prezzo: 430000,
-    mq: 78,
-    punteggio: 5.0,
-    data_vista: "2026-04-24",
-    url: "https://www.gazzettaimmobiliare.net/dettagli_annuncio.php?id=10592267",
-    note: "Edificio 1930, 5 piani, portiere, ottime condizioni",
-    nuovo: false
+    nuovo: false,
+    escluso: false
   },
   {
     id: "immobiliare-127839652",
@@ -125,7 +145,21 @@ const annunci = [
     data_vista: "2026-04-24",
     url: "https://www.immobiliare.it/annunci/127839652/",
     note: "3° piano con ascensore · doppia esposizione · luminoso",
-    nuovo: false
+    nuovo: false,
+    escluso: false
+  },
+  {
+    id: "gazzetta-10592267",
+    titolo: "Trilocale Via Lepontina 11",
+    zona: "Isola",
+    prezzo: 430000,
+    mq: 78,
+    punteggio: 5.0,
+    data_vista: "2026-04-24",
+    url: "https://www.gazzettaimmobiliare.net/dettagli_annuncio.php?id=10592267",
+    note: "Edificio 1930, 5 piani, portiere, ottime condizioni",
+    nuovo: false,
+    escluso: false
   },
   {
     id: "gohome-imperia-21-romolo",
@@ -137,7 +171,8 @@ const annunci = [
     data_vista: "2026-04-24",
     url: "https://www.idealista.it",
     note: "Completamente ristrutturato · annuncio recente",
-    nuovo: false
+    nuovo: false,
+    escluso: false
   },
   {
     id: "idealista-35235777",
@@ -149,55 +184,8 @@ const annunci = [
     data_vista: "2026-04-24",
     url: "https://www.idealista.it/immobile/35235777/",
     note: "5° piano · balcone · 2 camere da letto · cucina a vista",
-    nuovo: false
-  },
-  {
-    id: "gohome-brunacci-7-navigli",
-    titolo: "Trilocale Via Brunacci 7",
-    zona: "Navigli/Pavese",
-    prezzo: 399000,
-    mq: 75,
-    punteggio: 4.5,
-    data_vista: "2026-04-24",
-    url: "https://www.immobiliare.it",
-    note: "Luminoso · vicino Naviglio Pavese",
-    nuovo: false
-  },
-  {
-    id: "idealista-34702136",
-    titolo: "Trilocale 85mq Lambrate",
-    zona: "Lambrate",
-    prezzo: 335000,
-    mq: 85,
-    punteggio: 4.0,
-    data_vista: "2026-04-24",
-    url: "https://www.idealista.it/immobile/34702136/",
-    note: "Miglior prezzo/mq della selezione",
-    nuovo: false
-  },
-  {
-    id: "idealista-35442927",
-    titolo: "Trilocale 96mq Lambrate",
-    zona: "Lambrate",
-    prezzo: 425000,
-    mq: 96,
-    punteggio: 4.0,
-    data_vista: "2026-04-24",
-    url: "https://www.idealista.it/immobile/35442927/",
-    note: "96mq · spazioso",
-    nuovo: false
-  },
-  {
-    id: "immobiliare-121828000",
-    titolo: "Trilocale Via Campiglio 13",
-    zona: "Città Studi",
-    prezzo: 392000,
-    mq: 75,
-    punteggio: 3.5,
-    data_vista: "2026-04-24",
-    url: "https://www.immobiliare.it/annunci/121828000/",
-    note: "Edificio anni '50 con ascensore · cortile interno",
-    nuovo: false
+    nuovo: false,
+    escluso: false
   },
   {
     id: "immobiliare-127309421",
@@ -209,7 +197,125 @@ const annunci = [
     data_vista: "2026-04-27",
     url: "https://www.immobiliare.it/annunci/127309421/",
     note: "1° piano con ascensore · terrazzo · 2 bagni · trovato manualmente",
-    nuovo: true
+    nuovo: false,
+    escluso: false
+  },
+  {
+    id: "gohome-brunacci-7-navigli",
+    titolo: "Trilocale Via Brunacci 7",
+    zona: "Navigli/Pavese",
+    prezzo: 399000,
+    mq: 75,
+    punteggio: 4.5,
+    data_vista: "2026-04-24",
+    url: "https://www.immobiliare.it",
+    note: "Luminoso · vicino Naviglio Pavese",
+    nuovo: false,
+    escluso: false
+  },
+  {
+    id: "idealista-34702136",
+    titolo: "Trilocale 85mq Lambrate",
+    zona: "Lambrate",
+    prezzo: 335000,
+    mq: 85,
+    punteggio: 4.0,
+    data_vista: "2026-04-24",
+    url: "https://www.idealista.it/immobile/34702136/",
+    note: "Miglior prezzo/mq della selezione",
+    nuovo: false,
+    escluso: false
+  },
+  {
+    id: "idealista-35442927",
+    titolo: "Trilocale 96mq Lambrate",
+    zona: "Lambrate",
+    prezzo: 425000,
+    mq: 96,
+    punteggio: 4.0,
+    data_vista: "2026-04-24",
+    url: "https://www.idealista.it/immobile/35442927/",
+    note: "96mq · spazioso",
+    nuovo: false,
+    escluso: false
+  },
+  {
+    id: "immobiliare-121828000",
+    titolo: "Trilocale Via Campiglio 13",
+    zona: "Città Studi",
+    prezzo: 392000,
+    mq: 75,
+    punteggio: 3.5,
+    data_vista: "2026-04-24",
+    url: "https://www.immobiliare.it/annunci/121828000/",
+    note: "Edificio anni '50 con ascensore · cortile interno",
+    nuovo: false,
+    escluso: false
+  },
+  {
+    id: "immobiliare-112076963",
+    titolo: "Trilocale Via Comune Antico 52 — DA VERIFICARE",
+    zona: "Ca' Granda / Greco",
+    prezzo: null,
+    mq: 80,
+    punteggio: 0,
+    data_vista: "2026-04-28",
+    url: "https://www.immobiliare.it/annunci/112076963/",
+    note: "⚠️ PREZZO NON DISPONIBILE — da verificare urgentemente · 1° piano · ascensore · balcone · posto auto · 2 bagni · tripla esposizione",
+    nuovo: true,
+    escluso: false
+  },
+  {
+    id: "tecnocasa-60970604",
+    titolo: "Trilocale Turro €179k — ESCLUSO",
+    zona: "Turro",
+    prezzo: 179000,
+    mq: 80,
+    punteggio: 0,
+    data_vista: "2026-04-28",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60970604.html",
+    note: "ESCLUSO: ascensore non confermato — prezzo anomalo suggerisce assenza ascensore",
+    nuovo: false,
+    escluso: true
+  },
+  {
+    id: "immobiliare-127875532",
+    titolo: "Trilocale Via Vincenzo Russo 12 — ASTA",
+    zona: "Turro",
+    prezzo: 325000,
+    mq: 80,
+    punteggio: 0,
+    data_vista: "2026-04-28",
+    url: "https://www.immobiliare.it/annunci/127875532/",
+    note: "ESCLUSO: asta giudiziaria (21/05/2026)",
+    nuovo: false,
+    escluso: true
+  },
+  {
+    id: "immobiliare-128476944",
+    titolo: "Trilocale Via Diodoro Siculo 4 — fuori budget",
+    zona: "Greco-Segnano",
+    prezzo: 460000,
+    mq: 100,
+    punteggio: 0,
+    data_vista: "2026-04-28",
+    url: "https://www.immobiliare.it/annunci/128476944/",
+    note: "ESCLUSO: €460.000 fuori budget — buone caratteristiche (2 terrazzi, 2 bagni, 2007)",
+    nuovo: false,
+    escluso: true
+  },
+  {
+    id: "immobiliare-116470373",
+    titolo: "Trilocale Via Comune Antico 31 — duplex A+ fuori budget",
+    zona: "Greco-Segnano",
+    prezzo: 450000,
+    mq: 100,
+    punteggio: 0,
+    data_vista: "2026-04-28",
+    url: "https://www.immobiliare.it/annunci/116470373/",
+    note: "ESCLUSO: €450.000 fuori budget — duplex 2017 classe A+ con terrazza",
+    nuovo: false,
+    escluso: true
   }
 ];
 
@@ -220,6 +326,7 @@ function scoreBadgeClass(s) {
 }
 
 function formatPrice(p) {
+  if (!p) return 'N/D';
   return '€' + p.toLocaleString('it-IT');
 }
 
@@ -230,14 +337,15 @@ function renderCards(items) {
     return;
   }
   grid.innerHTML = items.sort((a,b) => b.punteggio - a.punteggio).map(a => `
-    <div class="card" data-zona="${a.zona}">
+    <div class="card${a.escluso ? ' excluded' : ''}" data-zona="${a.zona}">
       <div class="card-image">
         ${a.foto
           ? `<img src="${a.foto}" alt="${a.titolo}" onerror="this.style.display='none';this.parentElement.querySelector('.fallback').style.display='flex'">`
           : ''}
         <span class="fallback" style="display:${a.foto ? 'none' : 'flex'};width:100%;height:100%;align-items:center;justify-content:center;font-size:3rem">🏠</span>
-        <span class="score-badge ${scoreBadgeClass(a.punteggio)}">⭐ ${a.punteggio}/10</span>
-        ${a.nuovo ? '<span class="new-badge">NUOVO</span>' : ''}
+        <span class="score-badge ${scoreBadgeClass(a.punteggio)}">${a.punteggio > 0 ? '⭐ ' + a.punteggio + '/10' : '—'}</span>
+        ${a.nuovo && !a.escluso ? '<span class="new-badge">NUOVO</span>' : ''}
+        ${a.escluso ? '<span class="excluded-badge">ESCLUSO</span>' : ''}
       </div>
       <div class="card-body">
         <div class="card-zone">${a.zona}</div>
@@ -246,32 +354,32 @@ function renderCards(items) {
         <div class="card-meta">
           <div class="meta-item price-item">
             <div class="val">${formatPrice(a.prezzo)}</div>
-            <div class="key">Prezzo · €${Math.round(a.prezzo/a.mq).toLocaleString('it-IT')}/mq</div>
+            <div class="key">${a.prezzo ? 'Prezzo · €' + Math.round(a.prezzo/a.mq).toLocaleString('it-IT') + '/mq' : 'Prezzo da verificare'}</div>
           </div>
           <div class="meta-item">
             <div class="val">${a.mq} mq</div>
             <div class="key">Superficie</div>
           </div>
           <div class="meta-item">
-            <div class="val">${a.punteggio}/10</div>
+            <div class="val">${a.punteggio > 0 ? a.punteggio + '/10' : 'N/D'}</div>
             <div class="key">Punteggio</div>
           </div>
         </div>
         ${a.note ? `<p style="font-size:0.82rem;color:#555;margin-bottom:12px;line-height:1.4">${a.note}</p>` : ''}
-        <a class="card-link ${a.url === 'https://www.immobiliare.it' || a.url === 'https://www.idealista.it' ? 'disabled' : ''}"
-           href="${a.url}" target="_blank" rel="noopener">
-          ${a.url === 'https://www.immobiliare.it' || a.url === 'https://www.idealista.it' ? 'Link non disponibile' : 'Vedi annuncio →'}
+        <a class="card-link ${!a.url || a.url === 'https://www.immobiliare.it' || a.url === 'https://www.idealista.it' ? 'disabled' : ''}"
+           href="${a.url || '#'}" target="_blank" rel="noopener">
+          ${!a.url || a.url === 'https://www.immobiliare.it' || a.url === 'https://www.idealista.it' ? 'Link non disponibile' : 'Vedi annuncio →'}
         </a>
       </div>
     </div>
   `).join('');
 }
 
-function filterZone(zona) {
+function filterZone(zona, e) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  if (e && e.target) e.target.classList.add('active');
   if (zona === 'tutti') renderCards(annunci);
-  else renderCards(annunci.filter(a => a.zona.includes(zona)));
+  else renderCards(annunci.filter(a => a.zona.toLowerCase().includes(zona.toLowerCase())));
 }
 
 renderCards(annunci);
