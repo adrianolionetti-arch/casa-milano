@@ -36,6 +36,7 @@
 
     .new-badge { position: absolute; top: 10px; left: 10px; background: #ff3b30; color: #fff; border-radius: 20px; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; }
     .excluded-badge { position: absolute; top: 10px; left: 10px; background: #8e8e93; color: #fff; border-radius: 20px; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; }
+    .verify-badge { position: absolute; top: 10px; left: 10px; background: #ff9500; color: #fff; border-radius: 20px; padding: 4px 10px; font-size: 0.75rem; font-weight: 700; }
 
     .card-body { padding: 16px; }
     .card-zone { font-size: 0.78rem; font-weight: 600; color: #0071e3; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
@@ -71,24 +72,26 @@
 
 <header>
   <h1>🏠 Casa Milano</h1>
-  <p id="last-update">Aggiornato il 28 aprile 2026 · 17 annunci processati · 2 nuovi in zona top</p>
+  <p id="last-update">Aggiornato il 29 aprile 2026 · 27 annunci processati · 10 nuovi oggi</p>
 </header>
 
 <div class="stats">
-  <div class="stat"><div class="num" id="stat-total">17</div><div class="label">Annunci totali</div></div>
-  <div class="stat"><div class="num" id="stat-new">7</div><div class="label">Processati oggi</div></div>
-  <div class="stat"><div class="num" id="stat-budget">€350k</div><div class="label">Budget max</div></div>
+  <div class="stat"><div class="num" id="stat-total">27</div><div class="label">Annunci totali</div></div>
+  <div class="stat"><div class="num" id="stat-new">10</div><div class="label">Nuovi oggi</div></div>
+  <div class="stat"><div class="num" id="stat-budget">€360k</div><div class="label">Budget max</div></div>
   <div class="stat"><div class="num" id="stat-best">6.8</div><div class="label">Score migliore</div></div>
 </div>
 
 <div class="filters">
   <button class="filter-btn active" onclick="filterZone('tutti', event)">Tutti</button>
   <button class="filter-btn" onclick="filterZone('Pratocentenaro', event)">Pratocentenaro ⭐</button>
+  <button class="filter-btn" onclick="filterZone('Gorla', event)">Gorla ⭐</button>
+  <button class="filter-btn" onclick="filterZone('Precotto', event)">Precotto / Turro ⭐</button>
+  <button class="filter-btn" onclick="filterZone('NoLo', event)">NoLo ⭐</button>
   <button class="filter-btn" onclick="filterZone('Bicocca', event)">Bicocca</button>
+  <button class="filter-btn" onclick="filterZone('Greco', event)">Greco / Ca' Granda</button>
   <button class="filter-btn" onclick="filterZone('Lambrate', event)">Lambrate</button>
   <button class="filter-btn" onclick="filterZone('Città Studi', event)">Città Studi</button>
-  <button class="filter-btn" onclick="filterZone('Greco', event)">Greco / Ca' Granda</button>
-  <button class="filter-btn" onclick="filterZone('Turro', event)">Turro</button>
   <button class="filter-btn" onclick="filterZone('Navigli', event)">Navigli</button>
 </div>
 
@@ -106,8 +109,9 @@ const annunci = [
     data_vista: "2026-04-28",
     url: "https://www.wikicasa.it/annuncio/15611753",
     note: "1° piano · ascensore · 2 balconi E/O · 2 bagni · portineria · ristrutturato 2019 · a/c · MM5 Ca' Granda 300m",
-    nuovo: true,
-    escluso: false
+    nuovo: false,
+    escluso: false,
+    verifica: false
   },
   {
     id: "tecnocasa-61195106",
@@ -119,8 +123,135 @@ const annunci = [
     data_vista: "2026-04-28",
     url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61195106.html",
     note: "Ultimo piano · ascensore · 2 balconi · portineria · giardino condominiale · doppia esposizione · MM5 300m",
+    nuovo: false,
+    escluso: false,
+    verifica: false
+  },
+  {
+    id: "iconacasa-20965",
+    titolo: "Trilocale Viale Monza 143, Gorla — 4° piano, terrazzo, box",
+    zona: "Gorla",
+    prezzo: null,
+    mq: 85,
+    punteggio: null,
+    data_vista: "2026-04-29",
+    url: "https://www.iconacasa.com/index.php/opportunita/property/20965-milano-gorla-vendita-appartamento-viale-monza",
+    note: "⚠️ PREZZO DA VERIFICARE · Da ristrutturare · 4° piano su 7 · ascensore · terrazzo + balcone · box auto incluso · portineria h24 · MM1 Turro/Gorla sotto casa · rif. SC83",
     nuovo: true,
-    escluso: false
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "wikicasa-9776868",
+    titolo: "Trilocale Precotto/Turro — 100mq, balcone, giardino",
+    zona: "Precotto / Turro",
+    prezzo: null,
+    mq: 100,
+    punteggio: null,
+    data_vista: "2026-04-29",
+    url: "https://www.wikicasa.it/appartamento-vendita-milano-zona-precotto-turro-viale-monza-greco-9776868",
+    note: "⚠️ PREZZO E ASCENSORE DA VERIFICARE · 100mq · balcone · giardino condominiale · PVC doppio vetro · a/c · cantina · MM1 Precotto 300m",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "wikicasa-12683109",
+    titolo: "Trilocale Precotto/Turro — 80mq ristrutturato, balcone",
+    zona: "Precotto / Turro",
+    prezzo: null,
+    mq: 80,
+    punteggio: null,
+    data_vista: "2026-04-29",
+    url: "https://www.wikicasa.it/appartamento-vendita-milano-zona-precotto-turro-viale-monza-greco-12683109",
+    note: "⚠️ PREZZO E ASCENSORE DA VERIFICARE · Ristrutturato · balcone · giardino condominiale · cantina · box €25k opzionale · MM Precotto 900m · MM Bicocca 900m",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "wikicasa-12007855",
+    titolo: "Trilocale Via Luigi Cirenei 5, Gorla — 7° piano, 2 terrazzi",
+    zona: "Gorla",
+    prezzo: null,
+    mq: 100,
+    punteggio: null,
+    data_vista: "2026-04-29",
+    url: "https://www.wikicasa.it/appartamento-vendita-milano-zona-precotto-turro-viale-monza-greco-12007855",
+    note: "⚠️ PREZZO DA VERIFICARE + VERIFICARE DISPONIBILITÀ (snippet 2022) · 7° piano attico · 2 terrazzi · edificio 2005 · box €25k · MM1 Gorla",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "immobiliare-116904517",
+    titolo: "Trilocale Viale Monza 36, NoLo — 3° piano, posto auto",
+    zona: "NoLo / Rovereto",
+    prezzo: null,
+    mq: 80,
+    punteggio: null,
+    data_vista: "2026-04-29",
+    url: "https://www.immobiliare.it/annunci/116904517/",
+    note: "⚠️ PREZZO E ASCENSORE DA VERIFICARE · Da ristrutturare · 3° piano · posto auto · riscaldamento autonomo · doppia esposizione · MM1 Rovereto",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "immobiliare-104628691",
+    titolo: "Trilocale Via Nicola D'Apulia 16, NoLo — 3° piano",
+    zona: "NoLo",
+    prezzo: null,
+    mq: 100,
+    punteggio: null,
+    data_vista: "2026-04-29",
+    url: "https://www.immobiliare.it/annunci/104628691/",
+    note: "⚠️ PREZZO, ASCENSORE E TIPO VENDITA DA VERIFICARE · Buono stato · 3° piano · balcone · possibile nuda proprietà · riscaldamento centralizzato",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "immobiliare-112076963",
+    titolo: "Trilocale Via Comune Antico 52 — DA VERIFICARE",
+    zona: "Ca' Granda / Greco",
+    prezzo: null,
+    mq: 80,
+    punteggio: null,
+    data_vista: "2026-04-28",
+    url: "https://www.immobiliare.it/annunci/112076963/",
+    note: "⚠️ PREZZO NON DISPONIBILE — verificare urgentemente · 1° piano · ascensore · balcone · posto auto · 2 bagni · tripla esposizione",
+    nuovo: false,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "immobiliare-123608893",
+    titolo: "Trilocale Via Guido Venosta, Greco-Segnano",
+    zona: "Greco-Segnano",
+    prezzo: null,
+    mq: null,
+    punteggio: null,
+    data_vista: "2026-04-29",
+    url: "https://www.immobiliare.it/annunci/123608893/",
+    note: "⚠️ Dati insufficienti — verificare sul portale",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "tecnocasa-61179757",
+    titolo: "Trilocale Bicocca Sarca — €339k, 93mq, piano rialzato",
+    zona: "Bicocca",
+    prezzo: 339000,
+    mq: 93,
+    punteggio: 4.0,
+    data_vista: "2026-04-29",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61179757.html",
+    note: "⚠️ PIANO RIALZATO (potenziale esclusione) · ascensore su 9 piani · portineria h24 · 93mq · MM5 Bignami · box €25k opzionale",
+    nuovo: true,
+    escluso: false,
+    verifica: false
   },
   {
     id: "gohome-col-di-lana-navigli",
@@ -133,7 +264,8 @@ const annunci = [
     url: "https://www.immobiliare.it",
     note: "Prezzo ribassato da €449.000 — segnale di trattabilità",
     nuovo: false,
-    escluso: false
+    escluso: false,
+    verifica: false
   },
   {
     id: "immobiliare-127839652",
@@ -146,7 +278,8 @@ const annunci = [
     url: "https://www.immobiliare.it/annunci/127839652/",
     note: "3° piano con ascensore · doppia esposizione · luminoso",
     nuovo: false,
-    escluso: false
+    escluso: false,
+    verifica: false
   },
   {
     id: "gazzetta-10592267",
@@ -159,7 +292,8 @@ const annunci = [
     url: "https://www.gazzettaimmobiliare.net/dettagli_annuncio.php?id=10592267",
     note: "Edificio 1930, 5 piani, portiere, ottime condizioni",
     nuovo: false,
-    escluso: false
+    escluso: false,
+    verifica: false
   },
   {
     id: "gohome-imperia-21-romolo",
@@ -172,7 +306,8 @@ const annunci = [
     url: "https://www.idealista.it",
     note: "Completamente ristrutturato · annuncio recente",
     nuovo: false,
-    escluso: false
+    escluso: false,
+    verifica: false
   },
   {
     id: "idealista-35235777",
@@ -185,7 +320,8 @@ const annunci = [
     url: "https://www.idealista.it/immobile/35235777/",
     note: "5° piano · balcone · 2 camere da letto · cucina a vista",
     nuovo: false,
-    escluso: false
+    escluso: false,
+    verifica: false
   },
   {
     id: "immobiliare-127309421",
@@ -198,7 +334,8 @@ const annunci = [
     url: "https://www.immobiliare.it/annunci/127309421/",
     note: "1° piano con ascensore · terrazzo · 2 bagni · trovato manualmente",
     nuovo: false,
-    escluso: false
+    escluso: false,
+    verifica: false
   },
   {
     id: "gohome-brunacci-7-navigli",
@@ -211,7 +348,8 @@ const annunci = [
     url: "https://www.immobiliare.it",
     note: "Luminoso · vicino Naviglio Pavese",
     nuovo: false,
-    escluso: false
+    escluso: false,
+    verifica: false
   },
   {
     id: "idealista-34702136",
@@ -224,7 +362,8 @@ const annunci = [
     url: "https://www.idealista.it/immobile/34702136/",
     note: "Miglior prezzo/mq della selezione",
     nuovo: false,
-    escluso: false
+    escluso: false,
+    verifica: false
   },
   {
     id: "idealista-35442927",
@@ -237,7 +376,8 @@ const annunci = [
     url: "https://www.idealista.it/immobile/35442927/",
     note: "96mq · spazioso",
     nuovo: false,
-    escluso: false
+    escluso: false,
+    verifica: false
   },
   {
     id: "immobiliare-121828000",
@@ -250,20 +390,8 @@ const annunci = [
     url: "https://www.immobiliare.it/annunci/121828000/",
     note: "Edificio anni '50 con ascensore · cortile interno",
     nuovo: false,
-    escluso: false
-  },
-  {
-    id: "immobiliare-112076963",
-    titolo: "Trilocale Via Comune Antico 52 — DA VERIFICARE",
-    zona: "Ca' Granda / Greco",
-    prezzo: null,
-    mq: 80,
-    punteggio: 0,
-    data_vista: "2026-04-28",
-    url: "https://www.immobiliare.it/annunci/112076963/",
-    note: "⚠️ PREZZO NON DISPONIBILE — da verificare urgentemente · 1° piano · ascensore · balcone · posto auto · 2 bagni · tripla esposizione",
-    nuovo: true,
-    escluso: false
+    escluso: false,
+    verifica: false
   },
   {
     id: "tecnocasa-60970604",
@@ -276,7 +404,8 @@ const annunci = [
     url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60970604.html",
     note: "ESCLUSO: ascensore non confermato — prezzo anomalo suggerisce assenza ascensore",
     nuovo: false,
-    escluso: true
+    escluso: true,
+    verifica: false
   },
   {
     id: "immobiliare-127875532",
@@ -289,7 +418,8 @@ const annunci = [
     url: "https://www.immobiliare.it/annunci/127875532/",
     note: "ESCLUSO: asta giudiziaria (21/05/2026)",
     nuovo: false,
-    escluso: true
+    escluso: true,
+    verifica: false
   },
   {
     id: "immobiliare-128476944",
@@ -302,7 +432,8 @@ const annunci = [
     url: "https://www.immobiliare.it/annunci/128476944/",
     note: "ESCLUSO: €460.000 fuori budget — buone caratteristiche (2 terrazzi, 2 bagni, 2007)",
     nuovo: false,
-    escluso: true
+    escluso: true,
+    verifica: false
   },
   {
     id: "immobiliare-116470373",
@@ -315,11 +446,41 @@ const annunci = [
     url: "https://www.immobiliare.it/annunci/116470373/",
     note: "ESCLUSO: €450.000 fuori budget — duplex 2017 classe A+ con terrazza",
     nuovo: false,
-    escluso: true
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "immobiliare-117192877",
+    titolo: "Trilocale Via Crescenzago 105 — ESCLUSO 135mq",
+    zona: "Crescenzago",
+    prezzo: null,
+    mq: 135,
+    punteggio: 0,
+    data_vista: "2026-04-29",
+    url: "https://www.immobiliare.it/annunci/117192877/",
+    note: "ESCLUSO: 135mq > max 120mq · Park Towers nuova costruzione · 2 terrazzi · posto auto",
+    nuovo: false,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "immobiliare-113402049",
+    titolo: "Trilocale Piazza Greco 10 — ESCLUSO 73mq",
+    zona: "Greco",
+    prezzo: null,
+    mq: 73,
+    punteggio: 0,
+    data_vista: "2026-04-29",
+    url: "https://www.immobiliare.it/annunci/113402049/",
+    note: "ESCLUSO: 73mq < min 80mq · terrazza 40mq · ristrutturato 2020",
+    nuovo: false,
+    escluso: true,
+    verifica: false
   }
 ];
 
 function scoreBadgeClass(s) {
+  if (s === null) return 'score-low';
   if (s >= 8) return 'score-high';
   if (s >= 6) return 'score-mid';
   return 'score-low';
@@ -336,15 +497,20 @@ function renderCards(items) {
     grid.innerHTML = '<div class="empty"><div class="icon">🔍</div><p>Nessun annuncio per questa zona.</p></div>';
     return;
   }
-  grid.innerHTML = items.sort((a,b) => b.punteggio - a.punteggio).map(a => `
+  grid.innerHTML = items.sort((a,b) => {
+    const sa = a.punteggio ?? -1;
+    const sb = b.punteggio ?? -1;
+    return sb - sa;
+  }).map(a => `
     <div class="card${a.escluso ? ' excluded' : ''}" data-zona="${a.zona}">
       <div class="card-image">
         ${a.foto
           ? `<img src="${a.foto}" alt="${a.titolo}" onerror="this.style.display='none';this.parentElement.querySelector('.fallback').style.display='flex'">`
           : ''}
         <span class="fallback" style="display:${a.foto ? 'none' : 'flex'};width:100%;height:100%;align-items:center;justify-content:center;font-size:3rem">🏠</span>
-        <span class="score-badge ${scoreBadgeClass(a.punteggio)}">${a.punteggio > 0 ? '⭐ ' + a.punteggio + '/10' : '—'}</span>
-        ${a.nuovo && !a.escluso ? '<span class="new-badge">NUOVO</span>' : ''}
+        <span class="score-badge ${scoreBadgeClass(a.punteggio)}">${a.punteggio !== null && a.punteggio > 0 ? '⭐ ' + a.punteggio + '/10' : a.punteggio === null ? '?' : '—'}</span>
+        ${a.nuovo && !a.escluso && !a.verifica ? '<span class="new-badge">NUOVO</span>' : ''}
+        ${a.verifica && !a.escluso ? '<span class="verify-badge">DA VERIFICARE</span>' : ''}
         ${a.escluso ? '<span class="excluded-badge">ESCLUSO</span>' : ''}
       </div>
       <div class="card-body">
@@ -354,14 +520,14 @@ function renderCards(items) {
         <div class="card-meta">
           <div class="meta-item price-item">
             <div class="val">${formatPrice(a.prezzo)}</div>
-            <div class="key">${a.prezzo ? 'Prezzo · €' + Math.round(a.prezzo/a.mq).toLocaleString('it-IT') + '/mq' : 'Prezzo da verificare'}</div>
+            <div class="key">${a.prezzo && a.mq ? 'Prezzo · €' + Math.round(a.prezzo/a.mq).toLocaleString('it-IT') + '/mq' : 'Prezzo da verificare'}</div>
           </div>
           <div class="meta-item">
-            <div class="val">${a.mq} mq</div>
+            <div class="val">${a.mq ? a.mq + ' mq' : 'N/D'}</div>
             <div class="key">Superficie</div>
           </div>
           <div class="meta-item">
-            <div class="val">${a.punteggio > 0 ? a.punteggio + '/10' : 'N/D'}</div>
+            <div class="val">${a.punteggio !== null ? (a.punteggio > 0 ? a.punteggio + '/10' : '—') : '?/10'}</div>
             <div class="key">Punteggio</div>
           </div>
         </div>
