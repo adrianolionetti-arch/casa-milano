@@ -72,12 +72,12 @@
 
 <header>
   <h1>🏠 Casa Milano</h1>
-  <p id="last-update">Aggiornato il 29 aprile 2026 · 27 annunci processati · 10 nuovi oggi</p>
+  <p id="last-update">Aggiornato il 30 aprile 2026 · 36 annunci processati · 9 nuovi oggi</p>
 </header>
 
 <div class="stats">
-  <div class="stat"><div class="num" id="stat-total">27</div><div class="label">Annunci totali</div></div>
-  <div class="stat"><div class="num" id="stat-new">10</div><div class="label">Nuovi oggi</div></div>
+  <div class="stat"><div class="num" id="stat-total">36</div><div class="label">Annunci totali</div></div>
+  <div class="stat"><div class="num" id="stat-new">9</div><div class="label">Nuovi oggi</div></div>
   <div class="stat"><div class="num" id="stat-budget">€360k</div><div class="label">Budget max</div></div>
   <div class="stat"><div class="num" id="stat-best">6.8</div><div class="label">Score migliore</div></div>
 </div>
@@ -86,7 +86,8 @@
   <button class="filter-btn active" onclick="filterZone('tutti', event)">Tutti</button>
   <button class="filter-btn" onclick="filterZone('Pratocentenaro', event)">Pratocentenaro ⭐</button>
   <button class="filter-btn" onclick="filterZone('Gorla', event)">Gorla ⭐</button>
-  <button class="filter-btn" onclick="filterZone('Precotto', event)">Precotto / Turro ⭐</button>
+  <button class="filter-btn" onclick="filterZone('Turro', event)">Precotto / Turro ⭐</button>
+  <button class="filter-btn" onclick="filterZone('Niguarda', event)">Niguarda ⭐</button>
   <button class="filter-btn" onclick="filterZone('NoLo', event)">NoLo ⭐</button>
   <button class="filter-btn" onclick="filterZone('Bicocca', event)">Bicocca</button>
   <button class="filter-btn" onclick="filterZone('Greco', event)">Greco / Ca' Granda</button>
@@ -473,6 +474,132 @@ const annunci = [
     data_vista: "2026-04-29",
     url: "https://www.immobiliare.it/annunci/113402049/",
     note: "ESCLUSO: 73mq < min 80mq · terrazza 40mq · ristrutturato 2020",
+    nuovo: false,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "tecnocasa-61009314",
+    titolo: "Trilocale Niguarda — 92mq, terrazza 37mq, box auto incluso",
+    zona: "Niguarda",
+    prezzo: 359000,
+    mq: 92,
+    punteggio: 6.5,
+    data_vista: "2026-04-30",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61009314.html",
+    note: "Alto piano · ascensore · terrazza 37mq · box auto incluso · aria condizionata · edificio 1965 · Niguarda · Tecnocasa Studio Niguarda D.I.",
+    nuovo: true,
+    escluso: false,
+    verifica: false
+  },
+  {
+    id: "tecnocasa-60839979",
+    titolo: "Trilocale Via Grivola, Niguarda — €279k, 3° piano, portineria",
+    zona: "Niguarda",
+    prezzo: 279000,
+    mq: 85,
+    punteggio: 5.8,
+    data_vista: "2026-04-30",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60839979.html",
+    note: "3° piano · ascensore · portineria h24 · cortile condominiale · cucina abitabile · 1965 · Niguarda",
+    nuovo: true,
+    escluso: false,
+    verifica: false
+  },
+  {
+    id: "tecnocasa-61190313",
+    titolo: "Trilocale Via Marmolada, Niguarda — 109mq, ultimo piano",
+    zona: "Niguarda",
+    prezzo: 334000,
+    mq: 109,
+    punteggio: 5.5,
+    data_vista: "2026-04-30",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61190313.html",
+    note: "3° piano/ultimo · ascensore · 109mq luminoso · posto auto €25k opzionale · edificio 1965 · Niguarda",
+    nuovo: true,
+    escluso: false,
+    verifica: false
+  },
+  {
+    id: "gabetti-3110279",
+    titolo: "Trilocale Via della Torre 15, Turro — €298k, 105mq, ristrutturato",
+    zona: "Turro",
+    prezzo: 298000,
+    mq: 105,
+    punteggio: null,
+    data_vista: "2026-04-30",
+    url: "https://www.gabetti.it/casa/vendita/milano/appartamento/3110279",
+    note: "⚠️ ASCENSORE NON CONFERMATO — se presente score stimato 7.3 · completamente ristrutturato · portineria h24 · 2 bagni · fan coil autonomo · 150m da MM Turro",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "immobiliare-114824435",
+    titolo: "Trilocale Via della Torre 15, Turro — 82mq, 5° piano TOP",
+    zona: "Turro",
+    prezzo: null,
+    mq: 82,
+    punteggio: null,
+    data_vista: "2026-04-30",
+    url: "https://www.immobiliare.it/annunci/114824435/",
+    note: "⚠️ PREZZO E ASCENSORE NON CONFERMATI · 5° piano/top · portineria h24 · balcone con vista aperta · ristrutturato · parquet · a/c · possibile stesso stabile Gabetti",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "wikicasa-4048537",
+    titolo: "Trilocale Viale Rimembranze di Greco 40 — 85mq, 7° piano, 3 balconi",
+    zona: "Greco",
+    prezzo: null,
+    mq: 85,
+    punteggio: null,
+    data_vista: "2026-04-30",
+    url: "https://www.wikicasa.it/4048537_appartamento_vendita_milano",
+    note: "⚠️ ANNUNCIO DEL 2018 — verificare disponibilità · 7° piano/top · ascensore · portineria h24 · 3 balconi · tripla esposizione · da ristrutturare · prezzo 2018: ~€230k",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "immobiliare-106135181",
+    titolo: "Trilocale Viale Rimembranze di Greco 39 — 2° piano, ristrutturato",
+    zona: "Greco",
+    prezzo: null,
+    mq: 80,
+    punteggio: null,
+    data_vista: "2026-04-30",
+    url: "https://www.immobiliare.it/annunci/106135181/",
+    note: "⚠️ PREZZO NON DISPONIBILE · 2° piano · ascensore · balcone · ristrutturato e arredato · pubblicato luglio 2025 · Greco",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "tecnocasa-60954410",
+    titolo: "Trilocale Via Demonte, Niguarda — ESCLUSO (no ascensore)",
+    zona: "Niguarda",
+    prezzo: 289000,
+    mq: 85,
+    punteggio: 0,
+    data_vista: "2026-04-30",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60954410.html",
+    note: "ESCLUSO: senza ascensore · 2° piano · 2 balconi · vicino MM Niguarda",
+    nuovo: false,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "tecnocasa-61178188",
+    titolo: "Trilocale Via Monterotondo, Niguarda — ESCLUSO (piano terra)",
+    zona: "Niguarda",
+    prezzo: 309000,
+    mq: 85,
+    punteggio: 0,
+    data_vista: "2026-04-30",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61178188.html",
+    note: "ESCLUSO: piano terra senza giardino privato · a/c · infissi alluminio doppio vetro",
     nuovo: false,
     escluso: true,
     verifica: false
