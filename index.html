@@ -72,12 +72,12 @@
 
 <header>
   <h1>🏠 Casa Milano</h1>
-  <p id="last-update">Aggiornato il 30 aprile 2026 · 36 annunci processati · 9 nuovi oggi</p>
+  <p id="last-update">Aggiornato il 1 maggio 2026 · 41 annunci processati · 5 nuovi oggi</p>
 </header>
 
 <div class="stats">
-  <div class="stat"><div class="num" id="stat-total">36</div><div class="label">Annunci totali</div></div>
-  <div class="stat"><div class="num" id="stat-new">9</div><div class="label">Nuovi oggi</div></div>
+  <div class="stat"><div class="num" id="stat-total">41</div><div class="label">Annunci totali</div></div>
+  <div class="stat"><div class="num" id="stat-new">5</div><div class="label">Nuovi oggi</div></div>
   <div class="stat"><div class="num" id="stat-budget">€360k</div><div class="label">Budget max</div></div>
   <div class="stat"><div class="num" id="stat-best">6.8</div><div class="label">Score migliore</div></div>
 </div>
@@ -93,6 +93,7 @@
   <button class="filter-btn" onclick="filterZone('Greco', event)">Greco / Ca' Granda</button>
   <button class="filter-btn" onclick="filterZone('Lambrate', event)">Lambrate</button>
   <button class="filter-btn" onclick="filterZone('Città Studi', event)">Città Studi</button>
+  <button class="filter-btn" onclick="filterZone('Crescenzago', event)">Crescenzago</button>
   <button class="filter-btn" onclick="filterZone('Navigli', event)">Navigli</button>
 </div>
 
@@ -603,6 +604,76 @@ const annunci = [
     nuovo: false,
     escluso: true,
     verifica: false
+  },
+  {
+    id: "tecnocasa-60907314",
+    titolo: "Trilocale Crescenzago — 90mq, ristrutturato — ESCLUSO (no ascensore)",
+    zona: "Crescenzago",
+    prezzo: 288000,
+    mq: 90,
+    punteggio: 0,
+    data_vista: "2026-05-01",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60907314.html",
+    note: "ESCLUSO: palazzina di 2 piani, ascensore assente · duplex · ristrutturato · doppia esposizione · MM Crescenzago 5 min",
+    nuovo: false,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "tecnocasa-61075004",
+    titolo: "Trilocale Crescenzago — €265k, 100mq, 2° piano, giardino",
+    zona: "Crescenzago",
+    prezzo: 265000,
+    mq: 100,
+    punteggio: null,
+    data_vista: "2026-05-01",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61075004.html",
+    note: "⚠️ ASCENSORE NON CONFERMATO — se presente: score stimato 7/10 · €265k fascia ideale · 2° piano · condominio anni '70 · recentemente ristrutturato · giardino condominiale · MM Crescenzago vicina",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "tecnocasa-60897313",
+    titolo: "Quadrilocale Crescenzago — €268k, 90mq, doppia esposizione",
+    zona: "Crescenzago",
+    prezzo: 268000,
+    mq: 90,
+    punteggio: null,
+    data_vista: "2026-05-01",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60897313.html",
+    note: "⚠️ ASCENSORE NON CONFERMATO — se presente: score stimato 7/10 · €268k fascia ideale · palazzina anni '60 con giardino · doppia esposizione · ristrutturato · MM Crescenzago vicina",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "idealista-24075805",
+    titolo: "Trilocale Via Privata Tanaro 5, Gorla — 80mq, 3° piano, ascensore",
+    zona: "Gorla",
+    prezzo: null,
+    mq: 80,
+    punteggio: null,
+    data_vista: "2026-05-01",
+    url: "https://www.idealista.it/pro/cfc-immobiliare/immobile/24075805/",
+    note: "⚠️ PREZZO DA VERIFICARE — se in fascia ideale: score stimato 7+/10 · 3° piano con ascensore confermato · ristrutturato · balcone · Gorla-Ponte Nuovo · MM1 Cimiano ~10 min",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "immobiliaredst-gorla-tanaro",
+    titolo: "Trilocale Gorla — 106mq, 6° piano, 2 terrazze, box incluso",
+    zona: "Gorla",
+    prezzo: null,
+    mq: 106,
+    punteggio: null,
+    data_vista: "2026-05-01",
+    url: "https://www.immobiliaredst.it/property/trilocale-mm1-gorla/",
+    note: "⚠️ ANNUNCIO 2022 — VERIFICARE DISPONIBILITÀ · 6° piano/ultimo · ascensore · 2 terrazze · box auto incluso · cantina · ristrutturato · MM1 Gorla vicino · Naviglio Martesana",
+    nuovo: true,
+    escluso: false,
+    verifica: true
   }
 ];
 
