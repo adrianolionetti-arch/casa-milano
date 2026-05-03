@@ -2,7 +2,7 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-02T08:00:00"
+    "ultima_sessione": "2026-05-03T10:00:00"
   },
   "annunci": [
     {
@@ -746,6 +746,105 @@
       "data_vista": "2026-05-02",
       "notificato": false,
       "note": "ESCLUSO: €465.000 fuori budget E 70mq < minimo 80mq · Bicocca"
+    },
+    {
+      "id": "tecnocasa-61146321",
+      "url": "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61146321.html",
+      "titolo": "Trilocale Niguarda Ca' Granda — €368k fuori budget, 80mq, 2° piano, portineria",
+      "prezzo": 368000,
+      "zona": "Niguarda",
+      "mq": 80,
+      "piano": 2,
+      "ascensore": true,
+      "balcone": true,
+      "bagni": 1,
+      "portineria": true,
+      "punteggio": 0,
+      "data_vista": "2026-05-03",
+      "notificato": false,
+      "note": "ESCLUSO: €368.000 supera il budget max di €360k (€8k sopra) · 2° piano · ascensore · portineria h24 · 2 balconi · doppia esposizione E/O · ottimo stato · edificio 1950 · MM5 Ca' Granda/Pratocentenaro 300m · monitorare se il prezzo scende"
+    },
+    {
+      "id": "immobiliare-128218800",
+      "url": "https://www.immobiliare.it/annunci/128218800/",
+      "titolo": "Trilocale Viale Monza 237 — nuovo, 1° piano, balcone, €339k",
+      "prezzo": 339000,
+      "zona": "Viale Monza (Gorla/Precotto)",
+      "mq": null,
+      "piano": 1,
+      "ascensore": null,
+      "balcone": true,
+      "bagni": 1,
+      "punteggio": null,
+      "data_vista": "2026-05-03",
+      "notificato": false,
+      "note": "ASCENSORE E MQ NON CONFERMATI · stabile interno nuovo · parquet rovere · riscaldamento autonomo · A/C predisposizione · nuovi impianti certificati · porta blindata · tra MM1 Gorla e Precotto ~5 min a piedi · Terzo Millennio Re Corso Buenos Aires 9 · VERIFICARE URGENTEMENTE ASCENSORE (stabile interno piccolo potrebbe non averlo)"
+    },
+    {
+      "id": "wikicasa-14618756",
+      "url": "https://www.wikicasa.it/appartamento-vendita-milano-zona-precotto-turro-viale-monza-greco-14618756",
+      "titolo": "Trilocale Viale Monza 198/200 — 7° piano, 2 terrazze, 2 bagni, edificio 2008",
+      "prezzo": null,
+      "zona": "Precotto / Viale Monza",
+      "mq": 95,
+      "piano": 7,
+      "ascensore": true,
+      "terrazzo": true,
+      "bagni": 2,
+      "posto_auto": false,
+      "punteggio": null,
+      "data_vista": "2026-05-03",
+      "notificato": false,
+      "note": "PREZZO NON DISPONIBILE — score stimato 7-8 se in budget · 7° piano con doppio ascensore · 2 terrazze · 2 bagni (1 en suite) · 95mq · doppia esposizione N-S · edificio 2008 in buone condizioni · parquet camere · ceramica altri ambienti · PVC doppi vetri · portone blindato · box opzionale €30k · MM1 Precotto 150m · VERIFICARE URGENTEMENTE PREZZO"
+    },
+    {
+      "id": "idealista-33271747",
+      "url": "https://www.idealista.it/en/immobile/33271747/",
+      "titolo": "Trilocale Viale Monza 355, Villa San Giovanni — ~97mq, 3° piano, doppio ascensore",
+      "prezzo": null,
+      "zona": "Viale Monza (Sesto Marelli)",
+      "mq": 97,
+      "piano": 3,
+      "ascensore": true,
+      "balcone": true,
+      "bagni": 1,
+      "portineria": true,
+      "punteggio": null,
+      "data_vista": "2026-05-03",
+      "notificato": false,
+      "note": "PREZZO NON DISPONIBILE · 3° piano con doppio ascensore · portineria h24 · grande balcone · 97mq · 1970s elegante con giardino condominiale · 2 camere matrimoniali · MM1 Sesto Marelli vicino · score potenziale 5.8-6.3 se in fascia ideale · rif. 01-Monza355 (GLO VALUE REAL ESTATE)"
+    },
+    {
+      "id": "wikicasa-16332027",
+      "url": "https://www.wikicasa.it/en/annuncio/16332027",
+      "titolo": "Trilocale Viale Monza 355/C — 87mq, balcone, giardino, MM1 Sesto Marelli 140m",
+      "prezzo": null,
+      "zona": "Viale Monza (Sesto Marelli)",
+      "mq": 87,
+      "piano": null,
+      "ascensore": null,
+      "balcone": true,
+      "bagni": 1,
+      "punteggio": null,
+      "data_vista": "2026-05-03",
+      "notificato": false,
+      "note": "PREZZO E PIANO NON DISPONIBILI · 87mq · balcone · doppia esposizione S-O · giardino condominiale · 1970s · cantina inclusa · MM1 Sesto Marelli 140m · score potenziale 4.5-5 se in fascia ideale · rif. V265 (AP Studio Immobiliare)"
+    },
+    {
+      "id": "immobiliare-112404013",
+      "url": "https://www.immobiliare.it/annunci/112404013/",
+      "titolo": "Trilocale Via Carlo Esterle 31, Cimiano — 90mq, 3° piano, da ristrutturare",
+      "prezzo": null,
+      "zona": "Cimiano",
+      "mq": 90,
+      "piano": 3,
+      "ascensore": true,
+      "balcone": true,
+      "bagni": 1,
+      "punteggio": null,
+      "data_vista": "2026-05-03",
+      "notificato": false,
+      "note": "PREZZO NON CONFERMATO (snippet €169k probabilmente obsoleto/errato per 2026 — stimato €220k-€290k da ristrutturare) · 3° piano con ascensore confermato · da ristrutturare · doppia esposizione · cantina · MM2 Cimiano vicino · Tempocasa Cimiano rif. EST31C · VERIFICARE URGENTEMENTE PREZZO ATTUALE"
     }
   ]
 }
