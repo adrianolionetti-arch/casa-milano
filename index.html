@@ -72,12 +72,12 @@
 
 <header>
   <h1>🏠 Casa Milano</h1>
-  <p id="last-update">Aggiornato il 3 maggio 2026 · 57 annunci processati · 6 nuovi oggi</p>
+  <p id="last-update">Aggiornato il 4 maggio 2026 · 66 annunci processati · 10 nuovi oggi</p>
 </header>
 
 <div class="stats">
-  <div class="stat"><div class="num" id="stat-total">57</div><div class="label">Annunci totali</div></div>
-  <div class="stat"><div class="num" id="stat-new">6</div><div class="label">Nuovi oggi</div></div>
+  <div class="stat"><div class="num" id="stat-total">66</div><div class="label">Annunci totali</div></div>
+  <div class="stat"><div class="num" id="stat-new">10</div><div class="label">Nuovi oggi</div></div>
   <div class="stat"><div class="num" id="stat-budget">€360k</div><div class="label">Budget max</div></div>
   <div class="stat"><div class="num" id="stat-best">6.8</div><div class="label">Score migliore</div></div>
 </div>
@@ -883,6 +883,132 @@ const annunci = [
     data_vista: "2026-05-03",
     url: "https://www.immobiliare.it/annunci/112404013/",
     note: "⚠️ PREZZO DA VERIFICARE (snippet obsoleto €169k) · 3° piano con ascensore · da ristrutturare · doppia esposizione · balcone · cantina · MM2 Cimiano vicino · Tempocasa Cimiano rif. EST31C",
+    nuovo: false,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "tecnocasa-60861395",
+    titolo: "Trilocale Via Paolo Rotta, Niguarda — 116mq, 1° piano, 2 bagni, portineria",
+    zona: "Niguarda",
+    prezzo: 348000,
+    mq: 116,
+    punteggio: 6.0,
+    data_vista: "2026-05-04",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60861395.html",
+    note: "1° piano con ascensore · portineria h24 · giardino condominiale · 2 balconi + terrazza coperta · 2 bagni · completamente ristrutturato · AC split · vicino Parco Nord e Ospedale Niguarda",
+    nuovo: true,
+    escluso: false,
+    verifica: false
+  },
+  {
+    id: "immobiliare-119315913",
+    titolo: "Trilocale Via Pozzobonelli 6, Niguarda — ESCLUSO (€389k fuori budget)",
+    zona: "Niguarda",
+    prezzo: 389000,
+    mq: 90,
+    punteggio: 0,
+    data_vista: "2026-05-04",
+    url: "https://www.immobiliare.it/annunci/119315913/",
+    note: "ESCLUSO: €389k fuori budget · 1° piano · ascensore · portineria h24 · giardino · terrazzino vista parco · ristrutturato 2016 · costruzione 2010",
+    nuovo: false,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "immobiliare-115966993",
+    titolo: "Trilocale Via Cavezzali 6, Turro — ESCLUSO (€450k fuori budget)",
+    zona: "Turro",
+    prezzo: 450000,
+    mq: 90,
+    punteggio: 0,
+    data_vista: "2026-05-04",
+    url: "https://www.immobiliare.it/annunci/115966993/",
+    note: "ESCLUSO: €450k fuori budget · 5° piano · ascensore · portineria · balcone · doppia esposizione · cantina · MM1 Turro / MM2 Cimiano",
+    nuovo: false,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "idealista-33677087",
+    titolo: "Trilocale Via Rucellai 37, Precotto — ESCLUSO (€495k fuori budget)",
+    zona: "Precotto / Turro",
+    prezzo: 495000,
+    mq: 104,
+    punteggio: 0,
+    data_vista: "2026-05-04",
+    url: "https://www.idealista.it/immobile/33677087/",
+    note: "ESCLUSO: €495k fuori budget · 1° piano · ascensore · portineria · giardino · Borgo dei Tintori · MM1 Precotto 350m",
+    nuovo: false,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "idealista-20453698",
+    titolo: "Trilocale Via Rucellai 6, Precotto — ESCLUSO (€449k fuori budget)",
+    zona: "Precotto / Turro",
+    prezzo: 449000,
+    mq: 90,
+    punteggio: 0,
+    data_vista: "2026-05-04",
+    url: "https://www.idealista.it/immobile/20453698/",
+    note: "ESCLUSO: €449k fuori budget · 2° piano · ascensore · 2 bagni (1 idromassaggio) · parquet · AC · ottimo stato",
+    nuovo: false,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "tecnocasa-61176236",
+    titolo: "Trilocale Niguarda zona Rotta — ESCLUSO (€389k fuori budget)",
+    zona: "Niguarda",
+    prezzo: 389000,
+    mq: 116,
+    punteggio: 0,
+    data_vista: "2026-05-04",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61176236.html",
+    note: "ESCLUSO: €389k fuori budget · 116mq · Niguarda · Tecnocasa Studio Niguarda D.I.",
+    nuovo: false,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "tecnocasa-60927004",
+    titolo: "Trilocale Gorla — ESCLUSO (€459k fuori budget)",
+    zona: "Gorla",
+    prezzo: 459000,
+    mq: 115,
+    punteggio: 0,
+    data_vista: "2026-05-04",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60927004.html",
+    note: "ESCLUSO: €459k fuori budget · 115mq · Gorla · giardino privato",
+    nuovo: false,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "laltronaviglio-rovigno18",
+    titolo: "Trilocale con giardino Via Rovigno 18, Turro — nuova costruzione dic 2026",
+    zona: "Turro",
+    prezzo: null,
+    mq: 91,
+    punteggio: null,
+    data_vista: "2026-05-04",
+    url: "https://laltronaviglio.it/",
+    note: "⚠️ PREZZO DA VERIFICARE URGENTEMENTE — score potenziale 7+ se in fascia ideale · nuova costruzione 56 appt · giardino privato · 2 bagni · 2 camere · riscaldamento/raffrescamento a pavimento · VMC · fotovoltaico · consegna 31/12/2026 · MM1 Turro vicino",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "toscano-1139288",
+    titolo: "Trilocale Viale Fulvio Testi 91, Niguarda — 80mq, 2° piano, ristrutturato 2025",
+    zona: "Niguarda",
+    prezzo: null,
+    mq: 80,
+    punteggio: null,
+    data_vista: "2026-05-04",
+    url: "https://www.toscano.it/comune-milano/1139288-appartamento-viale-fulvio-testi",
+    note: "⚠️ PREZZO DA VERIFICARE — stima €280-€330k · 2° piano con ascensore · portineria h24 · ristrutturazione totale completata maggio 2025 · mai abitato · doppia esposizione E-O su giardini interni · edificio anni '60 · rif. 148/2025 (Toscano)",
     nuovo: true,
     escluso: false,
     verifica: true
