@@ -15,17 +15,21 @@ Leggi `criteri.md` e tienilo in memoria per tutta la sessione.
 
 ### Step 2 — Cerca gli annunci con Apify (fonte primaria per Immobiliare.it)
 
-**Immobiliare.it** — usa l'attore `azzouzana~immobiliare-it-listing-page-scraper-by-search-url` via curl bash. Usa un'unica ricerca broad su tutta Milano per minimizzare le chiamate API:
+**Immobiliare.it** — usa l'attore `azzouzana~immobiliare-it-listing-page-scraper-by-search-url`. Ordina per data pubblicazione per avere solo annunci recenti:
 
 ```bash
 APIFY_RESULT=$(curl -s -X POST \
   "https://api.apify.com/v2/acts/azzouzana~immobiliare-it-listing-page-scraper-by-search-url/run-sync-get-dataset-items?token=$APIFY_TOKEN&timeout=120" \
   -H "Content-Type: application/json" \
-  -d '{"startUrl":"https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=350000&superficieMinima=80","maxListings":80}')
-echo "$APIFY_RESULT" | python3 -c "import sys,json; data=json.load(sys.stdin); print(json.dumps(data, ensure_ascii=False))"
+  -d '{"startUrl":"https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=360000&superficieMinima=80&ordinamento=data_pubblicazione_decrescente","maxListings":60}')
+echo "$APIFY_RESULT"
 ```
 
-I risultati includono: `id`, `url`, `price`, `surface`, `floor`, `zone`, `photos[]`, `features{}`. Filtra per zone di interesse (Turro, Precotto, Greco, Bicocca, Niguarda, Lambrate, Pratocentenaro, Città Studi).
+⚠️ **FILTRO FRESCHEZZA OBBLIGATORIO**: dopo aver ricevuto i risultati Apify, scarta qualsiasi annuncio la cui data di pubblicazione (campo `publishDate` o `createdAt` o simile nei dati Apify) sia precedente a **45 giorni fa**. Se il campo data non è disponibile, considera l'annuncio valido ma segnalalo nelle note.
+
+⚠️ **FILTRO STATO**: scarta annunci con stato "venduto", "scaduto", "non disponibile" o simili.
+
+I risultati includono: `id`, `url`, `price`, `surface`, `floor`, `zone`, `photos[]`. Filtra per zone di interesse secondo criteri.md.
 
 **Se Apify restituisce rate limit o errore**, usa GoHome.it via WebFetch come fallback:
 - `https://www.gohome.it/immobiliari.aspx?q=trilocale+Turro+MILANO`
@@ -42,26 +46,23 @@ I risultati includono: `id`, `url`, `price`, `surface`, `floor`, `zone`, `photos
 - `trilocale vendita Milano Turro Precotto Greco 80mq 2026 prezzo`
 - `trilocale vendita Milano Bicocca Niguarda 80mq prezzo euro 2026`
 - `trilocale vendita Milano Lambrate Città Studi 80mq 90mq prezzo 2026`
-- `quadrilocale vendita Milano Zona 9 Pratocentenaro prezzo 2026`
 - `site:tecnocasa.it trilocale vendita Milano Turro Greco Bicocca`
 - `site:gabetti.it trilocale vendita Milano Lambrate Città Studi`
 
-Fai almeno 10–12 ricerche diverse per massimizzare la copertura.
-
 ### Step 3 — Filtra i duplicati
-Confronta ogni annuncio trovato con `annunci_visti.json`. Salta gli annunci con ID già presenti.
+Leggi `annunci_visti.json` e memorizza tutti gli ID esistenti. **Salta COMPLETAMENTE qualsiasi annuncio il cui ID è già presente nel JSON** — non aggiungerlo, non notificarlo, non includerlo nell'email. Solo gli annunci con ID non presenti sono "nuovi di questa sessione".
 
 ### Step 4 — Valuta e assegna punteggio
 
-Per ogni annuncio nuovo, usa questa scala 0–10:
+Per ogni annuncio **nuovo** (non presente in annunci_visti.json), usa questa scala 0–10:
 
 **Prezzo** (max 3 punti):
-- Sotto la fascia ideale: +3
-- Nella fascia ideale: +2
-- Sopra la fascia ideale ma sotto il max: +1
-- Sopra il budget max: ESCLUDI subito
+- Sotto la fascia ideale (< €310k): +3
+- Nella fascia ideale (€310k–€310k): +2
+- Accettabile (€310k–€360k): +1
+- Sopra €360k: ESCLUDI subito
 
-**Zona** (max 3 punti):
+**Zona** (max 3 punti) — vedi criteri.md per la lista completa:
 - Zona 1 (top): +3
 - Zona 2 (ottima): +2
 - Zona 3 (buona): +1
@@ -77,39 +78,35 @@ Per ogni annuncio nuovo, usa questa scala 0–10:
 - Classe energetica A/B: +0.5
 - Piano 3°+: +0.5
 
-Escludi immediatamente: piano terra senza giardino, aste giudiziarie, zone escluse.
+Escludi immediatamente: piano terra senza giardino, aste giudiziarie, zone escluse, immobili senza ascensore.
 
 ### Step 5 — Dettagli e foto sui migliori
 
-Per gli annunci con punteggio ≥ 6:
+Per gli annunci nuovi con punteggio ≥ 6, usa WebFetch sull'URL per estrarre il meta tag `og:image` e verificare piano, ascensore, balcone.
 
-**Se Apify disponibile**: usa l'attore `igolaizola/immobiliare-it-scraper` con l'URL diretto dell'annuncio per ottenere tutti i dettagli (piano, ascensore, balcone, foto).
-
-**Altrimenti**: usa WebFetch sull'URL dell'annuncio per estrarre il meta tag `og:image` e i dettagli.
-
-**Download immagini nel repo** (le foto vengono servite da GitHub Pages):
+**Download immagini nel repo**:
 ```bash
 mkdir -p images
-IMG_URL="[url foto estratto]"
+IMG_URL="[url og:image estratto]"
 IMG_FILE="images/[id-annuncio].jpg"
 curl -sL "$IMG_URL" -o "$IMG_FILE" 2>/dev/null
 if [ $(wc -c < "$IMG_FILE") -gt 5000 ]; then
-  echo "foto_locale=$IMG_FILE"
+  echo "foto_ok"
 else
   rm -f "$IMG_FILE"
-  echo "foto_locale="
 fi
 ```
 
-Nel JSON salva `"foto": "images/[id].jpg"` se il download ha avuto successo.
-Nella dashboard e nelle email usa il path relativo `images/[id].jpg` (servito da GitHub Pages).
+Nel JSON salva `"foto": "images/[id].jpg"` solo se il download riesce.
 
 ### Step 6 — Invia notifiche via Gmail
 
-**Destinatari**: adrianolionetti@gmail.com e alessia.curtopelle@gmail.com (invia a entrambi)
+**⚠️ REGOLA CRITICA**: l'email deve contenere SOLO gli annunci trovati per la prima volta in QUESTA sessione (cioè quelli non presenti in annunci_visti.json all'inizio della sessione). Non includere MAI annunci con `notificato: true` o annunci già in annunci_visti.json.
+
+**Destinatari**: adrianolionetti@gmail.com e alessia.curtopelle@gmail.com
 
 **Alert immediato** (punteggio ≥ 8): oggetto `🏠 [ALERT] [zona] — €[prezzo] — [mq]mq`
-**Digest** (punteggio ≥ 6): oggetto `🏠 [DIGEST] Ricerca casa Milano — [data] — [N] annunci`
+**Digest** (punteggio ≥ 6): oggetto `🏠 [DIGEST] Ricerca casa Milano — [data] — [N] annunci nuovi`
 **Nessuna novità**: oggetto `🏠 Sessione completata — nessuna novità oggi`
 
 **Formato email HTML**:
@@ -117,7 +114,7 @@ Nella dashboard e nelle email usa il path relativo `images/[id].jpg` (servito da
 <h2>🏠 Ricerca Casa Milano — [DATA]</h2>
 <p>📊 <a href="https://adrianolionetti-arch.github.io/casa-milano/">Apri la dashboard completa →</a></p>
 <hr>
-[Per ogni annuncio:]
+[Per ogni annuncio NUOVO con score ≥ 6:]
 <div style="margin:20px 0;padding:16px;border:1px solid #eee;border-radius:8px;">
   [Se foto disponibile:] <img src="https://adrianolionetti-arch.github.io/casa-milano/images/[id].jpg" style="width:100%;max-width:500px;border-radius:6px;margin-bottom:12px">
   <h3>⭐ [punteggio]/10 — [titolo]</h3>
@@ -127,31 +124,19 @@ Nella dashboard e nelle email usa il path relativo `images/[id].jpg` (servito da
 </div>
 ```
 
-Per inviare a più destinatari usa header `To: addr1, addr2` nel raw email.
-
 ### Step 7 — Aggiorna il database
-Aggiungi tutti gli annunci processati (qualunque punteggio) ad `annunci_visti.json`:
-```json
-{
-  "id": "immobiliare-12345678",
-  "url": "https://...",
-  "titolo": "...",
-  "prezzo": 380000,
-  "zona": "Isola",
-  "mq": 85,
-  "punteggio": 8.5,
-  "data_vista": "2026-04-24",
-  "notificato": true
-}
-```
+Aggiungi SOLO gli annunci nuovi di questa sessione ad `annunci_visti.json`. Non modificare le entry esistenti.
 
-### Step 8 — Salva il report
-Crea un file in `report/YYYY-MM-DD_HH-MM.md` con il riepilogo della sessione.
+### Step 8 — Aggiorna la dashboard (index.html)
+Rigenera index.html mostrando SOLO gli annunci con `data_vista` degli ultimi 30 giorni e punteggio ≥ 4 (o esclusi con motivazione). Ordina per punteggio decrescente. Aggiorna stat-total, stat-new (nuovi di oggi), stat-best.
+
+### Step 9 — Salva il report
+Crea un file in `report/YYYY-MM-DD.md` con il riepilogo della sessione.
 
 ## Regole generali
 
 - Non notificare mai lo stesso annuncio due volte
-- Se un sito non è accessibile, continua con gli altri senza fermarti
-- Se trovi 0 annunci nuovi, invia comunque una breve email di conferma: "Sessione completata, nessun annuncio nuovo oggi."
+- Se un sito non è accessibile, continua con gli altri
+- Se trovi 0 annunci nuovi, invia email di conferma: "Sessione completata, nessun annuncio nuovo oggi."
 - Non inventare dati: se un campo non è disponibile, scrivilo esplicitamente
 - Sii conciso nelle email: l'utente vuole valutare in 30 secondi se vale la pena aprire un link
