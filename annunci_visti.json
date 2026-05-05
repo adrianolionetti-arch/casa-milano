@@ -2,7 +2,7 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-04T10:00:00"
+    "ultima_sessione": "2026-05-05T10:00:00"
   },
   "annunci": [
     {
@@ -993,6 +993,64 @@
       "data_vista": "2026-05-04",
       "notificato": false,
       "note": "PREZZO NON DISPONIBILE · 2° piano con ascensore · portineria h24 · ristrutturazione totale completata maggio 2025 · mai abitato · doppia esposizione E-O su giardini interni · edificio anni '60 · rif. 148/2025 (Toscano Immobiliare) · VERIFICARE URGENTEMENTE PREZZO (stima €280-€330k per zona)"
+    },
+    {
+      "id": "casait-41423871",
+      "url": "https://www.casa.it/appartamento/vendita/milano/via-alessandro-astesani-45-milano-100mq-41423871/",
+      "titolo": "Trilocale Via Alessandro Astesani 45, Affori — 100mq, 7° piano, doppio ascensore",
+      "prezzo": 288000,
+      "zona": "Affori",
+      "mq": 100,
+      "piano": 7,
+      "ascensore": true,
+      "portineria": true,
+      "punteggio": 6.8,
+      "data_vista": "2026-05-05",
+      "notificato": true,
+      "note": "7° piano · doppio ascensore · portineria · viste panoramiche montagne · box garage €25k opzionale · MM3 gialla Affori/Affori FN vicino · edificio anni '60"
+    },
+    {
+      "id": "astesani-affori-86mq",
+      "url": "https://www.nuroa.it/vendita-immobili/milano-via-astesani-affori",
+      "titolo": "Trilocale Via Astesani area, Affori — 86mq, 3° piano, portineria",
+      "prezzo": null,
+      "zona": "Affori",
+      "mq": 86,
+      "piano": 3,
+      "ascensore": true,
+      "portineria": true,
+      "punteggio": null,
+      "data_vista": "2026-05-05",
+      "notificato": false,
+      "note": "⚠️ PREZZO DA VERIFICARE (stimato ~€199k @€2.314/mq) — se confermato score stimato 6.8/10 · 3° piano · ascensore · portineria · giardino condominiale · MM3 gialla Affori vicino"
+    },
+    {
+      "id": "immobiliare-104564113",
+      "url": "https://www.immobiliare.it/annunci/104564113/",
+      "titolo": "Trilocale Via Luigi Ornato 37, Niguarda — da ristrutturare, 1° piano",
+      "prezzo": null,
+      "zona": "Niguarda",
+      "mq": null,
+      "piano": 1,
+      "ascensore": null,
+      "punteggio": null,
+      "data_vista": "2026-05-05",
+      "notificato": false,
+      "note": "⚠️ ASCENSORE E PREZZO NON CONFERMATI (ascensore obbligatorio) · Da ristrutturare · 1° piano · riscaldamento autonomo · Via Ornato Niguarda"
+    },
+    {
+      "id": "idealista-34318592",
+      "url": "https://www.idealista.it/immobile/34318592/",
+      "titolo": "Trilocale Viale Monza NoLo-Pasteur — 104mq",
+      "prezzo": null,
+      "zona": "NoLo",
+      "mq": 104,
+      "piano": null,
+      "ascensore": null,
+      "punteggio": null,
+      "data_vista": "2026-05-05",
+      "notificato": false,
+      "note": "⚠️ PREZZO E ASCENSORE NON CONFERMATI · 104mq · Viale Monza area NoLo/Pasteur"
     }
   ]
 }
