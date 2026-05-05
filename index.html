@@ -72,12 +72,12 @@
 
 <header>
   <h1>🏠 Casa Milano</h1>
-  <p id="last-update">Aggiornato il 4 maggio 2026 · 66 annunci processati · 10 nuovi oggi</p>
+  <p id="last-update">Aggiornato il 5 maggio 2026 · 69 annunci processati · 4 nuovi oggi</p>
 </header>
 
 <div class="stats">
-  <div class="stat"><div class="num" id="stat-total">66</div><div class="label">Annunci totali</div></div>
-  <div class="stat"><div class="num" id="stat-new">10</div><div class="label">Nuovi oggi</div></div>
+  <div class="stat"><div class="num" id="stat-total">69</div><div class="label">Annunci totali</div></div>
+  <div class="stat"><div class="num" id="stat-new">4</div><div class="label">Nuovi oggi</div></div>
   <div class="stat"><div class="num" id="stat-budget">€360k</div><div class="label">Budget max</div></div>
   <div class="stat"><div class="num" id="stat-best">6.8</div><div class="label">Score migliore</div></div>
 </div>
@@ -96,6 +96,7 @@
   <button class="filter-btn" onclick="filterZone('Crescenzago', event)">Crescenzago</button>
   <button class="filter-btn" onclick="filterZone('Viale Monza', event)">Viale Monza</button>
   <button class="filter-btn" onclick="filterZone('Cimiano', event)">Cimiano</button>
+  <button class="filter-btn" onclick="filterZone('Affori', event)">Affori ⭐</button>
   <button class="filter-btn" onclick="filterZone('Navigli', event)">Navigli</button>
 </div>
 
@@ -141,7 +142,7 @@ const annunci = [
     data_vista: "2026-04-29",
     url: "https://www.iconacasa.com/index.php/opportunita/property/20965-milano-gorla-vendita-appartamento-viale-monza",
     note: "⚠️ PREZZO DA VERIFICARE · Da ristrutturare · 4° piano su 7 · ascensore · terrazzo + balcone · box auto incluso · portineria h24 · MM1 Turro/Gorla sotto casa · rif. SC83",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -155,7 +156,7 @@ const annunci = [
     data_vista: "2026-04-29",
     url: "https://www.wikicasa.it/appartamento-vendita-milano-zona-precotto-turro-viale-monza-greco-9776868",
     note: "⚠️ PREZZO E ASCENSORE DA VERIFICARE · 100mq · balcone · giardino condominiale · PVC doppio vetro · a/c · cantina · MM1 Precotto 300m",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -169,7 +170,7 @@ const annunci = [
     data_vista: "2026-04-29",
     url: "https://www.wikicasa.it/appartamento-vendita-milano-zona-precotto-turro-viale-monza-greco-12683109",
     note: "⚠️ PREZZO E ASCENSORE DA VERIFICARE · Ristrutturato · balcone · giardino condominiale · cantina · box €25k opzionale · MM Precotto 900m · MM Bicocca 900m",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -183,7 +184,7 @@ const annunci = [
     data_vista: "2026-04-29",
     url: "https://www.wikicasa.it/appartamento-vendita-milano-zona-precotto-turro-viale-monza-greco-12007855",
     note: "⚠️ PREZZO DA VERIFICARE + VERIFICARE DISPONIBILITÀ (snippet 2022) · 7° piano attico · 2 terrazzi · edificio 2005 · box €25k · MM1 Gorla",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -197,7 +198,7 @@ const annunci = [
     data_vista: "2026-04-29",
     url: "https://www.immobiliare.it/annunci/116904517/",
     note: "⚠️ PREZZO E ASCENSORE DA VERIFICARE · Da ristrutturare · 3° piano · posto auto · riscaldamento autonomo · doppia esposizione · MM1 Rovereto",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -211,7 +212,7 @@ const annunci = [
     data_vista: "2026-04-29",
     url: "https://www.immobiliare.it/annunci/104628691/",
     note: "⚠️ PREZZO, ASCENSORE E TIPO VENDITA DA VERIFICARE · Buono stato · 3° piano · balcone · possibile nuda proprietà · riscaldamento centralizzato",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -239,7 +240,7 @@ const annunci = [
     data_vista: "2026-04-29",
     url: "https://www.immobiliare.it/annunci/123608893/",
     note: "⚠️ Dati insufficienti — verificare sul portale",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -253,7 +254,7 @@ const annunci = [
     data_vista: "2026-04-29",
     url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61179757.html",
     note: "⚠️ PIANO RIALZATO (potenziale esclusione) · ascensore su 9 piani · portineria h24 · 93mq · MM5 Bignami · box €25k opzionale",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: false
   },
@@ -491,7 +492,7 @@ const annunci = [
     data_vista: "2026-04-30",
     url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61009314.html",
     note: "Alto piano · ascensore · terrazza 37mq · box auto incluso · aria condizionata · edificio 1965 · Niguarda · Tecnocasa Studio Niguarda D.I.",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: false
   },
@@ -505,7 +506,7 @@ const annunci = [
     data_vista: "2026-04-30",
     url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60839979.html",
     note: "3° piano · ascensore · portineria h24 · cortile condominiale · cucina abitabile · 1965 · Niguarda",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: false
   },
@@ -519,7 +520,7 @@ const annunci = [
     data_vista: "2026-04-30",
     url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61190313.html",
     note: "3° piano/ultimo · ascensore · 109mq luminoso · posto auto €25k opzionale · edificio 1965 · Niguarda",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: false
   },
@@ -533,7 +534,7 @@ const annunci = [
     data_vista: "2026-04-30",
     url: "https://www.gabetti.it/casa/vendita/milano/appartamento/3110279",
     note: "⚠️ ASCENSORE NON CONFERMATO — se presente score stimato 7.3 · completamente ristrutturato · portineria h24 · 2 bagni · fan coil autonomo · 150m da MM Turro",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -547,7 +548,7 @@ const annunci = [
     data_vista: "2026-04-30",
     url: "https://www.immobiliare.it/annunci/114824435/",
     note: "⚠️ PREZZO E ASCENSORE NON CONFERMATI · 5° piano/top · portineria h24 · balcone con vista aperta · ristrutturato · parquet · a/c · possibile stesso stabile Gabetti",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -561,7 +562,7 @@ const annunci = [
     data_vista: "2026-04-30",
     url: "https://www.wikicasa.it/4048537_appartamento_vendita_milano",
     note: "⚠️ ANNUNCIO DEL 2018 — verificare disponibilità · 7° piano/top · ascensore · portineria h24 · 3 balconi · tripla esposizione · da ristrutturare · prezzo 2018: ~€230k",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -575,7 +576,7 @@ const annunci = [
     data_vista: "2026-04-30",
     url: "https://www.immobiliare.it/annunci/106135181/",
     note: "⚠️ PREZZO NON DISPONIBILE · 2° piano · ascensore · balcone · ristrutturato e arredato · pubblicato luglio 2025 · Greco",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -631,7 +632,7 @@ const annunci = [
     data_vista: "2026-05-01",
     url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61075004.html",
     note: "⚠️ ASCENSORE NON CONFERMATO — se presente: score stimato 7/10 · €265k fascia ideale · 2° piano · condominio anni '70 · recentemente ristrutturato · giardino condominiale · MM Crescenzago vicina",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -645,7 +646,7 @@ const annunci = [
     data_vista: "2026-05-01",
     url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60897313.html",
     note: "⚠️ ASCENSORE NON CONFERMATO — se presente: score stimato 7/10 · €268k fascia ideale · palazzina anni '60 con giardino · doppia esposizione · ristrutturato · MM Crescenzago vicina",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -659,7 +660,7 @@ const annunci = [
     data_vista: "2026-05-01",
     url: "https://www.idealista.it/pro/cfc-immobiliare/immobile/24075805/",
     note: "⚠️ PREZZO DA VERIFICARE — se in fascia ideale: score stimato 7+/10 · 3° piano con ascensore confermato · ristrutturato · balcone · Gorla-Ponte Nuovo · MM1 Cimiano ~10 min",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -673,7 +674,7 @@ const annunci = [
     data_vista: "2026-05-01",
     url: "https://www.immobiliaredst.it/property/trilocale-mm1-gorla/",
     note: "⚠️ ANNUNCIO 2022 — VERIFICARE DISPONIBILITÀ · 6° piano/ultimo · ascensore · 2 terrazze · box auto incluso · cantina · ristrutturato · MM1 Gorla vicino · Naviglio Martesana",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -687,7 +688,7 @@ const annunci = [
     data_vista: "2026-05-02",
     url: "https://www.immobiliare.it/annunci/124697435/",
     note: "5° piano · ascensore · balcone doppio accesso (soggiorno + cucina) vista parco · 2 bagni (1 en suite) · doppia esposizione E-S · edificio 2021 elegante · 200m da MM5 Bignami · rif. IFM191",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: false
   },
@@ -813,7 +814,7 @@ const annunci = [
     data_vista: "2026-05-03",
     url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61146321.html",
     note: "ESCLUSO: €368k leggermente oltre budget max €360k · 2° piano · ascensore · portineria h24 · 2 balconi · doppia esposizione E/O · ottimo stato · 1950 · MM5 Ca' Granda 300m · monitorare se prezzo scende",
-    nuovo: true,
+    nuovo: false,
     escluso: true,
     verifica: false
   },
@@ -827,7 +828,7 @@ const annunci = [
     data_vista: "2026-05-03",
     url: "https://www.immobiliare.it/annunci/128218800/",
     note: "⚠️ ASCENSORE E MQ DA VERIFICARE · nuovo · parquet rovere · riscaldamento autonomo · A/C predisposizione · tra MM1 Gorla e Precotto ~5 min · Terzo Millennio Re",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -841,7 +842,7 @@ const annunci = [
     data_vista: "2026-05-03",
     url: "https://www.wikicasa.it/appartamento-vendita-milano-zona-precotto-turro-viale-monza-greco-14618756",
     note: "⚠️ PREZZO DA VERIFICARE URGENTEMENTE — score potenziale 7-8 se in budget · 7° piano · doppio ascensore · 2 terrazze · 2 bagni (1 en suite) · 95mq · doppia esposizione N-S · edificio 2008 · box opzionale €30k · MM1 Precotto 150m",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -855,7 +856,7 @@ const annunci = [
     data_vista: "2026-05-03",
     url: "https://www.idealista.it/en/immobile/33271747/",
     note: "⚠️ PREZZO DA VERIFICARE · 3° piano · doppio ascensore · portineria h24 · grande balcone · 97mq · 1970s elegante con giardino · MM1 Sesto Marelli · score potenziale 5.8-6.3 se fascia ideale",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -869,7 +870,7 @@ const annunci = [
     data_vista: "2026-05-03",
     url: "https://www.wikicasa.it/en/annuncio/16332027",
     note: "⚠️ PREZZO E PIANO DA VERIFICARE · 87mq · balcone · doppia esposizione S-O · giardino condominiale · 1970s · cantina · MM1 Sesto Marelli 140m · rif. V265",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -897,7 +898,7 @@ const annunci = [
     data_vista: "2026-05-04",
     url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60861395.html",
     note: "1° piano con ascensore · portineria h24 · giardino condominiale · 2 balconi + terrazza coperta · 2 bagni · completamente ristrutturato · AC split · vicino Parco Nord e Ospedale Niguarda",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: false
   },
@@ -995,7 +996,7 @@ const annunci = [
     data_vista: "2026-05-04",
     url: "https://laltronaviglio.it/",
     note: "⚠️ PREZZO DA VERIFICARE URGENTEMENTE — score potenziale 7+ se in fascia ideale · nuova costruzione 56 appt · giardino privato · 2 bagni · 2 camere · riscaldamento/raffrescamento a pavimento · VMC · fotovoltaico · consegna 31/12/2026 · MM1 Turro vicino",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -1009,6 +1010,62 @@ const annunci = [
     data_vista: "2026-05-04",
     url: "https://www.toscano.it/comune-milano/1139288-appartamento-viale-fulvio-testi",
     note: "⚠️ PREZZO DA VERIFICARE — stima €280-€330k · 2° piano con ascensore · portineria h24 · ristrutturazione totale completata maggio 2025 · mai abitato · doppia esposizione E-O su giardini interni · edificio anni '60 · rif. 148/2025 (Toscano)",
+    nuovo: false,
+    escluso: false,
+    verifica: true
+  }
+,  {
+    id: "casait-41423871",
+    titolo: "Trilocale Via Astesani 45, Affori — 100mq, 7° piano, doppio ascensore",
+    zona: "Affori",
+    prezzo: 288000,
+    mq: 100,
+    punteggio: 6.8,
+    data_vista: "2026-05-05",
+    url: "https://www.casa.it/appartamento/vendita/milano/via-alessandro-astesani-45-milano-100mq-41423871/",
+    note: "7° piano · doppio ascensore · portineria · viste panoramiche montagne · box garage €25k opzionale · MM3 gialla Affori/Affori FN vicino · edificio anni 60",
+    nuovo: true,
+    escluso: false,
+    verifica: false
+  },
+  {
+    id: "astesani-affori-86mq",
+    titolo: "Trilocale Via Astesani area, Affori — 86mq, 3° piano, portineria",
+    zona: "Affori",
+    prezzo: null,
+    mq: 86,
+    punteggio: null,
+    data_vista: "2026-05-05",
+    url: "https://www.nuroa.it/vendita-immobili/milano-via-astesani-affori",
+    note: "⚠️ PREZZO DA VERIFICARE (stimato ~€199k @€2.314/mq) — se confermato score stimato 6.8 · 3° piano · ascensore · portineria · giardino condominiale · MM3 gialla Affori vicino",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "immobiliare-104564113",
+    titolo: "Trilocale Via Luigi Ornato 37, Niguarda — da ristrutturare, 1° piano",
+    zona: "Niguarda",
+    prezzo: null,
+    mq: null,
+    punteggio: null,
+    data_vista: "2026-05-05",
+    url: "https://www.immobiliare.it/annunci/104564113/",
+    note: "⚠️ ASCENSORE E PREZZO NON CONFERMATI (ascensore obbligatorio) · Da ristrutturare · 1° piano · riscaldamento autonomo · Via Ornato Niguarda",
+    nuovo: true,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "idealista-34318592",
+    titolo: "Trilocale Viale Monza, NoLo-Pasteur — 104mq",
+    zona: "NoLo",
+    prezzo: null,
+    mq: 104,
+    punteggio: null,
+    data_vista: "2026-05-05",
+    url: "https://www.idealista.it/immobile/34318592/",
+    note: "⚠️ PREZZO E ASCENSORE NON CONFERMATI · 104mq · Viale Monza area NoLo/Pasteur",
     nuovo: true,
     escluso: false,
     verifica: true
