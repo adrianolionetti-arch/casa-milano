@@ -72,14 +72,14 @@
 
 <header>
   <h1>🏠 Casa Milano</h1>
-  <p id="last-update">Aggiornato il 5 maggio 2026 · 69 annunci processati · 4 nuovi oggi</p>
+  <p id="last-update">Aggiornato il 6 maggio 2026 · 77 annunci processati · 8 nuovi oggi</p>
 </header>
 
 <div class="stats">
-  <div class="stat"><div class="num" id="stat-total">69</div><div class="label">Annunci totali</div></div>
-  <div class="stat"><div class="num" id="stat-new">4</div><div class="label">Nuovi oggi</div></div>
+  <div class="stat"><div class="num" id="stat-total">77</div><div class="label">Annunci totali</div></div>
+  <div class="stat"><div class="num" id="stat-new">8</div><div class="label">Nuovi oggi</div></div>
   <div class="stat"><div class="num" id="stat-budget">€360k</div><div class="label">Budget max</div></div>
-  <div class="stat"><div class="num" id="stat-best">6.8</div><div class="label">Score migliore</div></div>
+  <div class="stat"><div class="num" id="stat-best">7.5</div><div class="label">Score migliore</div></div>
 </div>
 
 <div class="filters">
@@ -1024,7 +1024,7 @@ const annunci = [
     data_vista: "2026-05-05",
     url: "https://www.casa.it/appartamento/vendita/milano/via-alessandro-astesani-45-milano-100mq-41423871/",
     note: "7° piano · doppio ascensore · portineria · viste panoramiche montagne · box garage €25k opzionale · MM3 gialla Affori/Affori FN vicino · edificio anni 60",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: false
   },
@@ -1038,7 +1038,7 @@ const annunci = [
     data_vista: "2026-05-05",
     url: "https://www.nuroa.it/vendita-immobili/milano-via-astesani-affori",
     note: "⚠️ PREZZO DA VERIFICARE (stimato ~€199k @€2.314/mq) — se confermato score stimato 6.8 · 3° piano · ascensore · portineria · giardino condominiale · MM3 gialla Affori vicino",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -1052,7 +1052,7 @@ const annunci = [
     data_vista: "2026-05-05",
     url: "https://www.immobiliare.it/annunci/104564113/",
     note: "⚠️ ASCENSORE E PREZZO NON CONFERMATI (ascensore obbligatorio) · Da ristrutturare · 1° piano · riscaldamento autonomo · Via Ornato Niguarda",
-    nuovo: true,
+    nuovo: false,
     escluso: false,
     verifica: true
   },
@@ -1066,9 +1066,121 @@ const annunci = [
     data_vista: "2026-05-05",
     url: "https://www.idealista.it/immobile/34318592/",
     note: "⚠️ PREZZO E ASCENSORE NON CONFERMATI · 104mq · Viale Monza area NoLo/Pasteur",
+    nuovo: false,
+    escluso: false,
+    verifica: true
+  },
+  {
+    id: "immobiliare-112734805",
+    titolo: "Trilocale Via Lanfranco della Pila 57, Niguarda — 97mq, 2° piano, terrazza",
+    zona: "Niguarda",
+    prezzo: 300000,
+    mq: 97,
+    punteggio: 7.5,
+    data_vista: "2026-05-06",
+    url: "https://www.immobiliare.it/annunci/112734805/",
+    note: "2° piano con ascensore · terrazza + 2 balconi · doppia esposizione NO · 97mq · riscaldamento centralizzato ~€200/mese · Niguarda-Bicocca vicino Parco Nord · MM5 Bicocca vicino · buono stato · ICONACASA Niguarda",
+    nuovo: true,
+    escluso: false,
+    verifica: false
+  },
+  {
+    id: "immobiliare-118468511",
+    titolo: "Trilocale Via Paulucci di Calboli 32, Niguarda — 4° piano, portineria, 2 balconi",
+    zona: "Niguarda",
+    prezzo: 320000,
+    mq: null,
+    punteggio: 5.0,
+    data_vista: "2026-05-06",
+    url: "https://www.immobiliare.it/annunci/118468511/",
+    note: "⚠️ SUPERFICIE NON CONFERMATA (stimata 80-90mq) · 4° piano con ascensore · portineria mattina/pomeriggio · 2 balconi · doppia esposizione · cucina separata · angolo Via Ornato · ~€320k stima",
     nuovo: true,
     escluso: false,
     verifica: true
+  },
+  {
+    id: "immobiliare-119525357",
+    titolo: "Trilocale Via Paulucci Di Calboli 32, Niguarda — 1° piano, 93mq",
+    zona: "Niguarda",
+    prezzo: 327000,
+    mq: 93,
+    punteggio: 5.5,
+    data_vista: "2026-05-06",
+    url: "https://www.immobiliare.it/annunci/119525357/",
+    note: "1° piano su 7 con ascensore · 2 balconi · 2 camere · ristrutturato e arredato · stesso stabile di immobiliare-118468511 (piano diverso) · €3.516/mq · Niguarda",
+    nuovo: true,
+    escluso: false,
+    verifica: false
+  },
+  {
+    id: "immobiliare-124719439",
+    titolo: "Trilocale Via Derna 13, Cimiano — 85mq, 3°/5° piano, portineria, MM2",
+    zona: "Cimiano",
+    prezzo: 315000,
+    mq: 85,
+    punteggio: 4.0,
+    data_vista: "2026-05-06",
+    url: "https://www.immobiliare.it/annunci/124719439/",
+    note: "3° o 5° piano (fonti discordanti) · ascensore · portineria mezza giornata · cucina abitabile · balcone · a/c · cantina · edificio anni '60 · pochi passi MM2 Cimiano · vicino Naviglio Martesana",
+    nuovo: true,
+    escluso: false,
+    verifica: false
+  },
+  {
+    id: "tecnocasa-61165063",
+    titolo: "Trilocale Niguarda €235k — ESCLUSO (68mq + senza ascensore)",
+    zona: "Niguarda",
+    prezzo: 235000,
+    mq: 68,
+    punteggio: 0,
+    data_vista: "2026-05-06",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61165063.html",
+    note: "ESCLUSO: 68mq < minimo 80mq E senza ascensore (doppia esclusione) · €235k ottimo prezzo ma criteri non rispettati · 2° piano",
+    nuovo: false,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "tecnocasa-61141976",
+    titolo: "Trilocale Niguarda 100mq — ESCLUSO (€415k fuori budget)",
+    zona: "Niguarda",
+    prezzo: 415000,
+    mq: 100,
+    punteggio: 0,
+    data_vista: "2026-05-06",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61141976.html",
+    note: "ESCLUSO: €415.000 fuori budget max €360k · 100mq · Niguarda",
+    nuovo: false,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "idealista-32652294",
+    titolo: "Trilocale Viale Ca' Granda 16 — ESCLUSO (70mq < 80mq)",
+    zona: "Ca' Granda / Pratocentenaro",
+    prezzo: null,
+    mq: 70,
+    punteggio: 0,
+    data_vista: "2026-05-06",
+    url: "https://www.idealista.it/immobile/32652294/",
+    note: "ESCLUSO: 70mq < minimo 80mq · 1° piano · ascensore · portineria parziale · giardino condominiale · MM5 Ca' Granda vicino",
+    nuovo: false,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "wikicasa-14962834",
+    titolo: "Trilocale Via Porto Corsini 22, Bicocca — ESCLUSO (79mq < 80mq)",
+    zona: "Bicocca",
+    prezzo: 289000,
+    mq: 79,
+    punteggio: 0,
+    data_vista: "2026-05-06",
+    url: "https://www.wikicasa.it/annuncio/14962834",
+    note: "ESCLUSO: 79mq appena sotto il minimo 80mq · 3° piano · €289k · vicino MM1 Sesto Marelli",
+    nuovo: false,
+    escluso: true,
+    verifica: false
   }
 ];
 

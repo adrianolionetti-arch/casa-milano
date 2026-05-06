@@ -2,7 +2,7 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-05T10:00:00"
+    "ultima_sessione": "2026-05-06T10:00:00"
   },
   "annunci": [
     {
@@ -1051,6 +1051,129 @@
       "data_vista": "2026-05-05",
       "notificato": false,
       "note": "⚠️ PREZZO E ASCENSORE NON CONFERMATI · 104mq · Viale Monza area NoLo/Pasteur"
+    },
+    {
+      "id": "immobiliare-112734805",
+      "url": "https://www.immobiliare.it/annunci/112734805/",
+      "titolo": "Trilocale Via Lanfranco della Pila 57, Niguarda-Bicocca — 97mq, 2° piano, terrazza",
+      "prezzo": 300000,
+      "zona": "Niguarda",
+      "mq": 97,
+      "piano": 2,
+      "ascensore": true,
+      "terrazzo": true,
+      "balcone": true,
+      "bagni": 1,
+      "portineria": false,
+      "punteggio": 7.5,
+      "data_vista": "2026-05-06",
+      "notificato": true,
+      "note": "2° piano con ascensore · terrazza + 2 balconi · doppia esposizione NO · 97mq · riscaldamento centralizzato ~€200/mese · zona Niguarda-Bicocca vicino Parco Nord · MM5 Bicocca vicino · agenzia ICONACASA Niguarda · buono stato"
+    },
+    {
+      "id": "immobiliare-118468511",
+      "url": "https://www.immobiliare.it/annunci/118468511/",
+      "titolo": "Trilocale Via Paulucci di Calboli Fulcieri 32, Niguarda — 4° piano, portineria",
+      "prezzo": 320000,
+      "zona": "Niguarda",
+      "mq": null,
+      "piano": 4,
+      "ascensore": true,
+      "balcone": true,
+      "bagni": 1,
+      "portineria": true,
+      "punteggio": 5.0,
+      "data_vista": "2026-05-06",
+      "notificato": false,
+      "note": "4° piano con ascensore · portineria mattina e pomeriggio · 2 balconi (cucina + camera) · doppia esposizione · cucina separata · angolo Via Ornato · SUPERFICIE NON CONFERMATA (stimata 80-90mq) · ~€320k stima"
+    },
+    {
+      "id": "immobiliare-119525357",
+      "url": "https://www.immobiliare.it/annunci/119525357/",
+      "titolo": "Trilocale Via Paulucci Di Calboli Fulcieri 32, Niguarda — 1° piano, 93mq",
+      "prezzo": 327000,
+      "zona": "Niguarda",
+      "mq": 93,
+      "piano": 1,
+      "ascensore": true,
+      "balcone": true,
+      "bagni": 1,
+      "punteggio": 5.5,
+      "data_vista": "2026-05-06",
+      "notificato": false,
+      "note": "1° piano su 7 con ascensore · 2 balconi · 2 camere · ristrutturato e arredato · stesso indirizzo di immobiliare-118468511 (piano diverso) · €3.516/mq · zona Niguarda"
+    },
+    {
+      "id": "immobiliare-124719439",
+      "url": "https://www.immobiliare.it/annunci/124719439/",
+      "titolo": "Trilocale Via Derna 13, Cimiano — 85mq, 3°/5° piano, ascensore, portineria",
+      "prezzo": 315000,
+      "zona": "Cimiano",
+      "mq": 85,
+      "piano": 3,
+      "ascensore": true,
+      "balcone": true,
+      "bagni": 1,
+      "portineria": true,
+      "punteggio": 4.0,
+      "data_vista": "2026-05-06",
+      "notificato": false,
+      "note": "3° o 5° piano (fonti discordanti) · ascensore · portineria mezza giornata · cucina abitabile · balcone · aria condizionata · cantina · edificio anni '60 in buone condizioni · pochi passi MM2 Cimiano · vicino Naviglio Martesana"
+    },
+    {
+      "id": "tecnocasa-61165063",
+      "url": "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61165063.html",
+      "titolo": "Trilocale Niguarda — ESCLUSO (68mq < 80mq + senza ascensore)",
+      "prezzo": 235000,
+      "zona": "Niguarda",
+      "mq": 68,
+      "piano": 2,
+      "ascensore": false,
+      "punteggio": 0,
+      "data_vista": "2026-05-06",
+      "notificato": false,
+      "note": "ESCLUSO: 68mq sotto il minimo 80mq E senza ascensore (doppia esclusione) · €235k ottimo prezzo/zona ma criteri non rispettati"
+    },
+    {
+      "id": "tecnocasa-61141976",
+      "url": "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61141976.html",
+      "titolo": "Trilocale Niguarda — ESCLUSO (€415k fuori budget)",
+      "prezzo": 415000,
+      "zona": "Niguarda",
+      "mq": 100,
+      "ascensore": null,
+      "punteggio": 0,
+      "data_vista": "2026-05-06",
+      "notificato": false,
+      "note": "ESCLUSO: €415.000 fuori budget max €360k · 100mq · Niguarda"
+    },
+    {
+      "id": "idealista-32652294",
+      "url": "https://www.idealista.it/immobile/32652294/",
+      "titolo": "Trilocale Viale Ca' Granda 16 — ESCLUSO (70mq < 80mq)",
+      "prezzo": null,
+      "zona": "Ca' Granda / Pratocentenaro",
+      "mq": 70,
+      "piano": 1,
+      "ascensore": true,
+      "punteggio": 0,
+      "data_vista": "2026-05-06",
+      "notificato": false,
+      "note": "ESCLUSO: 70mq sotto il minimo di 80mq · 1° piano · edificio anni '60 · portineria parziale · giardino condominiale · MM5 Ca' Granda vicino"
+    },
+    {
+      "id": "wikicasa-14962834",
+      "url": "https://www.wikicasa.it/annuncio/14962834",
+      "titolo": "Trilocale Via Porto Corsini 22, Bicocca — ESCLUSO (79mq < 80mq)",
+      "prezzo": 289000,
+      "zona": "Bicocca",
+      "mq": 79,
+      "piano": 3,
+      "ascensore": null,
+      "punteggio": 0,
+      "data_vista": "2026-05-06",
+      "notificato": false,
+      "note": "ESCLUSO: 79mq appena sotto il minimo di 80mq · 3° piano · €289k · vicino MM1 Sesto Marelli"
     }
   ]
 }
