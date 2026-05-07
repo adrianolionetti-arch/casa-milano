@@ -2,7 +2,7 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-06T10:00:00"
+    "ultima_sessione": "2026-05-07T10:00:00"
   },
   "annunci": [
     {
@@ -1174,6 +1174,73 @@
       "data_vista": "2026-05-06",
       "notificato": false,
       "note": "ESCLUSO: 79mq appena sotto il minimo di 80mq · 3° piano · €289k · vicino MM1 Sesto Marelli"
+    },
+    {
+      "id": "immobiliare-101195489",
+      "url": "https://www.immobiliare.it/annunci/101195489/",
+      "titolo": "Trilocale Via Salvatore Pianell 63, Pratocentenaro — 100mq, 2° piano, ascensore",
+      "prezzo": null,
+      "zona": "Pratocentenaro",
+      "mq": 100,
+      "piano": 2,
+      "ascensore": true,
+      "balcone": true,
+      "bagni": null,
+      "portineria": true,
+      "punteggio": null,
+      "data_vista": "2026-05-07",
+      "notificato": true,
+      "note": "⚠️ PREZZO NON DISPONIBILE — score stimato 7-8/10 se in fascia ideale (€230k-310k) · 100mq · 2° piano con ascensore · portineria · cappotto termico · da ristrutturare · balcone · riscaldamento centralizzato · STESSA VIA di Adriano (Via Pianell 56, a pochi civici) · MM5 Ca' Granda 300m · VERIFICARE PREZZO URGENTEMENTE (agenzia RE/MAX Plan 3 rif. T16)"
+    },
+    {
+      "id": "immobiliare-97984978",
+      "url": "https://www.immobiliare.it/annunci/97984978/",
+      "titolo": "Trilocale Viale Giovanni Suzzani 142, Bicocca — 104mq, 7° piano, posto auto",
+      "prezzo": null,
+      "zona": "Bicocca",
+      "mq": 104,
+      "piano": 7,
+      "ascensore": true,
+      "balcone": true,
+      "bagni": 2,
+      "posto_auto": true,
+      "portineria": true,
+      "punteggio": null,
+      "data_vista": "2026-05-07",
+      "notificato": true,
+      "note": "⚠️ PREZZO NON DISPONIBILE — score stimato 5-7/10 · 7° piano/ultimo con ascensore · posto auto incluso nel prezzo · 2 bagni · portineria mezza giornata · ristrutturato ~15 anni fa · aria condizionata · doppia esposizione · MM5 Bignami vicino · edificio anni '60 elegante · VERIFICARE PREZZO URGENTEMENTE"
+    },
+    {
+      "id": "idealista-29532173",
+      "url": "https://www.idealista.it/immobile/29532173/",
+      "titolo": "Trilocale Via Privata Pisino 1, Gorla — €320k, 85mq, 2 balconi",
+      "prezzo": 320000,
+      "zona": "Gorla",
+      "mq": 85,
+      "piano": null,
+      "ascensore": null,
+      "balcone": true,
+      "bagni": null,
+      "punteggio": null,
+      "data_vista": "2026-05-07",
+      "notificato": false,
+      "note": "⚠️ ASCENSORE E PIANO NON CONFERMATI (ascensore obbligatorio) · €320k accettabile · 85mq · 2 balconi · edificio 2006 · zona Gorla (Zona 1) · score max stimato 4.5/10 se ascensore presente · MM1 Gorla vicino · VERIFICARE URGENTEMENTE ASCENSORE E PIANO"
+    },
+    {
+      "id": "immobiliare-111474501",
+      "url": "https://www.immobiliare.it/annunci/111474501/",
+      "titolo": "Trilocale Via dei Transiti 29, Pasteur/NoLo",
+      "prezzo": null,
+      "zona": "NoLo / Pasteur",
+      "mq": null,
+      "piano": null,
+      "ascensore": null,
+      "balcone": true,
+      "bagni": null,
+      "punteggio": null,
+      "data_vista": "2026-05-07",
+      "notificato": false,
+      "note": "⚠️ DATI INSUFFICIENTI — ottimo stato · balcone · riscaldamento centralizzato · Pasteur-NoLo area · VERIFICARE MQ, PIANO, ASCENSORE, PREZZO URGENTEMENTE"
     }
   ]
 }
