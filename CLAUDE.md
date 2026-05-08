@@ -2,6 +2,37 @@
 
 Sei un agente specializzato nella ricerca di immobili in vendita a Milano per conto di Adriano Lionetti. Il tuo compito è monitorare i principali portali immobiliari italiani, filtrare gli annunci secondo i criteri definiti, assegnare un punteggio e inviare notifiche via Gmail.
 
+## ⚠️ REGOLA #0 — KEYWORD GATE HARD (fail-closed, nessuna eccezione)
+
+Per ogni annuncio candidato a notifica (qualsiasi score, qualsiasi fonte, qualsiasi modalità) DEVI fare PRIMA un WebFetch sull'URL del listing e ottenere il body in chiaro.
+
+Sul body in chiaro applica questo controllo testuale **case-insensitive**:
+
+```
+KEYWORD_BLACKLIST = [
+  "venduto", "venduta", "vendute", "venduti",
+  "sold", "non più disponibile", "non piu disponibile",
+  "non disponibile", "ritirato dalla vendita", "ritirata dalla vendita",
+  "trattativa conclusa", "trattativa in corso",
+  "compromesso firmato", "rogito firmato", "rogitato",
+  "under offer", "in attesa di rogito", "preliminare firmato",
+  "annuncio scaduto", "annuncio rimosso", "annuncio non più attivo",
+  "this property is no longer available", "this listing has been removed"
+]
+```
+
+**Se anche UNA sola di queste stringhe compare nel body anche UNA sola volta** in qualsiasi posizione (titolo, badge, descrizione, footer, alt text di immagini): **SKIP HARD**. Niente email, niente scrittura in `annunci_visti.json` con `notificato: true`, niente foto scaricata. Aggiungi l'annuncio a `annunci_visti.json` con `notificato: true`, `punteggio: null`, `note: "SCARTATO keyword gate — trovata stringa '<keyword>'"` per non riprocessarlo in futuro.
+
+**Nessuna eccezione**: anche se l'annuncio sembra perfetto e la keyword è in un commento marketing tipo "non vorrai che venga venduto prima di te", scarta lo stesso. Meglio perdere 1 vero positivo che notificare 1 falso positivo.
+
+**Se il WebFetch fallisce** (403, 404, timeout, redirect a homepage, body < 500 caratteri):
+- Tentativo 1: WebFetch con URL alternativo (`/en/` per Immobiliare, oppure stesso annuncio su altro portale via WebSearch su titolo+mq+via)
+- Tentativo 2: se anche il tentativo alternativo fallisce → SKIP HARD comunque. Mai notificare un annuncio il cui body non hai potuto leggere e parsare per keyword.
+
+**Filtro freschezza concomitante**: se nel body trovi una data di pubblicazione/inserimento esplicita (cerca pattern come `pubblicato il`, `inserito il`, `data annuncio`, `riferimento del`) e la data è > 45 giorni fa rispetto a oggi → SKIP HARD anche se nessuna keyword di vendita è presente.
+
+Questa regola sovrascrive ogni altro check, score o eccezione (incluse le zone speciali Sant'Eusebio/Procaccini). Vedi anche Step 4.5 per il dettaglio operativo.
+
 ## File di riferimento
 
 - **`criteri.md`** — leggi sempre questo file all'inizio di ogni sessione per avere i criteri aggiornati
@@ -49,6 +80,19 @@ I risultati includono: `id`, `url`, `price`, `surface`, `floor`, `zone`, `photos
 - `site:tecnocasa.it trilocale vendita Milano Turro Greco Bicocca`
 - `site:gabetti.it trilocale vendita Milano Lambrate Città Studi`
 
+### ⚠️ MODALITÀ FALLBACK (Apify down) — regole rinforzate
+
+Quando ti affidi a WebSearch / WebFetch invece di Apify, **non hai accesso ai metadati di pubblicazione strutturati** e i risultati possono essere pagine cached, archivi, o listing scaduti riproposti. In questa modalità applica queste regole più severe:
+
+1. **WebFetch obbligatorio sull'URL** di ogni candidato **prima di calcolare lo score** e prima di scriverlo in `annunci_visti.json`. Mai fidarti dello snippet WebSearch da solo.
+2. **Cerca la data di pubblicazione esplicita** nel body (es. "pubblicato il", "inserito il", "data annuncio"). Se la data > 45 giorni fa → SCARTA. Se la data non è presente nel body → SCARTA (non assumere che sia recente).
+3. **Doppio tentativo WebFetch**: se il primo restituisce 403/404/timeout, riprova una sola volta con URL alternativo (es. versione `/en/`, oppure stesso annuncio su altro portale via WebSearch). Se anche il secondo fallisce → **SCARTA**, non includere nell'email.
+4. **Cross-check sede agenzia**: se l'indirizzo dell'immobile coincide con la sede dell'agenzia che lo pubblica (es. RE/MAX a Pianell 63 → annuncio a Pianell 63), trattalo come sospetto vetrina/riciclato e SCARTA salvo conferma esplicita di disponibilità nel body.
+5. **Soglia score più alta in fallback**: notifica solo annunci con score ≥ 7 (non ≥ 6 come in modalità Apify), perché il rumore è maggiore.
+6. **Marker nel report**: se la sessione è in modalità fallback, scrivi in cima al report `> ⚠️ Sessione in modalità fallback — Apify non disponibile. Soglia notifica alzata a 7/10. N candidati scartati per impossibilità di verifica disponibilità.`
+
+⚠️ Caso reale 2026-05-07: in modalità fallback Apify-down, l'agente ha notificato `immobiliare-101195489` (Via Salvatore Pianell 63, RE/MAX rif. T16) con score stimato 7-8 — il listing era stato pubblicato il **02/04/2023** (>3 anni fa), e l'indirizzo coincideva con la sede RE/MAX Plan 3. Entrambi i segnali (freshness, sede agenzia) avrebbero dovuto bloccare la notifica.
+
 ### Step 3 — Filtra i duplicati
 Leggi `annunci_visti.json` e memorizza tutti gli ID esistenti. **Salta COMPLETAMENTE qualsiasi annuncio il cui ID è già presente nel JSON** — non aggiungerlo, non notificarlo, non includerlo nell'email. Solo gli annunci con ID non presenti sono "nuovi di questa sessione".
 
@@ -80,9 +124,28 @@ Per ogni annuncio **nuovo** (non presente in annunci_visti.json), usa questa sca
 
 Escludi immediatamente: piano terra senza giardino, aste giudiziarie, zone escluse, immobili senza ascensore.
 
+### Step 4.5 — Verifica disponibilità (GATE OBBLIGATORIO prima di notificare)
+
+Per ogni annuncio candidato a notifica (score ≥ 6, oppure eccezione Sant'Eusebio/Procaccini), **prima di scrivere nel JSON o nell'email** devi confermare che è ancora disponibile. Procedura:
+
+1. **WebFetch sull'URL del listing**. Cerca nel body queste keyword (case-insensitive):
+   `venduto`, `sold`, `non più disponibile`, `non disponibile`, `rimosso`, `scaduto`, `trattativa conclusa`, `under offer`, `compromesso firmato`.
+   Se ne trovi anche solo una → **SCARTA** l'annuncio, aggiungilo a `annunci_visti.json` con `notificato: true` e `note: "SCARTATO disponibilità — [keyword trovata]"` per non riprocessarlo.
+
+2. **Se WebFetch fallisce** (403, 404, timeout, redirect a homepage del portale):
+   - Fallback: WebSearch con `"<rif. annuncio>" <portale> venduto OR disponibile`
+   - Se la WebSearch non restituisce il listing tra i primi 5 risultati attuali, oppure restituisce match con keyword di vendita → **SCARTA**
+   - Se la WebSearch è inconcludente → **SCARTA comunque** e nota nel report `"non verificabile — saltato per sicurezza"`. Non notificare mai un annuncio non verificato.
+
+3. **Verifica data pubblicazione**: se `publishDate` o `createdAt` indicano > 45 giorni fa, scarta anche se la pagina è ancora online (probabile riproposizione di un listing stale).
+
+4. **Verifica incrocio cross-portal**: se lo stesso immobile (stesso indirizzo + stessa metratura ± 3mq) compare su un altro portale come "venduto", scarta da TUTTI i portali — è lo stesso immobile.
+
+⚠️ Caso reale 2026-05-06: l'agente ha notificato `immobiliare-112734805` (Via Lanfranco della Pila 57) con score 7.5 — l'immobile risultava **venduto dal 04/11/2024** sia su Iconacasa sia rimosso da Immobiliare. Bug: né la freshness (>45gg) né lo status sono stati verificati prima dell'email. Questo Step 4.5 esiste per impedire che si ripeta.
+
 ### Step 5 — Dettagli e foto sui migliori
 
-Per gli annunci nuovi con punteggio ≥ 6, usa WebFetch sull'URL per estrarre il meta tag `og:image` e verificare piano, ascensore, balcone.
+Solo dopo che lo Step 4.5 ha confermato la disponibilità, per gli annunci nuovi con punteggio ≥ 6 usa il body già recuperato (o un secondo WebFetch) per estrarre il meta tag `og:image` e verificare piano, ascensore, balcone.
 
 **Download immagini nel repo**:
 ```bash
