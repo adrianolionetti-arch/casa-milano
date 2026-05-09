@@ -2,7 +2,7 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-08T10:00:00"
+    "ultima_sessione": "2026-05-09T10:00:00"
   },
   "annunci": [
     {
@@ -1375,6 +1375,37 @@
       "data_vista": "2026-05-08",
       "notificato": false,
       "note": "ESCLUSO: 77mq sotto il minimo di 80mq · nuova costruzione La Gardena 13 · 2° piano · terrazza · classe A · 16 unità · piscina · fitness · co-working · consegna dic 2026 · MM1 Gorla 10 min · zona Precotto"
+    },
+    {
+      "id": "idealista-33536728",
+      "url": "https://www.idealista.it/immobile/33536728/",
+      "titolo": "Trilocale Via Trasimeno, quartiere Adriano — €270k, 2° piano, ascensore, 2 balconi",
+      "prezzo": 270000,
+      "zona": "Adriano",
+      "mq": null,
+      "piano": 2,
+      "ascensore": true,
+      "balcone": true,
+      "bagni": 1,
+      "posto_auto": true,
+      "punteggio": null,
+      "data_vista": "2026-05-09",
+      "notificato": true,
+      "note": "SCARTATO REGOLA #0 — WebFetch 403 su entrambi i tentativi (idealista.it/immobile/33536728 e versione /en/), WebSearch inconclusiva per disponibilità — non verificabile, saltato per sicurezza. Dati da snippet: Via Trasimeno, Adriano, €270k incluso cantina e 2 posti auto condominiali, 2° piano, ascensore, 2 balconi, cucina abitabile, riscaldamento centralizzato, MM2 Crescenzago/Cascina Gobba."
+    },
+    {
+      "id": "toscano-1025709",
+      "url": "https://www.toscano.it/comune-milano/1025709-appartamento-via-pollini",
+      "titolo": "Trilocale Via Pollini, Bicocca/Niguarda — 100mq, €395k",
+      "prezzo": 395000,
+      "zona": "Bicocca / Niguarda",
+      "mq": 100,
+      "piano": null,
+      "ascensore": null,
+      "punteggio": 0,
+      "data_vista": "2026-05-09",
+      "notificato": false,
+      "note": "ESCLUSO: €395.000 fuori budget max €360k · 100mq · 3 locali · zona Bicocca/Niguarda (Via Pollini) · Toscano Immobiliare"
     }
   ]
 }
