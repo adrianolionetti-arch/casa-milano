@@ -72,12 +72,12 @@
 
 <header>
   <h1>🏠 Casa Milano</h1>
-  <p id="last-update">Aggiornato il 9 maggio 2026 · 91 annunci processati · 2 nuovi oggi</p>
+  <p id="last-update">Aggiornato il 10 maggio 2026 · 97 annunci processati · 6 nuovi oggi (tutti scartati Regola #0 — portali bloccati)</p>
 </header>
 
 <div class="stats">
-  <div class="stat"><div class="num" id="stat-total">91</div><div class="label">Annunci totali</div></div>
-  <div class="stat"><div class="num" id="stat-new">2</div><div class="label">Nuovi oggi</div></div>
+  <div class="stat"><div class="num" id="stat-total">97</div><div class="label">Annunci totali</div></div>
+  <div class="stat"><div class="num" id="stat-new">0</div><div class="label">Notificati oggi</div></div>
   <div class="stat"><div class="num" id="stat-budget">€360k</div><div class="label">Budget max</div></div>
   <div class="stat"><div class="num" id="stat-best">7.5</div><div class="label">Score migliore</div></div>
 </div>
@@ -1374,6 +1374,90 @@ const annunci = [
     data_vista: "2026-05-09",
     url: "https://www.toscano.it/comune-milano/1025709-appartamento-via-pollini",
     note: "ESCLUSO: €395.000 fuori budget max €360k · 100mq · 3 locali · Via Pollini Bicocca/Niguarda · Toscano Immobiliare",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "immobiliare-114443737",
+    titolo: "Trilocale Via Palmanova 213, Crescenzago — 80mq, 4° piano, terrazza",
+    zona: "Crescenzago",
+    prezzo: null,
+    mq: 80,
+    punteggio: null,
+    data_vista: "2026-05-10",
+    url: "https://www.immobiliare.it/annunci/114443737/",
+    note: "⚠️ SCARTATO Regola #0 — WebFetch bloccato (403) su tutti i portali questa sessione. Snippet: 4° piano, terrazza, 2 balconi, 80mq ottimo stato ristrutturato, riscaldamento centralizzato, MM2 Crescenzago vicino. Crescenzago (Zona 1). Riverificare in sessioni future.",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "immobiliare-115916231",
+    titolo: "Trilocale Via Vincenzo da Seregno 18, Affori — 8° piano, balcone, ascensore",
+    zona: "Affori",
+    prezzo: null,
+    mq: 100,
+    punteggio: null,
+    data_vista: "2026-05-10",
+    url: "https://www.immobiliare.it/annunci/115916231/",
+    note: "⚠️ SCARTATO Regola #0 — WebFetch bloccato (403). Snippet: 8°/ultimo piano, ascensore, balcone, buono stato originale, MM3 Affori FN vicino. Prezzo da verificare. Affori (Zona 1). Riverificare in sessioni future.",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "immobiliare-117405511",
+    titolo: "Trilocale Via Gaetano Salvemini 5, Affori — 90mq, 6° piano, ascensore",
+    zona: "Affori",
+    prezzo: null,
+    mq: 90,
+    punteggio: null,
+    data_vista: "2026-05-10",
+    url: "https://www.immobiliare.it/annunci/117405511/",
+    note: "⚠️ SCARTATO Regola #0 — WebFetch bloccato (403). Snippet: 90mq, 6° piano, ascensore, condominio ristrutturato. Prezzo da verificare. Affori/Bovisa (Zona 1). Riverificare in sessioni future.",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "immobiliare-106079537",
+    titolo: "Trilocale Via Don Luigi Guanella 13, Precotto — 2° piano, balcone, da ristrutturare",
+    zona: "Precotto / Turro",
+    prezzo: null,
+    mq: 83,
+    punteggio: null,
+    data_vista: "2026-05-10",
+    url: "https://www.immobiliare.it/annunci/106079537/",
+    note: "⚠️ SCARTATO Regola #0 — WebFetch bloccato (403). Snippet: 2° piano, balcone, da ristrutturare, riscaldamento centralizzato. Ascensore e prezzo da verificare. Precotto (Zona 1).",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "immobiliare-123852527",
+    titolo: "Trilocale Via Cinque Maggio 11, Quarto Oggiaro — ESCLUSO (zona esclusa)",
+    zona: "Quarto Oggiaro",
+    prezzo: null,
+    mq: 123,
+    punteggio: 0,
+    data_vista: "2026-05-10",
+    url: "https://www.immobiliare.it/annunci/123852527/",
+    note: "ESCLUSO: zona Quarto Oggiaro (esclusione assoluta per criteri). 123mq, 3° piano, ascensore, da ristrutturare, edificio anni '60 con portineria mattina.",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "iconacasa-18743",
+    titolo: "Appartamento Via Ponte Nuovo, Crescenzago — dati insufficienti",
+    zona: "Crescenzago",
+    prezzo: null,
+    mq: null,
+    punteggio: null,
+    data_vista: "2026-05-10",
+    url: "https://www.iconacasa.com/index.php/opportunita/property/18743-milano-p-te-nuovo-crescenzago-vendita-appartamento-via-ponte-nuovo",
+    note: "⚠️ SCARTATO Regola #0 — WebFetch bloccato (403) su iconacasa.com. Dati insufficienti. Crescenzago (Zona 1). Riverificare in sessioni future.",
     nuovo: true,
     escluso: true,
     verifica: false
