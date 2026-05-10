@@ -2,7 +2,7 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-09T10:00:00"
+    "ultima_sessione": "2026-05-10T08:00:00"
   },
   "annunci": [
     {
@@ -1406,6 +1406,105 @@
       "data_vista": "2026-05-09",
       "notificato": false,
       "note": "ESCLUSO: €395.000 fuori budget max €360k · 100mq · 3 locali · zona Bicocca/Niguarda (Via Pollini) · Toscano Immobiliare"
+    },
+    {
+      "id": "immobiliare-114443737",
+      "url": "https://www.immobiliare.it/annunci/114443737/",
+      "titolo": "Trilocale Via Palmanova 213, Crescenzago — 80mq, 4° piano, terrazza, ristrutturato",
+      "prezzo": null,
+      "zona": "Crescenzago",
+      "mq": 80,
+      "piano": 4,
+      "ascensore": true,
+      "terrazzo": true,
+      "balcone": true,
+      "bagni": 1,
+      "portineria": null,
+      "punteggio": null,
+      "data_vista": "2026-05-10",
+      "notificato": true,
+      "note": "SCARTATO Regola #0 — WebFetch 403 sistematico su immobiliare.it (Apify down, tutti i portali bloccati in questa sessione). Non verificabile freshness e disponibilità. Snippet Google: 4° piano, terrazza, 2 balconi, 80mq ottimo stato ristrutturato, riscaldamento centralizzato, PVC doppio vetro, tapparelle elettriche, MM2 Crescenzago vicino. Crescenzago Zona 1."
+    },
+    {
+      "id": "immobiliare-115916231",
+      "url": "https://www.immobiliare.it/annunci/115916231/",
+      "titolo": "Trilocale Via Vincenzo da Seregno 18, Affori — 8° piano/ultimo, balcone, ascensore",
+      "prezzo": null,
+      "zona": "Affori",
+      "mq": 100,
+      "piano": 8,
+      "ascensore": true,
+      "balcone": true,
+      "bagni": null,
+      "portineria": null,
+      "punteggio": null,
+      "data_vista": "2026-05-10",
+      "notificato": true,
+      "note": "SCARTATO Regola #0 — WebFetch 403 sistematico su immobiliare.it (Apify down, tutti i portali bloccati in questa sessione). Non verificabile freshness e disponibilità. Snippet Google: 8°/ultimo piano, ascensore, balcone, buono stato originale, 2 camere, MM3 Affori FN vicino. Prezzo non disponibile. Affori Zona 1."
+    },
+    {
+      "id": "immobiliare-117405511",
+      "url": "https://www.immobiliare.it/annunci/117405511/",
+      "titolo": "Trilocale Via Gaetano Salvemini 5, Affori/Bovisa — 90mq, 6° piano, ascensore",
+      "prezzo": null,
+      "zona": "Affori",
+      "mq": 90,
+      "piano": 6,
+      "ascensore": true,
+      "balcone": null,
+      "bagni": null,
+      "portineria": null,
+      "punteggio": null,
+      "data_vista": "2026-05-10",
+      "notificato": true,
+      "note": "SCARTATO Regola #0 — WebFetch 403 sistematico su immobiliare.it (Apify down, tutti i portali bloccati in questa sessione). Non verificabile freshness e disponibilità. Snippet Google: 90mq, 6° piano, ascensore, condominio recentemente ristrutturato. Prezzo non disponibile. Affori/Bovisa (Zona 1/3)."
+    },
+    {
+      "id": "immobiliare-106079537",
+      "url": "https://www.immobiliare.it/annunci/106079537/",
+      "titolo": "Trilocale Via Don Luigi Guanella 13, Precotto — 2° piano, balcone, da ristrutturare",
+      "prezzo": null,
+      "zona": "Precotto",
+      "mq": 83,
+      "piano": 2,
+      "ascensore": null,
+      "balcone": true,
+      "bagni": null,
+      "portineria": null,
+      "punteggio": null,
+      "data_vista": "2026-05-10",
+      "notificato": true,
+      "note": "SCARTATO Regola #0 — WebFetch 403 sistematico su immobiliare.it (Apify down, tutti i portali bloccati in questa sessione). Non verificabile freshness e disponibilità. Snippet Google: 2° piano, balcone, da ristrutturare, riscaldamento centralizzato. Ascensore non confermato (requisito obbligatorio). Prezzo non disponibile. Precotto Zona 1."
+    },
+    {
+      "id": "immobiliare-123852527",
+      "url": "https://www.immobiliare.it/annunci/123852527/",
+      "titolo": "Trilocale Via Cinque Maggio 11, Quarto Oggiaro — ESCLUSO (zona esclusa)",
+      "prezzo": null,
+      "zona": "Quarto Oggiaro",
+      "mq": 123,
+      "piano": 3,
+      "ascensore": true,
+      "balcone": true,
+      "bagni": null,
+      "punteggio": 0,
+      "data_vista": "2026-05-10",
+      "notificato": false,
+      "note": "ESCLUSO: zona Quarto Oggiaro (esclusione assoluta per criteri). 123mq, 3° piano, ascensore, da ristrutturare, edificio anni '60 con portineria, €2.195/mq stimato."
+    },
+    {
+      "id": "iconacasa-18743",
+      "url": "https://www.iconacasa.com/index.php/opportunita/property/18743-milano-p-te-nuovo-crescenzago-vendita-appartamento-via-ponte-nuovo",
+      "titolo": "Appartamento Via Ponte Nuovo, Crescenzago — dati insufficienti",
+      "prezzo": null,
+      "zona": "Crescenzago",
+      "mq": null,
+      "piano": null,
+      "ascensore": null,
+      "punteggio": null,
+      "data_vista": "2026-05-10",
+      "notificato": true,
+      "note": "SCARTATO Regola #0 — WebFetch 403 sistematico su iconacasa.com (tutti i portali bloccati in questa sessione). Dati insufficienti: zona Crescenzago (Zona 1). Riprocessare se accesso ripristinato."
     }
   ]
 }
