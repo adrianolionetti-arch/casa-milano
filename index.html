@@ -72,11 +72,11 @@
 
 <header>
   <h1>🏠 Casa Milano</h1>
-  <p id="last-update">Aggiornato il 10 maggio 2026 · 97 annunci processati · 6 nuovi oggi (tutti scartati Regola #0 — portali bloccati)</p>
+  <p id="last-update">Aggiornato il 11 maggio 2026 · 106 annunci processati · 0 notificati oggi (9 scartati/esclusi — portali bloccati 2° giorno consecutivo)</p>
 </header>
 
 <div class="stats">
-  <div class="stat"><div class="num" id="stat-total">97</div><div class="label">Annunci totali</div></div>
+  <div class="stat"><div class="num" id="stat-total">106</div><div class="label">Annunci totali</div></div>
   <div class="stat"><div class="num" id="stat-new">0</div><div class="label">Notificati oggi</div></div>
   <div class="stat"><div class="num" id="stat-budget">€360k</div><div class="label">Budget max</div></div>
   <div class="stat"><div class="num" id="stat-best">7.5</div><div class="label">Score migliore</div></div>
@@ -1458,6 +1458,132 @@ const annunci = [
     data_vista: "2026-05-10",
     url: "https://www.iconacasa.com/index.php/opportunita/property/18743-milano-p-te-nuovo-crescenzago-vendita-appartamento-via-ponte-nuovo",
     note: "⚠️ SCARTATO Regola #0 — WebFetch bloccato (403) su iconacasa.com. Dati insufficienti. Crescenzago (Zona 1). Riverificare in sessioni future.",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "immobiliare-115882743",
+    titolo: "Trilocale Via Alghero 14, Gorla — ESCLUSO (€420k fuori budget)",
+    zona: "Gorla",
+    prezzo: 420000,
+    mq: null,
+    punteggio: 0,
+    data_vista: "2026-05-11",
+    url: "https://www.immobiliare.it/annunci/115882743/",
+    note: "ESCLUSO: €420k fuori budget · 14° piano · doppio ascensore · portineria · 2 bagni · posto auto · €300/mese cond. · MM1 Gorla",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "idealista-33861867",
+    titolo: "Trilocale Via Privata Iglesias 26, Gorla — ESCLUSO (no ascensore)",
+    zona: "Gorla",
+    prezzo: null,
+    mq: null,
+    punteggio: 0,
+    data_vista: "2026-05-11",
+    url: "https://www.idealista.it/immobile/33861867/",
+    note: "ESCLUSO: edificio di soli 3 piani — ascensore quasi certamente assente · 1° piano · ristrutturato 2012 · MM1 Gorla",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "tempocasa-1482281",
+    titolo: "Trilocale Via Fabriano, Affori — ESCLUSO (piano rialzato = piano terra)",
+    zona: "Affori",
+    prezzo: 280000,
+    mq: 90,
+    punteggio: 0,
+    data_vista: "2026-05-11",
+    url: "https://tempocasa.it/it/vendita/milano/milano/trilocale/1482281",
+    note: "ESCLUSO: piano rialzato senza giardino privato (= piano terra, esclusione assoluta) · €280k fascia ideale · 90mq · ascensore · portineria · posto auto incluso · A/C · MM3 Affori Centro ~70m",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "immobiliare-117890837",
+    titolo: "Trilocale Via Candoglia 11, Affori — 1° piano, posto auto, balcone",
+    zona: "Affori",
+    prezzo: null,
+    mq: null,
+    punteggio: null,
+    data_vista: "2026-05-11",
+    url: "https://www.immobiliare.it/annunci/117890837/",
+    note: "⚠️ SCARTATO Regola #0 — WebFetch 403 (tutti i portali bloccati 2° giorno). Snippet: 1° piano, posto auto, balcone, riscaldamento autonomo, buono stato. Ascensore e prezzo da verificare. Affori (Zona 1).",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "immobiliare-112315383",
+    titolo: "Trilocale Via Valassina 16, Affori — 3° piano, balcone",
+    zona: "Affori",
+    prezzo: null,
+    mq: null,
+    punteggio: null,
+    data_vista: "2026-05-11",
+    url: "https://www.immobiliare.it/annunci/112315383/",
+    note: "⚠️ SCARTATO Regola #0 — WebFetch 403 (tutti i portali bloccati 2° giorno). Snippet: 3° piano, balcone, riscaldamento autonomo, buono stato. Ascensore e prezzo da verificare. Affori (Zona 1).",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "immobiliare-112117207",
+    titolo: "Trilocale Via Dante Chiasserini 30, Affori — 4° piano, terrazza",
+    zona: "Affori",
+    prezzo: null,
+    mq: null,
+    punteggio: null,
+    data_vista: "2026-05-11",
+    url: "https://www.immobiliare.it/annunci/112117207/",
+    note: "⚠️ SCARTATO Regola #0 — WebFetch 403 (tutti i portali bloccati 2° giorno). Snippet: 4° piano, terrazza, riscaldamento autonomo, buono stato. Ascensore e prezzo da verificare. Affori (Zona 1).",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "immobiliare-92763024",
+    titolo: "Trilocale Via Lanfranco della Pila 14, Niguarda — 97mq, 1° piano, €300k",
+    zona: "Niguarda",
+    prezzo: 300000,
+    mq: 97,
+    punteggio: null,
+    data_vista: "2026-05-11",
+    url: "https://www.immobiliare.it/en/annunci/92763024/",
+    note: "⚠️ SCARTATO Regola #0 — WebFetch 403 (tutti i portali bloccati). Score stimato 7.5 MA impossibile verificare disponibilità e freshness. Via Lanfranco della Pila 14, Bicocca-Niguarda, 97mq, 1° piano, ascensore, 2 balconi, ~€200/mese cond. Riverificare appena portali tornano accessibili.",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "iconacasa-31667",
+    titolo: "Trilocale Via Lanfranco della Pila 14, Niguarda — 90mq, 3° piano, mai abitato",
+    zona: "Niguarda",
+    prezzo: null,
+    mq: 90,
+    punteggio: null,
+    data_vista: "2026-05-11",
+    url: "https://www.iconacasa.com/index.php/opportunita/property/31667-milano-niguarda-vendita-appartamento-via-lanfranco-della-pila",
+    note: "⚠️ SCARTATO Regola #0 — WebFetch 403 (tutti i portali bloccati). Snippet: Via Lanfranco della Pila 14 Niguarda-Bicocca, 90mq, 3° piano, completamente ristrutturato, mai abitato (Fondocasa Milano Testi). Prezzo e ascensore da verificare urgentemente.",
+    nuovo: true,
+    escluso: true,
+    verifica: false
+  },
+  {
+    id: "tecnocasa-60995643",
+    titolo: "Trilocale Niguarda — ESCLUSO (€415k fuori budget)",
+    zona: "Niguarda",
+    prezzo: 415000,
+    mq: 88,
+    punteggio: 0,
+    data_vista: "2026-05-11",
+    url: "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60995643.html",
+    note: "ESCLUSO: €415.000 fuori budget max €360k · 88mq · Niguarda",
     nuovo: true,
     escluso: true,
     verifica: false
