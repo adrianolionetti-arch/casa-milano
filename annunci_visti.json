@@ -2,7 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-12T08:00:00"
+    "ultima_sessione": "2026-05-12T08:00:00",
+    "ultimo_aggiornamento": "2026-05-13",
+    "totale_annunci": 126
   },
   "annunci": [
     {
@@ -1812,6 +1814,110 @@
       "punteggio": 0,
       "notificato": false,
       "note": "ESCLUSO: 70mq < 80mq minimo obbligatorio"
+    },
+    {
+      "id": "immobiliare-98102476",
+      "url": "https://www.immobiliare.it/en/annunci/98102476/",
+      "titolo": "Trilocale via Ernesto Breda 37, Bicocca/Niguarda, Milano",
+      "prezzo": 329000,
+      "superficie": 80,
+      "zona": "Bicocca",
+      "piano": "secondo",
+      "data_vista": "2026-05-13",
+      "notificato": true,
+      "punteggio": null,
+      "note": "SCARTATO REGOLA #0 — WebFetch fallito (403) dopo 2 tentativi (immobiliare.it/en e immobiliare.it), impossibile verificare disponibilità e keyword gate"
+    },
+    {
+      "id": "immobiliare-109578197",
+      "url": "https://www.immobiliare.it/annunci/109578197/",
+      "titolo": "Trilocale ottimo stato, secondo piano, Città Studi, Milano, 111mq",
+      "prezzo": null,
+      "superficie": 111,
+      "zona": "Città Studi",
+      "piano": "secondo",
+      "data_vista": "2026-05-13",
+      "notificato": true,
+      "punteggio": null,
+      "note": "SCARTATO REGOLA #0 — WebFetch fallito (403) dopo 2 tentativi, impossibile verificare disponibilità e keyword gate"
+    },
+    {
+      "id": "casait-53650452",
+      "url": "https://www.casa.it/immobili/53650452/",
+      "titolo": "Trilocale via Vincenzo Russo 12, Turro, Milano, 80mq",
+      "prezzo": null,
+      "superficie": 80,
+      "zona": "Turro",
+      "piano": "secondo",
+      "data_vista": "2026-05-13",
+      "notificato": true,
+      "punteggio": null,
+      "note": "ESCLUSO — asta giudiziaria (criteri). Cross-check: stesso indirizzo di immobiliare-127875532 ('Asta per appartamento via Vincenzo Russo 12, asta 21/05/2026')"
+    },
+    {
+      "id": "immobiliare-106026965",
+      "url": "https://www.immobiliare.it/annunci/106026965/",
+      "titolo": "Trilocale via Don Luigi Guanella 13, Precotto, Milano",
+      "prezzo": null,
+      "superficie": null,
+      "zona": "Precotto",
+      "piano": null,
+      "data_vista": "2026-05-13",
+      "notificato": true,
+      "punteggio": null,
+      "note": "SCARTATO REGOLA #0 — WebFetch fallito (403) dopo 2 tentativi, impossibile verificare data pubblicazione e keyword gate. Stessa via di immobiliare-106079537 già in DB"
+    },
+    {
+      "id": "tecnocasa-61205467",
+      "url": "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61205467.html",
+      "titolo": "Trilocale Forze Armate Primaticcio, Milano, 80mq, €299.000",
+      "prezzo": 299000,
+      "superficie": 80,
+      "zona": "Forze Armate Primaticcio",
+      "piano": null,
+      "data_vista": "2026-05-13",
+      "notificato": false,
+      "punteggio": 0,
+      "note": "ESCLUSO da scoring — score max stimato 6.5 in modalità fallback (soglia 7): Zona 4 +0.5, prezzo <310k +3, superficie 80mq no bonus. Inoltre WebFetch 403, impossibile verifica REGOLA #0"
+    },
+    {
+      "id": "tecnocasa-61194120",
+      "url": "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61194120.html",
+      "titolo": "Trilocale Ripamonti Val Di Sole, Milano, 140mq, €579.000",
+      "prezzo": 579000,
+      "superficie": 140,
+      "zona": "Ripamonti Val Di Sole",
+      "piano": null,
+      "data_vista": "2026-05-13",
+      "notificato": false,
+      "punteggio": 0,
+      "note": "ESCLUSO criteri — prezzo €579k > €360k massimo e superficie 140mq > 120mq massimo"
+    },
+    {
+      "id": "tecnocasa-61179443",
+      "url": "https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61179443.html",
+      "titolo": "Trilocale Ripamonti Val Di Sole, Milano, 103mq, €359.000",
+      "prezzo": 359000,
+      "superficie": 103,
+      "zona": "Ripamonti Val Di Sole",
+      "piano": null,
+      "data_vista": "2026-05-13",
+      "notificato": false,
+      "punteggio": 0,
+      "note": "ESCLUSO da scoring — score max stimato 4.5 in modalità fallback: Zona 4 +0.5, prezzo accettabile +1, superficie >=90mq +1, max features +2. Sotto soglia fallback 7"
+    },
+    {
+      "id": "immobiliare-109097515",
+      "url": "https://www.immobiliare.it/en/annunci/109097515/",
+      "titolo": "Appartamento nuova costruzione via Rovigno 18 (L'Altro Naviglio), Milano, 60mq",
+      "prezzo": null,
+      "superficie": 60,
+      "zona": "Turro (NoLo)",
+      "piano": null,
+      "data_vista": "2026-05-13",
+      "notificato": false,
+      "punteggio": 0,
+      "note": "ESCLUSO criteri — superficie 60mq < 80mq minimo"
     }
   ]
 }
