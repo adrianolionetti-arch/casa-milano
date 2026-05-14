@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write         # allow agent to push commits
+  id-token: write         # required by claude-code-action for OIDC
 
 concurrency:
   group: casa-milano
