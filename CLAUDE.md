@@ -152,15 +152,33 @@ Aggiungi a `annunci_visti.json` con:
 }
 ```
 
-### Step 7 — Email digest
+### Step 7 — Email digest (OBBLIGATORIA AD OGNI SESSIONE)
 
-Destinatari: `adrianolionetti@gmail.com`, `alessia.curtopelle@gmail.com`
+**REGOLA**: devi mandare **una** email Gmail in ogni sessione, sempre, senza eccezioni. La sessione termina solo dopo che `send_email` ha risposto con un `messageId`. Se l'invio fallisce, ritenta una volta. Se fallisce ancora, includi nel commit message `EMAIL FAILED` ma non saltare lo step.
 
-**Oggetti**:
-- 0 nuovi candidati → `🏠 Sessione completata — nessuna novità oggi`
-- 1+ nuovi score ≥ 8 → `🏠 [ALERT] <zona> — €<prezzo> — <mq>mq`
-- 1+ nuovi score 6–7.9 → `🏠 [DIGEST] Ricerca casa Milano — <data> — <N> annunci nuovi`
-- Infra fail → `🏠 [INFRA] Ricerca Casa Milano — <motivo>`
+Pseudocodice:
+```
+N = numero di NUOVI annunci con score ≥ 6 (NON include scartati/esclusi)
+infra_failed = True se Step 2 ha mandato email INFRA e abortito
+
+if infra_failed:
+    # già mandata in Step 2d, NON rimandare
+    skip
+elif N == 0:
+    subject = "🏠 Sessione completata — nessuna novità oggi"
+    body = breve riepilogo HTML: N item Apify processati, K duplicati,
+           S scartati REGOLA #0, E esclusi criteri, link dashboard
+elif any(score ≥ 8):
+    subject = f"🏠 [ALERT] {zona top} — €{prezzo} — {mq}mq"
+    body = card HTML completa di tutti i nuovi score ≥ 6
+else:  # 1+ nuovi 6-7.9
+    subject = f"🏠 [DIGEST] Ricerca casa Milano — {data} — {N} annunci nuovi"
+    body = card HTML di tutti i nuovi score ≥ 6
+
+send_email(subject, body)  # OBBLIGATORIO se non infra_failed
+```
+
+Destinatari: `adrianolionetti@gmail.com`, `alessia.curtopelle@gmail.com` (entrambi sempre).
 
 **Corpo HTML** per ogni annuncio nuovo score ≥ 6:
 ```html
