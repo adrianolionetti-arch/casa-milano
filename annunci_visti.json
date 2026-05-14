@@ -2,8 +2,8 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-14T23:35:31.581480",
-    "ultimo_aggiornamento": "2026-05-14",
+    "ultima_sessione": "2026-05-14T23:48:57.410616",
+    "ultimo_aggiornamento": "2026-05-15",
     "totale_annunci": 127,
     "cleanup": {
       "date": "2026-05-14",
@@ -604,10 +604,10 @@
       "bagni": 2,
       "portineria": false,
       "posto_auto": false,
-      "punteggio": 6.0,
+      "punteggio": null,
       "data_vista": "2026-05-02",
       "notificato": true,
-      "note": "5° piano con ascensore · balcone doppio accesso (soggiorno e cucina) con vista parco · 2 bagni (1 en suite) · doppia esposizione E-S · edificio 2021 elegante · 200m da MM5 Bignami · riscaldamento centralizzato ~€200/mese spese · Ref. IFM191"
+      "note": "SCARTATO disponibilità — 404/'pagina non più disponibile' su immobiliare.it (verificato manualmente 2026-05-15). Note originali: 5° piano con ascensore · balcone doppio accesso (soggiorno e cucina) con vista parco · 2 bagni (1 en suite) · doppia esposizione E-S · edificio 2021 elegante · 200m da MM5 Bignami · riscaldamento centralizzato ~€200/mese spese · Ref. IFM191"
     },
     {
       "id": "iconacasa-33753",
