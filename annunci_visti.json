@@ -4,7 +4,17 @@
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
     "ultima_sessione": "2026-05-14T08:00:00",
     "ultimo_aggiornamento": "2026-05-14",
-    "totale_annunci": 126
+    "totale_annunci": 126,
+    "cleanup": {
+      "date": "2026-05-14",
+      "rationale": "Removed entries with generic portal URLs (no listing ID) from gohome fallback discoveries",
+      "removed_count": 3,
+      "removed_ids": [
+        "gohome-col-di-lana-navigli",
+        "gohome-imperia-21-romolo",
+        "gohome-brunacci-7-navigli"
+      ]
+    }
   },
   "annunci": [
     {
@@ -15,39 +25,6 @@
       "zona": "Isola",
       "mq": 78,
       "punteggio": 5.0,
-      "data_vista": "2026-04-24",
-      "notificato": true
-    },
-    {
-      "id": "gohome-col-di-lana-navigli",
-      "url": "https://www.immobiliare.it",
-      "titolo": "Trilocale Viale Col di Lana, Bocconi-Navigli",
-      "prezzo": 399000,
-      "zona": "Navigli",
-      "mq": 75,
-      "punteggio": 5.5,
-      "data_vista": "2026-04-24",
-      "notificato": true
-    },
-    {
-      "id": "gohome-imperia-21-romolo",
-      "url": "https://www.idealista.it",
-      "titolo": "Trilocale Via Imperia 21, zona Romolo",
-      "prezzo": 425000,
-      "zona": "Navigli/Romolo",
-      "mq": 85,
-      "punteggio": 5.0,
-      "data_vista": "2026-04-24",
-      "notificato": true
-    },
-    {
-      "id": "gohome-brunacci-7-navigli",
-      "url": "https://www.immobiliare.it",
-      "titolo": "Trilocale Via Vincenzo Brunacci 7, Naviglio Pavese",
-      "prezzo": 399000,
-      "zona": "Navigli/Pavese",
-      "mq": 75,
-      "punteggio": 4.5,
       "data_vista": "2026-04-24",
       "notificato": true
     },
@@ -1067,10 +1044,10 @@
       "balcone": true,
       "bagni": 1,
       "portineria": false,
-      "punteggio": 7.5,
+      "punteggio": null,
       "data_vista": "2026-05-06",
       "notificato": true,
-      "note": "2° piano con ascensore · terrazza + 2 balconi · doppia esposizione NO · 97mq · riscaldamento centralizzato ~€200/mese · zona Niguarda-Bicocca vicino Parco Nord · MM5 Bicocca vicino · agenzia ICONACASA Niguarda · buono stato"
+      "note": "SCARTATO storico — confermato venduto 04/11/2024 (caso 2026-05-06)"
     },
     {
       "id": "immobiliare-118468511",
@@ -1192,7 +1169,7 @@
       "punteggio": null,
       "data_vista": "2026-05-07",
       "notificato": true,
-      "note": "⚠️ PREZZO NON DISPONIBILE — score stimato 7-8/10 se in fascia ideale (€230k-310k) · 100mq · 2° piano con ascensore · portineria · cappotto termico · da ristrutturare · balcone · riscaldamento centralizzato · STESSA VIA di Adriano (Via Pianell 56, a pochi civici) · MM5 Ca' Granda 300m · VERIFICARE PREZZO URGENTEMENTE (agenzia RE/MAX Plan 3 rif. T16)"
+      "note": "SCARTATO storico — listing 02/04/2023, sede agenzia (caso 2026-05-07)"
     },
     {
       "id": "immobiliare-97984978",
