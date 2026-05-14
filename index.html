@@ -2,57 +2,176 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Casa Milano — Dashboard</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f1f5f9; color: #1e293b; }
-    .header { background: linear-gradient(135deg,#1e293b,#334155); color: #fff; padding: 24px 20px; }
-    .header h1 { font-size: 22px; margin-bottom: 4px; }
-    .header p { font-size: 13px; color: #94a3b8; }
-    .stats { display: flex; gap: 12px; padding: 16px 20px; flex-wrap: wrap; max-width:800px; margin:0 auto; }
-    .stat { background: #fff; border-radius: 8px; padding: 12px 18px; flex: 1; min-width: 100px; box-shadow: 0 1px 3px rgba(0,0,0,.07); }
-    .stat-val { font-size: 28px; font-weight: 700; color: #1e293b; }
-    .stat-lbl { font-size: 12px; color: #64748b; margin-top: 2px; }
-    .main { padding: 0 20px 40px; max-width: 800px; margin: 0 auto; }
-    .section-title { font-size: 13px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .5px; margin: 20px 0 10px; }
-    .empty { background:#fff; padding:24px; border-radius:8px; text-align:center; color:#64748b; }
-    @media(max-width:600px) { .stats { gap: 8px; } .stat-val { font-size: 22px; } }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    header h1 { font-size: 2.5em; margin-bottom: 10px; }
+    header p { font-size: 1.1em; opacity: 0.9; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      padding: 40px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .stat-card .number {
+      font-size: 2.5em;
+      font-weight: bold;
+      color: #667eea;
+    }
+    .stat-card .label {
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 5px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .listings {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .listing {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .listing:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .listing img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .listing-content {
+      padding: 16px;
+    }
+    .listing-score {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9em;
+      margin-bottom: 8px;
+    }
+    .listing h3 {
+      font-size: 1.1em;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    .listing-meta {
+      font-size: 0.9em;
+      color: #666;
+      margin-bottom: 8px;
+    }
+    .listing-price {
+      font-size: 1.3em;
+      font-weight: bold;
+      color: #667eea;
+      margin-bottom: 8px;
+    }
+    .listing-agency {
+      font-size: 0.85em;
+      color: #999;
+      margin-bottom: 12px;
+    }
+    .btn {
+      display: inline-block;
+      background: #667eea;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 0.9em;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: #764ba2;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>🏠 Casa Milano — Dashboard</h1>
-    <p>Aggiornato: 14/05/2026 · Ultimi 30 giorni · Solo annunci con score ≥ 6 e URL listing valido</p>
-  </div>
+  <header>
+    <h1>🏠 Casa Milano</h1>
+    <p>Ricerca immobili in vendita — Milano</p>
+  </header>
+
   <div class="stats">
-    <div class="stat"><div class="stat-val">2</div><div class="stat-lbl">In dashboard</div></div>
-    <div class="stat"><div class="stat-val">123</div><div class="stat-lbl">Processati (30gg)</div></div>
-    <div class="stat"><div class="stat-val">0</div><div class="stat-lbl">Nuovi oggi</div></div>
-    <div class="stat"><div class="stat-val">6.8</div><div class="stat-lbl">Score max</div></div>
+    <div class="stat-card">
+      <div class="number">127</div>
+      <div class="label">Processati (30gg)</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">1</div>
+      <div class="label">In dashboard (score ≥ 6)</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">0</div>
+      <div class="label">Nuovi oggi</div>
+    </div>
+    <div class="stat-card">
+      <div class="number">6.0</div>
+      <div class="label">Score max</div>
+    </div>
   </div>
-  <div class="main">
-    <div class="section-title">Annunci attivi — score ≥ 6, ultimi 30 giorni</div>
-    <div style="border:1px solid #3b82f6;background:#eff6ff;border-radius:8px;padding:16px;margin-bottom:12px">
-  
-  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px">
-    <strong>★★★★★★★☆☆☆ 6.8/10</strong><span style="background:#3b82f6;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;margin-left:8px">📩 NOTIFICATO</span>
+
+  <div class="container">
+<div class="listings">
+    <div class="listing">
+      <div style="width:100%;height:200px;background:#eee;display:flex;align-items:center;justify-content:center;color:#999;">Foto non disponibile</div>
+      <div class="listing-content">
+        <div class="listing-score">⭐ 6.0/10</div>
+        <h3>Trilocale Viale Giovanni Suzzani 225, Bicocca — 93mq, 5° piano, 2 bagni</h3>
+        <div class="listing-meta">93 mq · Bicocca · Piano 5</div>
+        <div class="listing-price">€ 335,000</div>
+        <div class="listing-agency">Agenzia sconosciuta</div>
+        <a href="https://www.immobiliare.it/annunci/124697435/" class="btn" target="_blank">Vedi annuncio →</a>
+      </div>
+    </div>
   </div>
-  <div style="font-size:14px;color:#1e293b;margin-bottom:4px"><strong>Trilocale Via Pianell 58, Pratocentenaro — ristrutturato 2019</strong></div>
-  <div style="font-size:13px;color:#475569;margin-bottom:4px">💰 €315.000 · 85mq · Pratocentenaro · 2026-04-28</div>
-  <div style="font-size:12px;color:#94a3b8;margin-bottom:8px">1° piano con ascensore · 2 balconi doppia esposizione E/O · 2 bagni · portineria · completamente ristrutturato 2019 · ar</div>
-  <a href="https://www.wikicasa.it/annuncio/15611753" style="font-size:12px;color:#3b82f6;text-decoration:none" target="_blank">Vedi annuncio →</a>
-</div>
-<div style="border:1px solid #3b82f6;background:#eff6ff;border-radius:8px;padding:16px;margin-bottom:12px">
-  
-  <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px">
-    <strong>★★★★★★☆☆☆☆ 6.0/10</strong><span style="background:#3b82f6;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;margin-left:8px">📩 NOTIFICATO</span>
   </div>
-  <div style="font-size:14px;color:#1e293b;margin-bottom:4px"><strong>Trilocale Viale Giovanni Suzzani 225, Bicocca — 93mq, 5° piano, 2 bagni</strong></div>
-  <div style="font-size:13px;color:#475569;margin-bottom:4px">💰 €335.000 · 93mq · Bicocca · 2026-05-02</div>
-  <div style="font-size:12px;color:#94a3b8;margin-bottom:8px">5° piano con ascensore · balcone doppio accesso (soggiorno e cucina) con vista parco · 2 bagni (1 en suite) · doppia esp</div>
-  <a href="https://www.immobiliare.it/annunci/124697435/" style="font-size:12px;color:#3b82f6;text-decoration:none" target="_blank">Vedi annuncio →</a>
-</div>
-  </div>
+
+  <footer style="text-align: center; padding: 20px; color: #999; font-size: 0.9em;">
+    <p>Ultimo aggiornamento: 2026-05-14 23:36:09 UTC</p>
+  </footer>
 </body>
 </html>
