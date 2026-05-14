@@ -1,25 +1,29 @@
 # Agente: Ricerca Casa Milano
 
-Sei un agente specializzato nella ricerca di immobili in vendita a Milano per Adriano Lionetti. Monitori giornalmente Immobiliare.it tramite Apify, filtri gli annunci secondo i criteri in `criteri.md`, assegni un punteggio e invii notifiche via Gmail.
+Sei un agente specializzato nella ricerca di immobili in vendita a Milano per Adriano Lionetti. Monitori giornalmente Immobiliare.it via Apify, filtri gli annunci secondo i criteri in `criteri.md`, assegni un punteggio e invii notifiche via Gmail.
 
-## Architettura (importante)
+## Architettura
 
-Il pipeline è **Apify-only, fail-loud**. Esiste un'unica fonte dati e nessun fallback silenzioso. Se Apify non è disponibile, si invia un'email "[INFRA]" e si interrompe la sessione — non si tenta WebSearch né WebFetch diretto sui portali.
+Giro su **GitHub Actions** del repo `adrianolionetti-arch/casa-milano`, cron `0 6 * * *` UTC. Il runner ha rete piena: posso usare `curl` (Bash) verso qualsiasi host, incluso `api.apify.com`. Le credenziali sono in GitHub Secrets ed esposte come env var.
 
 ```
-05:30 UTC  Apify schedule "casa-milano-daily" → run attore → scrive nel dataset
-06:00 UTC  Trigger Claude → legge dataset via WebFetch GET → processa → email + commit
+Cron 06:00 UTC → GitHub Actions runner → Claude Code agent (questa istanza)
+  ├─ curl Apify (POST run-sync-get-dataset-items) → JSON listing
+  ├─ filtri + scoring (CLAUDE.md + criteri.md)
+  ├─ Gmail digest/alert/INFRA email
+  ├─ rigenera index.html
+  └─ git commit + push
 ```
 
-- **Apify schedule id**: `6o8xxkmNOIY7bvmmu` — cron `30 5 * * *` UTC
 - **Apify actor id**: `sPIR3lEdL9H69xrmi` (alias `azzouzana~immobiliare-it-listing-page-scraper-by-search-url`)
-- **Search URL configurato nello schedule**: `https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=360000&superficieMinima=80&ordinamento=data_pubblicazione_decrescente`
+- **Pricing Apify**: $0.001/listing (pay-per-event dal 2026-05-04) → ~$2/mese a 60 listing/giorno
+- **Search URL**: `https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=360000&superficieMinima=80&ordinamento=data_pubblicazione_decrescente`
 
-**Tooling**: si usa SOLO WebFetch verso `api.apify.com` per i dati. Bash verso `api.apify.com` è bloccato dal sandbox del trigger — non tentarlo. Bash resta usato per: git, processing locale, base64, scrittura file, invio email Gmail.
+**Niente fallback**. Se Apify fallisce → email `[INFRA]` esplicita e ABORT. Mai usare WebSearch né WebFetch sui portali (immobiliare.it diretto, gohome.it, tecnocasa.it, idealista.it, casa.it, wikicasa.it, bakeca.it): sono dietro Cloudflare 403 e i candidati senza body verificabile producono notifiche sbagliate.
 
 ## ⚠️ REGOLA #0 — KEYWORD GATE HARD (fail-closed)
 
-Per ogni annuncio candidato a notifica, applica un controllo testuale **case-insensitive** su `title + " " + properties[0].description` (entrambi vengono dall'oggetto Apify, non da un WebFetch sul listing):
+Per ogni annuncio candidato a notifica, applica un controllo testuale **case-insensitive** su `title + " " + properties[0].description` (entrambi dall'oggetto Apify, niente WebFetch sul listing URL):
 
 ```
 KEYWORD_BLACKLIST = [
@@ -34,17 +38,18 @@ KEYWORD_BLACKLIST = [
 ]
 ```
 
-Se anche UNA stringa compare → **SKIP HARD**. Aggiungi a `annunci_visti.json` con `notificato: true`, `punteggio: null`, `note: "SCARTATO keyword gate — trovata stringa '<kw>'"`. Niente email, niente foto, niente eccezioni (incluso Sant'Eusebio/Procaccini).
+Se almeno una stringa compare → **SKIP HARD**. Aggiungi a `annunci_visti.json` con `notificato: true`, `punteggio: null`, `note: "SCARTATO keyword gate — trovata stringa '<kw>'"`. Niente email, niente foto, niente eccezioni (incluso Sant'Eusebio/Procaccini).
 
 **Cross-check sede agenzia**: se l'indirizzo dell'immobile (`properties[0].location.address`) coincide con la sede dichiarata dell'agenzia (`advertiser.agency.displayName` contiene la stessa via) → **SKIP HARD** con note "SCARTATO sede agenzia — sospetto listing vetrina".
 
-**Filtro freschezza dataset**: se nel campo `properties[0].description` trovi una data di pubblicazione esplicita (`pubblicato il`, `inserito il`, `data annuncio`) e la data è > 45 giorni fa → **SKIP HARD** con note "SCARTATO freshness — pubblicato <data>".
+**Filtro freschezza**: se in `properties[0].description` trovi una data di pubblicazione esplicita (`pubblicato il`, `inserito il`, `data annuncio`) e la data è > 45 giorni fa → **SKIP HARD** con note "SCARTATO freshness — pubblicato <data>".
 
 ## File di riferimento
 
 - `criteri.md` — leggi all'inizio di ogni sessione
-- `annunci_visti.json` — DB ID processati (mai notificare duplicati)
+- `annunci_visti.json` — DB ID già processati (mai notificare duplicati)
 - `report/` — un file `.md` per sessione
+- `index.html` — dashboard generata
 - `images/` — non più popolato; le foto si linkano direttamente dal CDN Immobiliare
 
 ## Workflow
@@ -55,42 +60,30 @@ Leggi `criteri.md` e `annunci_visti.json`. Memorizza in memoria tutti gli `id` e
 
 ### Step 2 — Recupero dati Apify (UNICA FONTE)
 
-**Step 2a — Ultima run riuscita**
+Esegui una **run sincrona** dell'attore (~10-30 sec di durata):
 
-```
-WebFetch
-  url: https://api.apify.com/v2/acts/sPIR3lEdL9H69xrmi/runs/last?token=$APIFY_TOKEN&status=SUCCEEDED
-  prompt: "Return the raw JSON response verbatim inside a ```json code block, no commentary, no truncation."
-```
-
-Estrai `data.id` (runId), `data.finishedAt`, `data.defaultDatasetId`.
-
-**Step 2b — Validazione freschezza run**
-
-Calcola l'età della run: `now - finishedAt`. Se > **12 ore** → invia email infra (vedi Step 2d) e ABORT. Significa che l'Apify schedule è saltato.
-
-**Step 2c — Lettura dataset**
-
-```
-WebFetch
-  url: https://api.apify.com/v2/datasets/<defaultDatasetId>/items?token=$APIFY_TOKEN&clean=true&format=json
-  prompt: "Return the raw JSON array verbatim inside a ```json code block, no commentary, no truncation, no summarization."
+```bash
+APIFY_RESULT=$(curl -sS -X POST \
+  "https://api.apify.com/v2/acts/${APIFY_ACTOR_ID}/run-sync-get-dataset-items?token=${APIFY_TOKEN}&timeout=120" \
+  -H "Content-Type: application/json" \
+  -d '{"startUrl":"https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=360000&superficieMinima=80&ordinamento=data_pubblicazione_decrescente","maxListings":60}' \
+  -w "\nHTTP=%{http_code}\n")
 ```
 
-Parsa come array di oggetti.
+Estrai HTTP code. Se ≠ 200 → vedi Step 2d.
+
+`APIFY_RESULT` (senza l'ultima riga `HTTP=...`) è un array JSON di oggetti listing. Salvalo in `/tmp/apify_items.json` per processare con Python/jq.
 
 **Step 2d — Failure modes (espliciti, niente fallback silenzioso)**
 
 Se uno di questi accade, invia email con oggetto `🏠 [INFRA] Ricerca Casa Milano — <motivo>` e abortisci senza scrivere nulla nel DB:
-- WebFetch su `api.apify.com` fallisce (timeout, 5xx, body vuoto)
-- `runs/last` restituisce 0 risultati
-- `finishedAt` è > 12 ore fa
-- Dataset items è array vuoto `[]` o non parsabile come JSON
-- Nessun item dell'array contiene il campo obbligatorio `id` e `directLink`
 
-Corpo email: oggetto + descrizione tecnica del problema + link allo schedule (`https://console.apify.com/schedules/6o8xxkmNOIY7bvmmu`). Salva report con stesso contenuto.
+- curl ritorna HTTP code ≠ 200 (timeout, 5xx, 4xx)
+- Risposta non parsabile come JSON
+- Array vuoto `[]`
+- Nessun item contiene `id` e `directLink`
 
-**Non tentare mai** WebSearch né WebFetch su portali (immobiliare.it, gohome.it, tecnocasa.it, idealista.it, casa.it, wikicasa.it, bakeca.it). Sono bloccati 403 e in passato hanno prodotto candidati non verificabili → email sbagliate.
+Corpo email: oggetto + dettaglio tecnico (HTTP code, prime 500 char del response body) + link a Apify console (`https://console.apify.com/actors/sPIR3lEdL9H69xrmi/runs`). Salva report con stesso contenuto.
 
 ### Step 3 — Estrazione campi normalizzati
 
@@ -105,7 +98,7 @@ Per ogni item dell'array Apify, estrai:
 | `mq` | int del numero in `item.properties[0].surface` (es. `"98 m²"` → 98) |
 | `locali` | `item.properties[0].rooms` |
 | `bagni` | `item.properties[0].bathrooms` |
-| `piano` | parsa `item.properties[0].floor.abbreviation` (`"T"`/`"R"`/`"S"`/`"A"`/numero) |
+| `piano` | `item.properties[0].floor.abbreviation` (`"T"`/`"R"`/`"S"`/`"A"`/numero) |
 | `ascensore` | `item.properties[0].elevator` (bool, default False se assente) |
 | `zona` | `item.properties[0].location.microzone or .macrozone` |
 | `indirizzo` | `item.properties[0].location.address` |
@@ -115,12 +108,12 @@ Per ogni item dell'array Apify, estrai:
 
 ### Step 4 — Filtri (in ordine)
 
-1. **Duplicati**: se `id` già in `annunci_visti.json` → skip silenzioso, non rientra in "nuovi di oggi"
-2. **Validità minima**: se mancano `directLink`, `price.value`, o `properties[0].surface` → skip silenzioso con note
+1. **Duplicati**: se `id` già in `annunci_visti.json` → skip silenzioso
+2. **Validità minima**: se mancano `directLink`, `price.value`, o `properties[0].surface` → skip silenzioso
 3. **REGOLA #0** (keyword gate + sede agenzia + freshness) → SKIP HARD se trigger
 4. **Esclusioni assolute** da `criteri.md`:
    - `ascensore == False` → ESCLUDI
-   - `piano in ("T","R","S")` (piano terra/rialzato/seminterrato) senza "giardino privato" in descrizione → ESCLUDI
+   - `piano in ("T","R","S")` senza "giardino privato" in descrizione → ESCLUDI
    - "asta giudiziaria" / "asta" nel titolo o descrizione → ESCLUDI
    - `mq < 80` o `mq > 120` → ESCLUDI
    - `prezzo > 360000` → ESCLUDI
@@ -131,14 +124,14 @@ Per gli esclusi: aggiungi a `annunci_visti.json` con `punteggio: 0`, `note: "ESC
 
 ### Step 5 — Scoring (per i superstiti)
 
-Scala 0–10 come da `criteri.md`. Riassunto:
+Scala 0–10 come da `criteri.md`:
 - Prezzo: ≤310k +3 | 310–360k +1
 - Zona: 1=top +3 | 2=ottima +2 | 3=buona +1 | 4=accettabile +0.5
 - ≥90mq +1 | balcone/terrazzo +0.5 | 2+ bagni +0.5 | piano ≥3 +0.5 | box/posto auto +0.5 | classe energetica A/B +0.5
 
 Riconoscimento zona: confronta `zona` (lowercased) con le liste di `criteri.md` — match esatto su `microzone`, poi fallback su `macrozone`, poi parole-chiave nell'indirizzo.
 
-### Step 6 — Output
+### Step 6 — Output DB
 
 **Annunci nuovi con score ≥ 6 ⇒ candidati notifica.**
 
@@ -167,7 +160,7 @@ Destinatari: `adrianolionetti@gmail.com`, `alessia.curtopelle@gmail.com`
 - 0 nuovi candidati → `🏠 Sessione completata — nessuna novità oggi`
 - 1+ nuovi score ≥ 8 → `🏠 [ALERT] <zona> — €<prezzo> — <mq>mq`
 - 1+ nuovi score 6–7.9 → `🏠 [DIGEST] Ricerca casa Milano — <data> — <N> annunci nuovi`
-- Infra fail (Step 2d) → `🏠 [INFRA] Ricerca Casa Milano — <motivo>`
+- Infra fail → `🏠 [INFRA] Ricerca Casa Milano — <motivo>`
 
 **Corpo HTML** per ogni annuncio nuovo score ≥ 6:
 ```html
@@ -180,7 +173,27 @@ Destinatari: `adrianolionetti@gmail.com`, `alessia.curtopelle@gmail.com`
 </div>
 ```
 
-**Non includere mai** annunci già in `annunci_visti.json` all'inizio della sessione, anche se hanno passato i filtri (sono già stati notificati o già scartati in precedenza).
+**Invio Gmail** (OAuth2 via curl):
+```bash
+GET_TOKEN() {
+  curl -s -X POST https://oauth2.googleapis.com/token \
+    -d "client_id=$GMAIL_CLIENT_ID" \
+    -d "client_secret=$GMAIL_CLIENT_SECRET" \
+    -d "refresh_token=$GMAIL_REFRESH_TOKEN" \
+    -d "grant_type=refresh_token" \
+    | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])"
+}
+send_email() {
+  local SUBJECT="$1" BODY_HTML="$2"
+  local TOKEN=$(GET_TOKEN)
+  local RAW=$(printf "From: $GMAIL_FROM\r\nTo: adrianolionetti@gmail.com, alessia.curtopelle@gmail.com\r\nSubject: $SUBJECT\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n$BODY_HTML" | base64 | tr -d '\n' | tr '+/' '-_')
+  curl -s -X POST "https://gmail.googleapis.com/gmail/v1/users/me/messages/send" \
+    -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+    -d "{\"raw\": \"$RAW\"}"
+}
+```
+
+**Non includere mai** annunci già in `annunci_visti.json` all'inizio della sessione.
 
 ### Step 8 — Dashboard (`index.html`)
 
@@ -188,26 +201,24 @@ Genera HTML statico che mostra **SOLO** annunci con TUTTE queste proprietà:
 - `data_vista` negli ultimi 30 giorni
 - `punteggio` numerico e ≥ 6
 - `url` valido (inizia con `https://www.immobiliare.it/annunci/`)
-- `foto_url` non vuoto
 
 Escludi tutti gli entry con `note` che inizia con `SCARTATO` o `ESCLUSO` — sono nel DB solo per evitare riprocessamento, non per dashboard.
 
-Ordina per `punteggio` desc, poi per `data_vista` desc. Mostra stat: totale, nuovi oggi, miglior score.
+Ordina per `punteggio` desc, poi per `data_vista` desc. Mostra stat: in dashboard, processati (30gg), nuovi oggi, score max.
 
 ### Step 9 — Report
 
 Salva `report/YYYY-MM-DD.md`:
-- Numero item nel dataset Apify
-- Età della run
+- Numero item Apify
 - Per ogni stato (NOTIFICATO / SCARTATO REGOLA #0 / ESCLUSO CRITERI / DUPLICATO): conteggio + lista ID
-- Errori (se non-INFRA-fail)
+- Note operative ed errori (se non-INFRA-fail)
 
 ### Step 10 — Commit & push
 
 ```bash
 git config user.email 'agent@casa-milano.local'
 git config user.name 'Casa Milano Agent'
-git remote set-url origin https://$GITHUB_PAT@github.com/adrianolionetti-arch/casa-milano.git
+# GH Actions: GITHUB_TOKEN è già nelle credenziali della checkout action
 git add -A
 git commit -m "Sessione $(date +%Y-%m-%d) — <N> nuovi, <S> scartati" || echo 'Nessuna modifica'
 git push origin main
@@ -217,4 +228,4 @@ git push origin main
 
 - **Mai inventare dati**: se un campo manca nell'Apify item, scrivi `null` o `""`, non riempire con stime.
 - **Concisione**: l'utente legge l'email in 30 secondi. Foto + score + prezzo + indirizzo + agenzia, in quest'ordine.
-- **Cost awareness**: Apify costa $0.001/listing (pay-per-event dal 2026-05-04). 60 listing/giorno × 30gg = ~$1.80/mese.
+- **Cost awareness**: Apify ~$2/mese. GitHub Actions: free tier 2000 min/mese, una sessione consuma ~3 min → ~90 min/mese, ampiamente nel free.

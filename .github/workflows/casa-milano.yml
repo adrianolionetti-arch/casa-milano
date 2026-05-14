@@ -1,0 +1,53 @@
+name: Casa Milano - daily search
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # 06:00 UTC daily (08:00 Rome winter / 07:00 Rome summer)
+  workflow_dispatch:      # manual run from the Actions tab
+
+permissions:
+  contents: write         # allow agent to push commits
+
+concurrency:
+  group: casa-milano
+  cancel-in-progress: false
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Run Casa Milano agent
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Esegui una sessione di ricerca Casa Milano seguendo CLAUDE.md alla lettera.
+
+            Sei sul GitHub Actions runner del repo casa-milano: rete piena, Bash + curl
+            funzionano verso api.apify.com, oauth2.googleapis.com, gmail.googleapis.com.
+
+            Le credenziali sono in env vars: APIFY_TOKEN, APIFY_ACTOR_ID, GMAIL_CLIENT_ID,
+            GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN, GMAIL_FROM, DASHBOARD_URL.
+            GITHUB_TOKEN è già configurato per i push.
+
+            Workflow:
+            1) Leggi CLAUDE.md e criteri.md
+            2) Step 2 di CLAUDE.md (curl Apify run-sync) — se HTTP ≠ 200 invia email INFRA e ABORT
+            3) Step 3-9 per i listing ricevuti (filtri, scoring, DB, email, dashboard, report)
+            4) Step 10: commit + push
+          claude_args: --model claude-sonnet-4-6 --max-turns 40
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          APIFY_ACTOR_ID: sPIR3lEdL9H69xrmi
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+          GMAIL_FROM: ${{ secrets.GMAIL_FROM }}
+          DASHBOARD_URL: https://adrianolionetti-arch.github.io/casa-milano/
