@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-14T08:00:00",
+    "ultima_sessione": "2026-05-14T23:35:31.581480",
     "ultimo_aggiornamento": "2026-05-14",
-    "totale_annunci": 126,
+    "totale_annunci": 127,
     "cleanup": {
       "date": "2026-05-14",
       "rationale": "Removed entries with generic portal URLs (no listing ID) from gohome fallback discoveries",
@@ -1895,6 +1895,65 @@
       "notificato": false,
       "punteggio": 0,
       "note": "ESCLUSO criteri — superficie 60mq < 80mq minimo"
+    },
+    {
+      "id": "immobiliare-123439299",
+      "url": "https://www.immobiliare.it/annunci/123439299",
+      "titolo": "Trilocale via Giuseppe Ripamonti 190, Vigentino - Fatima, Milano",
+      "prezzo": 255000,
+      "data_vista": "2026-05-14",
+      "notificato": true,
+      "punteggio": null,
+      "note": "SCARTATO sede agenzia — sospetto listing vetrina"
+    },
+    {
+      "id": "immobiliare-128562976",
+      "url": "https://www.immobiliare.it/annunci/128562976",
+      "titolo": "Trilocale via Capri 9, Baggio, Milano",
+      "prezzo": 230000,
+      "mq": 91,
+      "zona": "Baggio",
+      "piano": "1",
+      "data_vista": "2026-05-14",
+      "notificato": true,
+      "punteggio": 0,
+      "note": "ESCLUSO criteri — zona Baggio in lista esclusione"
+    },
+    {
+      "id": "immobiliare-126232673",
+      "url": "https://www.immobiliare.it/annunci/126232673",
+      "titolo": "Trilocale via Attilio Cassoni 16, Cermenate - Abbiategrasso, Milano",
+      "prezzo": 359000,
+      "mq": 95,
+      "zona": "Cermenate - Abbiategrasso",
+      "piano": "3",
+      "ascensore": true,
+      "bagni": 1,
+      "agenzia": "Gabetti Franchising Milano - Ripamonti",
+      "indirizzo": "Via Attilio Cassoni",
+      "data_vista": "2026-05-14",
+      "punteggio": 3.5,
+      "notificato": false,
+      "note": "",
+      "foto_url": "https://pic.im-cdn.it/image/1856920843/xxl-c.jpg"
+    },
+    {
+      "id": "immobiliare-128565836",
+      "url": "https://www.immobiliare.it/annunci/128565836",
+      "titolo": "Trilocale via Ernesto Breda 23, Bicocca, Milano",
+      "prezzo": 320000,
+      "mq": 108,
+      "zona": "Bicocca",
+      "piano": "2",
+      "ascensore": true,
+      "bagni": 1,
+      "agenzia": "TEMPOCASA Milano Precotto",
+      "indirizzo": "Via Ernesto Breda 23",
+      "data_vista": "2026-05-14",
+      "punteggio": 5.0,
+      "notificato": false,
+      "note": "",
+      "foto_url": "https://pic.im-cdn.it/image/1911908562/xxl-c.jpg"
     }
   ]
 }
