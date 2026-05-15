@@ -180,6 +180,21 @@ send_email(subject, body)  # OBBLIGATORIO se non infra_failed
 
 Destinatari: `adrianolionetti@gmail.com`, `alessia.curtopelle@gmail.com` (entrambi sempre).
 
+**⚠️ LINK DASHBOARD — VALORE FISSO**: il link "Apri la dashboard" nel body DEVE essere **esattamente** il valore della env var `$DASHBOARD_URL` (oggi `https://adrianolionetti-arch.github.io/casa-milano/`). MAI inventare URL alternativi tipo `casa-milano.vercel.app`, `casamilano.it`, `my-dashboard.netlify.app` o simili: la dashboard è ospitata SOLO su GitHub Pages a quell'URL. Se il body non contiene esattamente `$DASHBOARD_URL` riscrivilo prima di inviare.
+
+**Template "nessuna novità"** (caso N == 0, body completo, niente improvvisazioni):
+```html
+<h2>🏠 Casa Milano — sessione del <data></h2>
+<p>Nessun annuncio nuovo con score ≥ 6 oggi.</p>
+<ul>
+  <li>Apify: <X> listing recuperati</li>
+  <li>Duplicati riconosciuti: <K></li>
+  <li>Scartati REGOLA #0 (keyword gate): <S></li>
+  <li>Esclusi per criteri: <E></li>
+</ul>
+<p><a href="$DASHBOARD_URL">📊 Apri la dashboard completa →</a></p>
+```
+
 **Corpo HTML** per ogni annuncio nuovo score ≥ 6:
 ```html
 <div style="margin:20px 0;padding:16px;border:1px solid #eee;border-radius:8px;">
