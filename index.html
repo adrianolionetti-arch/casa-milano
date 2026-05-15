@@ -1,167 +1,103 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Casa Milano — Dashboard</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f5f5f5;
-      color: #333;
-      line-height: 1.6;
-    }
-    header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 40px 20px;
-      text-align: center;
-    }
-    header h1 { font-size: 2.5em; margin-bottom: 10px; }
-    header p { font-size: 1.1em; opacity: 0.9; }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 20px;
-      padding: 40px 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .stat-card {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    .stat-card .number {
-      font-size: 2.5em;
-      font-weight: bold;
-      color: #667eea;
-    }
-    .stat-card .label {
-      font-size: 0.9em;
-      color: #666;
-      margin-top: 5px;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    .listings {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-    }
-    .listing {
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .listing:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-    }
-    .listing img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-    .listing-content {
-      padding: 16px;
-    }
-    .listing-score {
-      display: inline-block;
-      background: #667eea;
-      color: white;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-weight: bold;
-      font-size: 0.9em;
-      margin-bottom: 8px;
-    }
-    .listing h3 {
-      font-size: 1.1em;
-      margin-bottom: 8px;
-      color: #333;
-    }
-    .listing-meta {
-      font-size: 0.9em;
-      color: #666;
-      margin-bottom: 8px;
-    }
-    .listing-price {
-      font-size: 1.3em;
-      font-weight: bold;
-      color: #667eea;
-      margin-bottom: 8px;
-    }
-    .listing-agency {
-      font-size: 0.85em;
-      color: #999;
-      margin-bottom: 12px;
-    }
-    .btn {
-      display: inline-block;
-      background: #667eea;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 4px;
-      text-decoration: none;
-      font-size: 0.9em;
-      transition: background 0.2s;
-    }
-    .btn:hover {
-      background: #764ba2;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 40px 20px;
-      color: #999;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casa Milano — Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            color: #333;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        header { 
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h1 { font-size: 32px; margin-bottom: 10px; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stat {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #0071e3;
+        }
+        .stat-value { font-size: 24px; font-weight: bold; color: #0071e3; }
+        .stat-label { font-size: 12px; color: #999; margin-top: 5px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .card-img { width: 100%; height: 200px; object-fit: cover; }
+        .card-body { padding: 15px; }
+        .card-score { 
+            display: inline-block;
+            background: #0071e3;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        .card-title { font-size: 16px; font-weight: bold; margin-bottom: 8px; }
+        .card-meta { font-size: 13px; color: #666; margin-bottom: 8px; line-height: 1.5; }
+        .card-agency { font-size: 12px; color: #999; margin-bottom: 12px; }
+        .card-btn {
+            display: inline-block;
+            background: #0071e3;
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .card-btn:hover { background: #0051c3; }
+        .empty { text-align: center; padding: 40px; color: #999; }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>🏠 Casa Milano</h1>
-    <p>Ricerca immobili in vendita — Milano</p>
-  </header>
+    <div class="container">
+        <header>
+            <h1>🏠 Casa Milano</h1>
+            <p>Ricerca immobili a Milano per Adriano Lionetti</p>
+            <div class="stats">
 
-  <div class="stats">
-    <div class="stat-card">
-      <div class="number">127</div>
-      <div class="label">Processati (30gg)</div>
+                <div class="stat">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">Annunci qualificati (30gg)</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">0/10</div>
+                    <div class="stat-label">Score massimo</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">127</div>
+                    <div class="stat-label">Processati (30gg)</div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="grid">
+<div class="empty" style="grid-column: 1/-1;">Nessun annuncio qualificato negli ultimi 30 giorni</div>
+        </div>
     </div>
-    <div class="stat-card">
-      <div class="number">0</div>
-      <div class="label">In dashboard (score ≥ 6)</div>
-    </div>
-    <div class="stat-card">
-      <div class="number">0</div>
-      <div class="label">Nuovi oggi</div>
-    </div>
-    <div class="stat-card">
-      <div class="number">—</div>
-      <div class="label">Score max</div>
-    </div>
-  </div>
-
-  <div class="container">
-<div class="listings">
-    <div class="empty">Nessun annuncio attivo con score ≥ 6 al momento.</div>
-  </div>
-  </div>
-
-  <footer style="text-align: center; padding: 20px; color: #999; font-size: 0.9em;">
-    <p>Ultimo aggiornamento: 2026-05-15 00:00 UTC</p>
-  </footer>
 </body>
 </html>
