@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-15T01:17:12.247973",
+    "ultima_sessione": "2026-05-15T08:43:37.264764",
     "ultimo_aggiornamento": "2026-05-15",
-    "totale_annunci": 128
+    "totale_annunci": 131
   },
   "annunci": [
     {
@@ -1957,6 +1957,66 @@
       "data_vista": "2026-05-15",
       "notificato": true,
       "note": "ESCLUSO — Senza ascensore"
+    },
+    {
+      "id": "immobiliare-127788618",
+      "url": "https://www.immobiliare.it/annunci/127788618",
+      "titolo": "Trilocale via Privata Piero Martinetti 15, Piazzale Siena, Milano",
+      "prezzo": 359000,
+      "mq": 95,
+      "locali": "3",
+      "bagni": "1",
+      "piano": "R",
+      "ascensore": true,
+      "zona": "piazzale siena",
+      "indirizzo": "Via Privata Piero Martinetti",
+      "descrizione": "Via Privata Piero Martinetti:\nNel cuore del quartiere Bande Nere, adiacente ed a breve distanza dalla fermata della metropolitana M1 GAMBARA e M1 BANDE NERE che in meno di 15 minuti collega al centro della città, oltre che dalle fermate dei vari mezzi di superficie (bus 80/64/49/67); proponiamo in contesto signorile degli anni '60, ben tenuto nelle parti comuni, con cortile condominiale, un AMPIO e LUMINOSO TRILOCALE posto al PIANO RIALZATO in stabile fornito di ascensore e servizio di portineria part-time.\nLa zona risulta molto tranquilla e ben servita di tutti i servizi di prima necessità, c",
+      "agenzia": "Affiliato Tecnorete: ADR CASE SRL",
+      "foto_url": "https://pic.im-cdn.it/image/1893011238/xxl-c.jpg",
+      "punteggio": 0,
+      "data_vista": "2026-05-15",
+      "notificato": true,
+      "note": "ESCLUSO — piano terra/rialzato/seminterrato senza giardino"
+    },
+    {
+      "id": "immobiliare-127728556",
+      "url": "https://www.immobiliare.it/annunci/127728556",
+      "titolo": "Trilocale viale Ungheria 15, Viale Ungheria - Mecenate, Milano",
+      "prezzo": 235000,
+      "mq": 80,
+      "locali": "3",
+      "bagni": "1",
+      "piano": "R",
+      "ascensore": true,
+      "zona": "viale ungheria - mecenate",
+      "indirizzo": "Viale Ungheria",
+      "descrizione": "Rif: UN15PR3L - Tempocasa Milano Mecenate, propone IN ESCLUSIVA questo appartamento interessante appartamento sito in Viale Ungheria 15 che rappresenta un vera opportunità per chi desidera creare, passo dopo passo, la propria idea di casa, ideale per giovani coppie o famiglie.\n\nCi troviamo in un tranquillo condominio immerso nel verde, dove la quiete si intreccia con la praticità della vita cittadina.\n\nL’abitazione, posta al piano rialzato e servita da ascensore, si apre su una superficie di 80 mq ben distribuiti, pronti per essere valorizzati grazie a un intervento di ristrutturazione che pot",
+      "agenzia": "TEMPOCASA Milano Mecenate",
+      "foto_url": "https://pic.im-cdn.it/image/1891489522/xxl-c.jpg",
+      "punteggio": 0,
+      "data_vista": "2026-05-15",
+      "notificato": true,
+      "note": "ESCLUSO — piano terra/rialzato/seminterrato senza giardino"
+    },
+    {
+      "id": "immobiliare-127212267",
+      "url": "https://www.immobiliare.it/annunci/127212267",
+      "titolo": "Quadrilocale via Ronchi 24, Udine, Milano",
+      "prezzo": 330000,
+      "mq": 92,
+      "locali": "4",
+      "bagni": "2",
+      "piano": "R",
+      "ascensore": false,
+      "zona": "udine",
+      "indirizzo": "Via Ronchi",
+      "descrizione": "Rif. Q9DRX – Quadrilocale a due passi dalla MM2 Udine | Libero subito \nSe cerchi una casa perfettamente collegata al centro di Milano, questa è l’opportunità che aspettavi. Ottimo anche per investimento.\nIn via Ronchi, a pochi metri dalla fermata MM2 Udine, proponiamo in vendita quadrilocale di circa 92 mq, situato al piano ammezzato di uno stabile signorile con servizio di portineria centrale. \nL’appartamento è in buone condizioni interne e gli spazi sono ben distribuiti. \nComposizione: \nIngresso accogliente \nSoggiorno con cucina a vista, perfetto per momenti di convivialità \nTre camere da le",
+      "agenzia": "Radovix Immobiliare",
+      "foto_url": "https://pic.im-cdn.it/image/1879088277/xxl-c.jpg",
+      "punteggio": 0,
+      "data_vista": "2026-05-15",
+      "notificato": true,
+      "note": "ESCLUSO — no ascensore"
     }
   ]
 }

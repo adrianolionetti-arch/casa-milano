@@ -1,228 +1,146 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>🏠 Casa Milano — Dashboard</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 20px;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    header {
-      background: white;
-      padding: 40px 30px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
-    }
-    h1 {
-      font-size: 2.5em;
-      color: #333;
-      margin-bottom: 10px;
-    }
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 20px;
-      margin-top: 30px;
-    }
-    .stat-box {
-      background: #f8f9fa;
-      padding: 20px;
-      border-radius: 8px;
-      border-left: 4px solid #667eea;
-    }
-    .stat-box h3 {
-      font-size: 0.9em;
-      color: #666;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-    .stat-box .value {
-      font-size: 2em;
-      color: #333;
-      font-weight: bold;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 20px;
-      margin-bottom: 40px;
-    }
-    .card {
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
-    .card-image {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-      background: #e0e0e0;
-    }
-    .card-body {
-      padding: 20px;
-    }
-    .score {
-      display: inline-block;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 0.9em;
-      margin-bottom: 10px;
-    }
-    .card-title {
-      font-size: 1.1em;
-      color: #333;
-      margin-bottom: 10px;
-      font-weight: 600;
-    }
-    .card-meta {
-      font-size: 0.95em;
-      color: #666;
-      margin-bottom: 15px;
-    }
-    .card-agency {
-      font-size: 0.85em;
-      color: #999;
-      margin-bottom: 15px;
-      font-style: italic;
-    }
-    .card-button {
-      display: inline-block;
-      background: #667eea;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 6px;
-      text-decoration: none;
-      font-weight: 500;
-      transition: background 0.3s;
-    }
-    .card-button:hover {
-      background: #764ba2;
-    }
-    .empty {
-      text-align: center;
-      padding: 60px 30px;
-      background: white;
-      border-radius: 12px;
-      color: #999;
-    }
-    .empty h2 {
-      margin-bottom: 10px;
-    }
-    footer {
-      text-align: center;
-      color: white;
-      font-size: 0.9em;
-      margin-top: 40px;
-      padding: 20px 0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Casa Milano — Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                 color: #333; padding: 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        header { background: white; padding: 30px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        header h1 { font-size: 28px; margin-bottom: 10px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
+        .stat { background: #f5f5f5; padding: 15px; border-radius: 6px; text-align: center; }
+        .stat .number { font-size: 24px; font-weight: bold; color: #667eea; }
+        .stat .label { font-size: 12px; color: #666; margin-top: 5px; }
+        .card { background: white; border-radius: 8px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .card-image { width: 100%; height: 250px; object-fit: cover; background: #f0f0f0; }
+        .card-content { padding: 20px; }
+        .card-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
+        .card-score { display: inline-block; background: #667eea; color: white; padding: 6px 12px; border-radius: 4px; font-weight: bold; margin-bottom: 10px; }
+        .card-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 15px; }
+        .meta-item { font-size: 13px; color: #666; }
+        .meta-item strong { color: #333; }
+        .card-agency { font-size: 12px; color: #999; margin-bottom: 10px; }
+        .button { display: inline-block; background: #0071e3; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; }
+        .button:hover { background: #0051c3; }
+        footer { background: white; padding: 20px; border-radius: 8px; text-align: center; font-size: 12px; color: #999; }
+        .empty { text-align: center; padding: 40px; color: #999; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>🏠 Casa Milano</h1>
-      <p>Dashboard annunci in vendita a Milano</p>
-      <div class="stats">
-        <div class="stat-box">
-          <h3>Processati (30gg)</h3>
-          <div class="value">128</div>
+    <div class="container">
+        <header>
+            <h1>🏠 Casa Milano</h1>
+            <p>Dashboard annunci — aggiornato 2026-05-15</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="number">5</div>
+                    <div class="label">Annunci visibili</div>
+                </div>
+                <div class="stat">
+                    <div class="number">0</div>
+                    <div class="label">Nuovi oggi</div>
+                </div>
+                <div class="stat">
+                    <div class="number">131</div>
+                    <div class="label">Processati (30gg)</div>
+                </div>
+                <div class="stat">
+                    <div class="number">6.8</div>
+                    <div class="label">Score massimo</div>
+                </div>
+            </div>
+        </header>
+        <main>
+
+        <div class="card">
+            <img class="card-image" alt="Trilocale Via Alessandro Astesani 45, Affori — 100mq, 7° piano, doppio ascensore">
+            <div class="card-content">
+                <span class="card-score">⭐ 6.8/10</span>
+                <h2 class="card-title">Trilocale Via Alessandro Astesani 45, Affori — 100mq, 7° piano, doppio ascensore</h2>
+                <div class="card-meta">
+                    <div class="meta-item"><strong>💰 €288000</strong></div>
+                    <div class="meta-item"><strong>100</strong> mq</div>
+                    <div class="meta-item"><strong>Affori</strong></div>
+                    <div class="meta-item">Piano <strong>7</strong></div>
+                </div>
+                <div class="card-agency">N/A</div>
+                <a href="https://www.casa.it/appartamento/vendita/milano/via-alessandro-astesani-45-milano-100mq-41423871/" class="button">Vedi su Immobiliare.it →</a>
+            </div>
         </div>
-        <div class="stat-box">
-          <h3>Nuovi oggi</h3>
-          <div class="value">1</div>
+
+        <div class="card">
+            <img class="card-image" alt="Trilocale Via Pianell 58, Pratocentenaro — ristrutturato 2019">
+            <div class="card-content">
+                <span class="card-score">⭐ 6.8/10</span>
+                <h2 class="card-title">Trilocale Via Pianell 58, Pratocentenaro — ristrutturato 2019</h2>
+                <div class="card-meta">
+                    <div class="meta-item"><strong>💰 €315000</strong></div>
+                    <div class="meta-item"><strong>85</strong> mq</div>
+                    <div class="meta-item"><strong>Pratocentenaro</strong></div>
+                    <div class="meta-item">Piano <strong>1</strong></div>
+                </div>
+                <div class="card-agency">N/A</div>
+                <a href="https://www.wikicasa.it/annuncio/15611753" class="button">Vedi su Immobiliare.it →</a>
+            </div>
         </div>
-        <div class="stat-box">
-          <h3>Score massimo</h3>
-          <div class="value">6.8</div>
+
+        <div class="card">
+            <img class="card-image" alt="Trilocale Niguarda — 92mq, terrazza 37mq, box auto incluso">
+            <div class="card-content">
+                <span class="card-score">⭐ 6.5/10</span>
+                <h2 class="card-title">Trilocale Niguarda — 92mq, terrazza 37mq, box auto incluso</h2>
+                <div class="card-meta">
+                    <div class="meta-item"><strong>💰 €359000</strong></div>
+                    <div class="meta-item"><strong>92</strong> mq</div>
+                    <div class="meta-item"><strong>Niguarda</strong></div>
+                    <div class="meta-item">Piano <strong>None</strong></div>
+                </div>
+                <div class="card-agency">N/A</div>
+                <a href="https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61009314.html" class="button">Vedi su Immobiliare.it →</a>
+            </div>
         </div>
-        <div class="stat-box">
-          <h3>In dashboard</h3>
-          <div class="value">5</div>
+
+        <div class="card">
+            <img class="card-image" alt="Trilocale Pratocentenaro — ultimo piano, portineria, giardino">
+            <div class="card-content">
+                <span class="card-score">⭐ 6.3/10</span>
+                <h2 class="card-title">Trilocale Pratocentenaro — ultimo piano, portineria, giardino</h2>
+                <div class="card-meta">
+                    <div class="meta-item"><strong>💰 €345000</strong></div>
+                    <div class="meta-item"><strong>85</strong> mq</div>
+                    <div class="meta-item"><strong>Pratocentenaro</strong></div>
+                    <div class="meta-item">Piano <strong>None</strong></div>
+                </div>
+                <div class="card-agency">N/A</div>
+                <a href="https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61195106.html" class="button">Vedi su Immobiliare.it →</a>
+            </div>
         </div>
-      </div>
-    </header>
-    
-    <div class="grid">
 
-    <div class="card">
-      <img src="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="250"%3E%3Crect fill="%23e0e0e0" width="300" height="250"/%3E%3C/svg%3E" alt="Trilocale Via Paolo Rotta, Niguarda — 116mq, 1° piano, 2 bagni, portineria" class="card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22250%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22300%22 height=%22250%22/%3E%3C/svg%3E'">
-      <div class="card-body">
-        <div class="score">⭐ 6.0/10</div>
-        <div class="card-title">Trilocale Via Paolo Rotta, Niguarda — 116mq, 1° piano, 2 bagni, portineria</div>
-        <div class="card-meta">💰 €348,000 · 116mq · Niguarda · Piano 1</div>
-        <div class="card-agency">Agenzia</div>
-        <a href="https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60861395.html" class="card-button" target="_blank">Vedi annuncio →</a>
-      </div>
-    </div>
+        <div class="card">
+            <img class="card-image" alt="Trilocale Via Paolo Rotta, Niguarda — 116mq, 1° piano, 2 bagni, portineria">
+            <div class="card-content">
+                <span class="card-score">⭐ 6.0/10</span>
+                <h2 class="card-title">Trilocale Via Paolo Rotta, Niguarda — 116mq, 1° piano, 2 bagni, portineria</h2>
+                <div class="card-meta">
+                    <div class="meta-item"><strong>💰 €348000</strong></div>
+                    <div class="meta-item"><strong>116</strong> mq</div>
+                    <div class="meta-item"><strong>Niguarda</strong></div>
+                    <div class="meta-item">Piano <strong>1</strong></div>
+                </div>
+                <div class="card-agency">N/A</div>
+                <a href="https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60861395.html" class="button">Vedi su Immobiliare.it →</a>
+            </div>
+        </div>
 
-    <div class="card">
-      <img src="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="250"%3E%3Crect fill="%23e0e0e0" width="300" height="250"/%3E%3C/svg%3E" alt="Trilocale Pratocentenaro — ultimo piano, portineria, giardino" class="card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22250%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22300%22 height=%22250%22/%3E%3C/svg%3E'">
-      <div class="card-body">
-        <div class="score">⭐ 6.3/10</div>
-        <div class="card-title">Trilocale Pratocentenaro — ultimo piano, portineria, giardino</div>
-        <div class="card-meta">💰 €345,000 · 85mq · Pratocentenaro · Piano None</div>
-        <div class="card-agency">Agenzia</div>
-        <a href="https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61195106.html" class="card-button" target="_blank">Vedi annuncio →</a>
-      </div>
+        </main>
+        <footer>
+            <p>Casa Milano Agent — ricerca automatica su Immobiliare.it</p>
+        </footer>
     </div>
-
-    <div class="card">
-      <img src="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="250"%3E%3Crect fill="%23e0e0e0" width="300" height="250"/%3E%3C/svg%3E" alt="Trilocale Niguarda — 92mq, terrazza 37mq, box auto incluso" class="card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22250%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22300%22 height=%22250%22/%3E%3C/svg%3E'">
-      <div class="card-body">
-        <div class="score">⭐ 6.5/10</div>
-        <div class="card-title">Trilocale Niguarda — 92mq, terrazza 37mq, box auto incluso</div>
-        <div class="card-meta">💰 €359,000 · 92mq · Niguarda · Piano None</div>
-        <div class="card-agency">Agenzia</div>
-        <a href="https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61009314.html" class="card-button" target="_blank">Vedi annuncio →</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <img src="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="250"%3E%3Crect fill="%23e0e0e0" width="300" height="250"/%3E%3C/svg%3E" alt="Trilocale Via Alessandro Astesani 45, Affori — 100mq, 7° piano, doppio ascensore" class="card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22250%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22300%22 height=%22250%22/%3E%3C/svg%3E'">
-      <div class="card-body">
-        <div class="score">⭐ 6.8/10</div>
-        <div class="card-title">Trilocale Via Alessandro Astesani 45, Affori — 100mq, 7° piano, doppio ascensore</div>
-        <div class="card-meta">💰 €288,000 · 100mq · Affori · Piano 7</div>
-        <div class="card-agency">Agenzia</div>
-        <a href="https://www.casa.it/appartamento/vendita/milano/via-alessandro-astesani-45-milano-100mq-41423871/" class="card-button" target="_blank">Vedi annuncio →</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <img src="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="300" height="250"%3E%3Crect fill="%23e0e0e0" width="300" height="250"/%3E%3C/svg%3E" alt="Trilocale Via Pianell 58, Pratocentenaro — ristrutturato 2019" class="card-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22250%22%3E%3Crect fill=%22%23e0e0e0%22 width=%22300%22 height=%22250%22/%3E%3C/svg%3E'">
-      <div class="card-body">
-        <div class="score">⭐ 6.8/10</div>
-        <div class="card-title">Trilocale Via Pianell 58, Pratocentenaro — ristrutturato 2019</div>
-        <div class="card-meta">💰 €315,000 · 85mq · Pratocentenaro · Piano 1</div>
-        <div class="card-agency">Agenzia</div>
-        <a href="https://www.wikicasa.it/annuncio/15611753" class="card-button" target="_blank">Vedi annuncio →</a>
-      </div>
-    </div>
-</div>
-    <footer>
-      Aggiornato: 2026-05-15 01:17 UTC
-      <br>
-      <a href="https://github.com/adrianolionetti-arch/casa-milano" style="color:white;">GitHub repo</a>
-    </footer>
-  </div>
 </body>
 </html>
