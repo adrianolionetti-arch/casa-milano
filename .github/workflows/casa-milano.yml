@@ -43,7 +43,7 @@ jobs:
             2) Step 2 di CLAUDE.md (curl Apify run-sync) — se HTTP ≠ 200 invia email INFRA e ABORT
             3) Step 3-9 per i listing ricevuti (filtri, scoring, DB, email, dashboard, report)
             4) Step 10: commit + push
-          claude_args: --model claude-haiku-4-5-20251001 --max-turns 40 --permission-mode bypassPermissions
+          claude_args: --model claude-sonnet-4-6 --max-turns 40 --permission-mode bypassPermissions
         env:
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
           APIFY_ACTOR_ID: sPIR3lEdL9H69xrmi
