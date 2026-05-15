@@ -206,38 +206,32 @@ Destinatari: `adrianolionetti@gmail.com`, `alessia.curtopelle@gmail.com` (entram
 </div>
 ```
 
-**Invio Gmail** (OAuth2 via curl):
+**Invio Gmail**: usa lo script Python `scripts/send_email.py` (NON ricreare la funzione bash — produceva mojibake nel Subject con emoji/accenti). Lo script gestisce MIME UTF-8 e RFC 2047 correttamente.
+
 ```bash
-GET_TOKEN() {
-  curl -s -X POST https://oauth2.googleapis.com/token \
-    -d "client_id=$GMAIL_CLIENT_ID" \
-    -d "client_secret=$GMAIL_CLIENT_SECRET" \
-    -d "refresh_token=$GMAIL_REFRESH_TOKEN" \
-    -d "grant_type=refresh_token" \
-    | python3 -c "import sys,json; print(json.load(sys.stdin)['access_token'])"
-}
-send_email() {
-  local SUBJECT="$1" BODY_HTML="$2"
-  local TOKEN=$(GET_TOKEN)
-  local RAW=$(printf "From: $GMAIL_FROM\r\nTo: adrianolionetti@gmail.com, alessia.curtopelle@gmail.com\r\nSubject: $SUBJECT\r\nMIME-Version: 1.0\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n$BODY_HTML" | base64 | tr -d '\n' | tr '+/' '-_')
-  curl -s -X POST "https://gmail.googleapis.com/gmail/v1/users/me/messages/send" \
-    -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
-    -d "{\"raw\": \"$RAW\"}"
-}
+# Scrivi il corpo HTML in un file temp
+cat > /tmp/email_body.html << 'HTMLEOF'
+<h2>🏠 Casa Milano — sessione del 2026-XX-XX</h2>
+<p>...</p>
+HTMLEOF
+
+# Invia (env GMAIL_* devono essere settate dal workflow)
+python3 scripts/send_email.py "🏠 Sessione completata — nessuna novità oggi" /tmp/email_body.html
 ```
+
+Lo script stampa il `messageId` su stdout in caso di successo, errore su stderr con exit ≠ 0. Se l'esecuzione fallisce, ritenta una volta con la stessa subject/body. Se fallisce ancora → `EMAIL FAILED` nel commit message ma non saltare lo step.
 
 **Non includere mai** annunci già in `annunci_visti.json` all'inizio della sessione.
 
 ### Step 8 — Dashboard (`index.html`)
 
-Genera HTML statico che mostra **SOLO** annunci con TUTTE queste proprietà:
-- `data_vista` negli ultimi 30 giorni
-- `punteggio` numerico e ≥ 6
-- `url` valido (inizia con `https://www.immobiliare.it/annunci/`)
+**NON ricostruire la dashboard a mano**: usa lo script deterministico già nel repo. Filtra correttamente per URL immobiliare, ordina, gestisce stat. Lancia semplicemente:
 
-Escludi tutti gli entry con `note` che inizia con `SCARTATO` o `ESCLUSO` — sono nel DB solo per evitare riprocessamento, non per dashboard.
+```bash
+python3 scripts/build_dashboard.py
+```
 
-Ordina per `punteggio` desc, poi per `data_vista` desc. Mostra stat: in dashboard, processati (30gg), nuovi oggi, score max.
+Lo script legge `annunci_visti.json`, applica i filtri (score ≥ 6, ultimi 30gg, URL match `^https://www\.immobiliare\.it/annunci/\d+/?$`, escludi `SCARTATO`/`ESCLUSO`), e scrive `index.html`. Non interpretarne la logica — chiamalo e basta.
 
 ### Step 9 — Report
 

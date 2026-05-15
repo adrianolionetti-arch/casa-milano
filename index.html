@@ -1,146 +1,39 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Casa Milano — Dashboard</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                 color: #333; padding: 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        header { background: white; padding: 30px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        header h1 { font-size: 28px; margin-bottom: 10px; }
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
-        .stat { background: #f5f5f5; padding: 15px; border-radius: 6px; text-align: center; }
-        .stat .number { font-size: 24px; font-weight: bold; color: #667eea; }
-        .stat .label { font-size: 12px; color: #666; margin-top: 5px; }
-        .card { background: white; border-radius: 8px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .card-image { width: 100%; height: 250px; object-fit: cover; background: #f0f0f0; }
-        .card-content { padding: 20px; }
-        .card-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
-        .card-score { display: inline-block; background: #667eea; color: white; padding: 6px 12px; border-radius: 4px; font-weight: bold; margin-bottom: 10px; }
-        .card-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 15px; }
-        .meta-item { font-size: 13px; color: #666; }
-        .meta-item strong { color: #333; }
-        .card-agency { font-size: 12px; color: #999; margin-bottom: 10px; }
-        .button { display: inline-block; background: #0071e3; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: 600; }
-        .button:hover { background: #0051c3; }
-        footer { background: white; padding: 20px; border-radius: 8px; text-align: center; font-size: 12px; color: #999; }
-        .empty { text-align: center; padding: 40px; color: #999; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Casa Milano — Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f1f5f9; color: #1e293b; }
+    .header { background: linear-gradient(135deg,#1e293b,#334155); color: #fff; padding: 24px 20px; }
+    .header h1 { font-size: 22px; margin-bottom: 4px; }
+    .header p { font-size: 13px; color: #94a3b8; }
+    .stats { display: flex; gap: 12px; padding: 16px 20px; flex-wrap: wrap; max-width:800px; margin:0 auto; }
+    .stat { background: #fff; border-radius: 8px; padding: 12px 18px; flex: 1; min-width: 100px; box-shadow: 0 1px 3px rgba(0,0,0,.07); }
+    .stat-val { font-size: 28px; font-weight: 700; color: #1e293b; }
+    .stat-lbl { font-size: 12px; color: #64748b; margin-top: 2px; }
+    .main { padding: 0 20px 40px; max-width: 800px; margin: 0 auto; }
+    .section-title { font-size: 13px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .5px; margin: 20px 0 10px; }
+    .empty { background:#fff; padding:24px; border-radius:8px; text-align:center; color:#64748b; }
+    @media(max-width:600px) { .stats { gap: 8px; } .stat-val { font-size: 22px; } }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🏠 Casa Milano</h1>
-            <p>Dashboard annunci — aggiornato 2026-05-15</p>
-            <div class="stats">
-                <div class="stat">
-                    <div class="number">5</div>
-                    <div class="label">Annunci visibili</div>
-                </div>
-                <div class="stat">
-                    <div class="number">0</div>
-                    <div class="label">Nuovi oggi</div>
-                </div>
-                <div class="stat">
-                    <div class="number">131</div>
-                    <div class="label">Processati (30gg)</div>
-                </div>
-                <div class="stat">
-                    <div class="number">6.8</div>
-                    <div class="label">Score massimo</div>
-                </div>
-            </div>
-        </header>
-        <main>
-
-        <div class="card">
-            <img class="card-image" alt="Trilocale Via Alessandro Astesani 45, Affori — 100mq, 7° piano, doppio ascensore">
-            <div class="card-content">
-                <span class="card-score">⭐ 6.8/10</span>
-                <h2 class="card-title">Trilocale Via Alessandro Astesani 45, Affori — 100mq, 7° piano, doppio ascensore</h2>
-                <div class="card-meta">
-                    <div class="meta-item"><strong>💰 €288000</strong></div>
-                    <div class="meta-item"><strong>100</strong> mq</div>
-                    <div class="meta-item"><strong>Affori</strong></div>
-                    <div class="meta-item">Piano <strong>7</strong></div>
-                </div>
-                <div class="card-agency">N/A</div>
-                <a href="https://www.casa.it/appartamento/vendita/milano/via-alessandro-astesani-45-milano-100mq-41423871/" class="button">Vedi su Immobiliare.it →</a>
-            </div>
-        </div>
-
-        <div class="card">
-            <img class="card-image" alt="Trilocale Via Pianell 58, Pratocentenaro — ristrutturato 2019">
-            <div class="card-content">
-                <span class="card-score">⭐ 6.8/10</span>
-                <h2 class="card-title">Trilocale Via Pianell 58, Pratocentenaro — ristrutturato 2019</h2>
-                <div class="card-meta">
-                    <div class="meta-item"><strong>💰 €315000</strong></div>
-                    <div class="meta-item"><strong>85</strong> mq</div>
-                    <div class="meta-item"><strong>Pratocentenaro</strong></div>
-                    <div class="meta-item">Piano <strong>1</strong></div>
-                </div>
-                <div class="card-agency">N/A</div>
-                <a href="https://www.wikicasa.it/annuncio/15611753" class="button">Vedi su Immobiliare.it →</a>
-            </div>
-        </div>
-
-        <div class="card">
-            <img class="card-image" alt="Trilocale Niguarda — 92mq, terrazza 37mq, box auto incluso">
-            <div class="card-content">
-                <span class="card-score">⭐ 6.5/10</span>
-                <h2 class="card-title">Trilocale Niguarda — 92mq, terrazza 37mq, box auto incluso</h2>
-                <div class="card-meta">
-                    <div class="meta-item"><strong>💰 €359000</strong></div>
-                    <div class="meta-item"><strong>92</strong> mq</div>
-                    <div class="meta-item"><strong>Niguarda</strong></div>
-                    <div class="meta-item">Piano <strong>None</strong></div>
-                </div>
-                <div class="card-agency">N/A</div>
-                <a href="https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61009314.html" class="button">Vedi su Immobiliare.it →</a>
-            </div>
-        </div>
-
-        <div class="card">
-            <img class="card-image" alt="Trilocale Pratocentenaro — ultimo piano, portineria, giardino">
-            <div class="card-content">
-                <span class="card-score">⭐ 6.3/10</span>
-                <h2 class="card-title">Trilocale Pratocentenaro — ultimo piano, portineria, giardino</h2>
-                <div class="card-meta">
-                    <div class="meta-item"><strong>💰 €345000</strong></div>
-                    <div class="meta-item"><strong>85</strong> mq</div>
-                    <div class="meta-item"><strong>Pratocentenaro</strong></div>
-                    <div class="meta-item">Piano <strong>None</strong></div>
-                </div>
-                <div class="card-agency">N/A</div>
-                <a href="https://www.tecnocasa.it/vendita/appartamenti/milano/milano/61195106.html" class="button">Vedi su Immobiliare.it →</a>
-            </div>
-        </div>
-
-        <div class="card">
-            <img class="card-image" alt="Trilocale Via Paolo Rotta, Niguarda — 116mq, 1° piano, 2 bagni, portineria">
-            <div class="card-content">
-                <span class="card-score">⭐ 6.0/10</span>
-                <h2 class="card-title">Trilocale Via Paolo Rotta, Niguarda — 116mq, 1° piano, 2 bagni, portineria</h2>
-                <div class="card-meta">
-                    <div class="meta-item"><strong>💰 €348000</strong></div>
-                    <div class="meta-item"><strong>116</strong> mq</div>
-                    <div class="meta-item"><strong>Niguarda</strong></div>
-                    <div class="meta-item">Piano <strong>1</strong></div>
-                </div>
-                <div class="card-agency">N/A</div>
-                <a href="https://www.tecnocasa.it/vendita/appartamenti/milano/milano/60861395.html" class="button">Vedi su Immobiliare.it →</a>
-            </div>
-        </div>
-
-        </main>
-        <footer>
-            <p>Casa Milano Agent — ricerca automatica su Immobiliare.it</p>
-        </footer>
-    </div>
+  <div class="header">
+    <h1>🏠 Casa Milano — Dashboard</h1>
+    <p>Aggiornato: 15/05/2026 · Ultimi 30 giorni · Solo annunci attivi su Immobiliare.it</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><div class="stat-val">0</div><div class="stat-lbl">In dashboard</div></div>
+    <div class="stat"><div class="stat-val">131</div><div class="stat-lbl">Processati (30gg)</div></div>
+    <div class="stat"><div class="stat-val">0</div><div class="stat-lbl">Nuovi oggi</div></div>
+    <div class="stat"><div class="stat-val">0</div><div class="stat-lbl">Score max</div></div>
+  </div>
+  <div class="main">
+    <div class="section-title">Annunci attivi — score ≥ 6.0, ultimi 30 giorni</div>
+    <div class="empty">Nessun annuncio attivo. La prossima sessione Apify popolerà la lista.</div>
+  </div>
 </body>
 </html>

@@ -101,10 +101,10 @@
       "balcone": true,
       "bagni": 2,
       "portineria": true,
-      "punteggio": 6.8,
+      "punteggio": null,
       "data_vista": "2026-04-28",
       "notificato": true,
-      "note": "1° piano con ascensore · 2 balconi doppia esposizione E/O · 2 bagni · portineria · completamente ristrutturato 2019 · aria condizionata · MM5 Ca' Granda 300m · prezzo da €315k (rif. T56)"
+      "note": "SCARTATO storico — URL non immobiliare.it (portale obsoleto, dashboard mostra solo immobiliare.it)"
     },
     {
       "id": "tecnocasa-61195106",
@@ -118,10 +118,10 @@
       "balcone": true,
       "bagni": 1,
       "portineria": true,
-      "punteggio": 6.3,
+      "punteggio": null,
       "data_vista": "2026-04-28",
       "notificato": true,
-      "note": "Ultimo piano con ascensore · 2 balconi · portineria · giardino condominiale · doppia esposizione · aria condizionata · MM5 Ca' Granda/Pratocentenaro 300m"
+      "note": "SCARTATO storico — URL non immobiliare.it (portale obsoleto, dashboard mostra solo immobiliare.it)"
     },
     {
       "id": "immobiliare-112076963",
@@ -365,10 +365,10 @@
       "bagni": 1,
       "posto_auto": true,
       "portineria": false,
-      "punteggio": 6.5,
+      "punteggio": null,
       "data_vista": "2026-04-30",
       "notificato": true,
-      "note": "Alto piano · ascensore · terrazza 37mq · box auto incluso nel prezzo · aria condizionata · 1965 · Niguarda"
+      "note": "SCARTATO storico — URL non immobiliare.it (portale obsoleto, dashboard mostra solo immobiliare.it)"
     },
     {
       "id": "tecnocasa-60839979",
@@ -829,10 +829,10 @@
       "bagni": 2,
       "portineria": true,
       "posto_auto": false,
-      "punteggio": 6.0,
+      "punteggio": null,
       "data_vista": "2026-05-04",
       "notificato": true,
-      "note": "1° piano con ascensore · portineria h24 · giardino condominiale · 2 balconi + terrazza coperta · 2 bagni · completamente ristrutturato · AC split · serramenti PVC doppio vetro · tapparelle motorizzate · riscaldamento centralizzato con valvole termostatiche · zona Niguarda vicino Parco Nord e Ospedale Niguarda · tram 4 e bus 42/51/52"
+      "note": "SCARTATO storico — URL non immobiliare.it (portale obsoleto, dashboard mostra solo immobiliare.it)"
     },
     {
       "id": "immobiliare-119315913",
@@ -973,10 +973,10 @@
       "piano": 7,
       "ascensore": true,
       "portineria": true,
-      "punteggio": 6.8,
+      "punteggio": null,
       "data_vista": "2026-05-05",
       "notificato": true,
-      "note": "7° piano · doppio ascensore · portineria · viste panoramiche montagne · box garage €25k opzionale · MM3 gialla Affori/Affori FN vicino · edificio anni '60"
+      "note": "SCARTATO storico — URL non immobiliare.it (portale obsoleto, dashboard mostra solo immobiliare.it)"
     },
     {
       "id": "astesani-affori-86mq",
