@@ -1,2 +1,9 @@
 .DS_Store
 annunci_visti.backup-*.json
+
+# Local-only secrets — never commit
+.env
+.env.*
+
+# Local state from Claude Code harness (scheduler locks, etc.)
+.claude/
