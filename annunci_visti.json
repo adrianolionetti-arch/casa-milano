@@ -2,19 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-14T23:48:57.410616",
+    "ultima_sessione": "2026-05-15T01:17:12.247973",
     "ultimo_aggiornamento": "2026-05-15",
-    "totale_annunci": 127,
-    "cleanup": {
-      "date": "2026-05-14",
-      "rationale": "Removed entries with generic portal URLs (no listing ID) from gohome fallback discoveries",
-      "removed_count": 3,
-      "removed_ids": [
-        "gohome-col-di-lana-navigli",
-        "gohome-imperia-21-romolo",
-        "gohome-brunacci-7-navigli"
-      ]
-    }
+    "totale_annunci": 128
   },
   "annunci": [
     {
@@ -1954,6 +1944,19 @@
       "notificato": false,
       "note": "",
       "foto_url": "https://pic.im-cdn.it/image/1911908562/xxl-c.jpg"
+    },
+    {
+      "id": "immobiliare-112886759",
+      "url": "https://www.immobiliare.it/annunci/112886759",
+      "titolo": "Appartamenti di nuova costruzione a Milano",
+      "prezzo": 143000,
+      "mq": 42,
+      "zona": "Gratosoglio",
+      "punteggio": 0,
+      "foto_url": "https://pic.im-cdn.it/image/1817426831/xxl-c.jpg",
+      "data_vista": "2026-05-15",
+      "notificato": true,
+      "note": "ESCLUSO — Senza ascensore"
     }
   ]
 }
