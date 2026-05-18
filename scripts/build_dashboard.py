@@ -17,8 +17,10 @@ import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
-DB_PATH = Path(__file__).resolve().parent.parent / "annunci_visti.json"
-OUT_PATH = Path(__file__).resolve().parent.parent / "index.html"
+ROOT = Path(__file__).resolve().parent.parent
+DB_PATH = ROOT / "annunci_visti.json"
+PREFERITI_PATH = ROOT / "preferiti.json"
+OUT_PATH = ROOT / "index.html"
 
 URL_REGEX = re.compile(r"^https://www\.immobiliare\.it/annunci/\d+/?$")
 DAYS_WINDOW = 30
@@ -45,8 +47,10 @@ def fmt_eur(v) -> str:
     return "€" + format(int(v), ",d").replace(",", ".")
 
 
-def card(a: dict) -> str:
-    pts = a.get("punteggio") or 0
+def card(a: dict, *, is_preferito: bool = False, in_preferiti_set: set | None = None) -> str:
+    """Render una card. is_preferito=True per la sezione Preferiti (bordo rosa + cuore pieno).
+    in_preferiti_set: se passato, marca le card normali che esistono anche tra i preferiti."""
+    pts = a.get("punteggio")
     foto = a.get("foto_url") or ""
     img_html = (
         f'<img src="{foto}" loading="lazy" style="width:100%;max-width:100%;border-radius:6px;'
@@ -54,27 +58,50 @@ def card(a: dict) -> str:
         if foto and foto.startswith("http")
         else ""
     )
+
+    # Heart indicator
+    if is_preferito:
+        heart = '<span title="Preferito" style="font-size:18px">❤️</span>'
+    elif in_preferiti_set and a.get("id") in in_preferiti_set:
+        heart = '<span title="Anche in preferiti" style="font-size:18px">❤️</span>'
+    else:
+        heart = ""
+
+    border = "#ec4899" if is_preferito else "#3b82f6"
+    bg = "#fdf2f8" if is_preferito else "#eff6ff"
+
+    score_html = f'<strong>{stars(pts)} {pts}/10</strong>' if pts is not None else '<strong style="color:#64748b">— (preferito manuale)</strong>'
+
     notif_html = (
         '<span style="background:#3b82f6;color:#fff;padding:2px 8px;border-radius:4px;'
         'font-size:11px;margin-left:8px">📩 NOTIFICATO</span>'
-        if a.get("notificato")
+        if a.get("notificato") and not is_preferito
         else ""
     )
     mq_part = f"{a.get('mq')}mq" if a.get("mq") else "—"
+    note_pers = a.get("note_personali") or ""
+    note_html = (
+        f'<div style="font-size:12px;color:#9f1239;font-style:italic;margin-bottom:6px">📝 {note_pers}</div>'
+        if note_pers
+        else ""
+    )
     return (
-        '<div style="border:1px solid #3b82f6;background:#eff6ff;border-radius:8px;padding:16px;'
+        f'<div style="border:1px solid {border};background:{bg};border-radius:8px;padding:16px;'
         'margin-bottom:12px">'
         f"{img_html}"
         '<div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px">'
-        f'<strong>{stars(pts)} {pts}/10</strong>{notif_html}</div>'
+        f'{score_html}{notif_html}'
+        f'<span style="margin-left:auto">{heart}</span></div>'
         '<div style="font-size:14px;color:#1e293b;margin-bottom:4px"><strong>'
         f'{a.get("titolo", "(senza titolo)") or ""}</strong></div>'
         '<div style="font-size:13px;color:#475569;margin-bottom:4px">💰 '
-        f'{fmt_eur(a.get("prezzo"))} · {mq_part} · {a.get("zona") or "—"} · {a.get("data_vista") or ""}'
+        f'{fmt_eur(a.get("prezzo"))} · {mq_part} · {a.get("zona") or "—"} · '
+        f'{a.get("data_vista") or a.get("data_aggiunto") or ""}'
         f' · Piano {a.get("piano") or "—"}</div>'
         '<div style="font-size:12px;color:#64748b;margin-bottom:8px">'
         f'{a.get("agenzia") or ""}</div>'
-        f'<a href="{a.get("url") or ""}" style="font-size:12px;color:#3b82f6;text-decoration:none" '
+        f'{note_html}'
+        f'<a href="{a.get("url") or ""}" style="font-size:12px;color:{border};text-decoration:none" '
         'target="_blank">Vedi annuncio →</a></div>'
     )
 
@@ -83,6 +110,13 @@ def build(dry_run: bool = False) -> int:
     with open(DB_PATH) as f:
         db = json.load(f)
     ann = db.get("annunci", [])
+
+    # Preferiti (file separato, opzionale)
+    preferiti = []
+    if PREFERITI_PATH.exists():
+        with open(PREFERITI_PATH) as f:
+            preferiti = json.load(f).get("annunci", [])
+    preferiti_ids = {p.get("id") for p in preferiti if p.get("id")}
 
     today = date.today()
     cutoff = today - timedelta(days=DAYS_WINDOW)
@@ -109,7 +143,17 @@ def build(dry_run: bool = False) -> int:
     score_max = max((a.get("punteggio") or 0) for a in dash) if dash else 0
     today_str = today.strftime("%d/%m/%Y")
 
-    cards = "\n".join(card(a) for a in dash)
+    # Preferiti section (ordina per data_aggiunto desc)
+    preferiti_sorted = sorted(preferiti, key=lambda a: a.get("data_aggiunto", ""), reverse=True)
+    preferiti_cards = "\n".join(card(a, is_preferito=True) for a in preferiti_sorted)
+    preferiti_section = ""
+    if preferiti_sorted:
+        preferiti_section = (
+            f'<div class="section-title" style="color:#ec4899">❤️ Preferiti — {len(preferiti_sorted)} salvati</div>\n'
+            f'{preferiti_cards}'
+        )
+
+    cards = "\n".join(card(a, in_preferiti_set=preferiti_ids) for a in dash)
     empty = (
         '<div class="empty">Nessun annuncio attivo. La prossima sessione Apify popolerà la lista.</div>'
     )
@@ -144,11 +188,13 @@ def build(dry_run: bool = False) -> int:
   </div>
   <div class="stats">
     <div class="stat"><div class="stat-val">{len(dash)}</div><div class="stat-lbl">In dashboard</div></div>
+    <div class="stat"><div class="stat-val">{len(preferiti_sorted)}</div><div class="stat-lbl">❤️ Preferiti</div></div>
     <div class="stat"><div class="stat-val">{total_30d}</div><div class="stat-lbl">Processati (30gg)</div></div>
     <div class="stat"><div class="stat-val">{nuovi_oggi}</div><div class="stat-lbl">Nuovi oggi</div></div>
     <div class="stat"><div class="stat-val">{score_max}</div><div class="stat-lbl">Score max</div></div>
   </div>
   <div class="main">
+    {preferiti_section}
     <div class="section-title">Annunci attivi — score ≥ {MIN_SCORE}, ultimi {DAYS_WINDOW} giorni</div>
     {content}
   </div>
@@ -156,12 +202,12 @@ def build(dry_run: bool = False) -> int:
 </html>"""
 
     if dry_run:
-        print(f"DRY RUN: dashboard avrebbe {len(dash)} card")
+        print(f"DRY RUN: dashboard avrebbe {len(dash)} card + {len(preferiti_sorted)} preferiti")
         return 0
 
     with open(OUT_PATH, "w", encoding="utf-8") as f:
         f.write(html)
-    print(f"index.html scritto: {len(dash)} card, {len(html)} bytes")
+    print(f"index.html scritto: {len(dash)} card + {len(preferiti_sorted)} preferiti, {len(html)} bytes")
     return 0
 
 
