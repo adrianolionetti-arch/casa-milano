@@ -6,37 +6,135 @@
   <title>Casa Milano — Dashboard</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f1f5f9; color: #1e293b; }
-    .header { background: linear-gradient(135deg,#1e293b,#334155); color: #fff; padding: 24px 20px; }
-    .header h1 { font-size: 22px; margin-bottom: 4px; }
-    .header p { font-size: 13px; color: #94a3b8; }
-    .stats { display: flex; gap: 12px; padding: 16px 20px; flex-wrap: wrap; max-width:800px; margin:0 auto; }
-    .stat { background: #fff; border-radius: 8px; padding: 12px 18px; flex: 1; min-width: 100px; box-shadow: 0 1px 3px rgba(0,0,0,.07); }
-    .stat-val { font-size: 28px; font-weight: 700; color: #1e293b; }
-    .stat-lbl { font-size: 12px; color: #64748b; margin-top: 2px; }
-    .main { padding: 0 20px 40px; max-width: 800px; margin: 0 auto; }
-    .section-title { font-size: 13px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: .5px; margin: 20px 0 10px; }
-    .empty { background:#fff; padding:24px; border-radius:8px; text-align:center; color:#64748b; }
-    @media(max-width:600px) { .stats { gap: 8px; } .stat-val { font-size: 22px; } }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f8fafc; color: #0f172a; line-height: 1.5; }
+
+    .header { background: linear-gradient(135deg,#1e293b,#475569); color: #fff; padding: 28px 20px; }
+    .header h1 { font-size: 24px; margin-bottom: 6px; font-weight: 700; }
+    .header p { font-size: 13px; color: #cbd5e1; }
+
+    .stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; padding: 16px 20px 8px; max-width: 900px; margin: 0 auto; }
+    .stat { background: #fff; border-radius: 10px; padding: 14px 12px; box-shadow: 0 1px 3px rgba(15,23,42,.08); text-align: center; }
+    .stat-val { font-size: 26px; font-weight: 700; color: #0f172a; line-height: 1; }
+    .stat-lbl { font-size: 11px; color: #64748b; margin-top: 4px; text-transform: uppercase; letter-spacing: .3px; }
+
+    .tip { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; margin: 12px 20px; border-radius: 6px; font-size: 13px; color: #78350f; max-width: 900px; margin-left: auto; margin-right: auto; }
+    .tip strong { color: #92400e; }
+
+    .main { padding: 0 20px 40px; max-width: 900px; margin: 0 auto; }
+    .section-title { font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: .8px; margin: 24px 0 12px; }
+    .empty { background:#fff; padding: 32px 24px; border-radius: 10px; text-align: center; color: #64748b; }
+
+    /* CARD */
+    .card, .card-fav { background:#fff; border-radius: 12px; padding: 0; margin-bottom: 16px; box-shadow: 0 1px 4px rgba(15,23,42,.07); overflow: hidden; transition: box-shadow .2s; }
+    .card:hover, .card-fav:hover { box-shadow: 0 4px 12px rgba(15,23,42,.12); }
+    .card-fav { border: 2px solid #ec4899; background: linear-gradient(180deg,#fdf2f8 0%,#fff 60px); }
+
+    .card-photo { width: 100%; height: 220px; object-fit: cover; display: block; }
+    .card-photo-placeholder { width: 100%; height: 160px; display: flex; align-items: center; justify-content: center; background: #f1f5f9; font-size: 56px; }
+
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 18px 8px; flex-wrap: wrap; }
+    .price { font-size: 28px; font-weight: 800; color: #0f172a; line-height: 1; flex-shrink: 0; }
+    .badges { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; flex: 1; }
+
+    .score-badge { background: #1e40af; color:#fff; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+    .score-badge.manual { background: #ec4899; }
+    .notif-badge { background: #16a34a; color:#fff; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+
+    .heart-btn, .heart-badge { background: none; border: none; font-size: 24px; cursor: pointer; padding: 4px; border-radius: 50%; transition: transform .15s; line-height: 1; }
+    .heart-btn:hover { transform: scale(1.15); background: #fce7f3; }
+    .heart-badge.filled { cursor: default; }
+
+    .title { padding: 0 18px; font-size: 15px; font-weight: 600; color: #1e293b; margin-bottom: 8px; line-height: 1.35; }
+    .location { padding: 0 18px 6px; font-size: 13px; color: #475569; }
+    .location strong { color: #1e293b; }
+    .details { padding: 0 18px 10px; font-size: 13px; color: #475569; }
+    .agency { padding: 0 18px 10px; font-size: 12px; color: #64748b; }
+    .note-pers { padding: 8px 18px; font-size: 13px; color: #831843; background: #fdf2f8; border-top: 1px solid #fbcfe8; font-style: italic; }
+
+    .cta { display: block; margin: 12px 18px 18px; padding: 10px 16px; background: #0071e3; color:#fff; border-radius: 8px; text-decoration: none; text-align: center; font-size: 14px; font-weight: 600; transition: background .15s; }
+    .cta:hover { background: #005bb5; }
+    .card-fav .cta { background: #ec4899; }
+    .card-fav .cta:hover { background: #be185d; }
+
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #1e293b; color:#fff; padding: 14px 20px; border-radius: 10px; box-shadow: 0 4px 16px rgba(15,23,42,.25); font-size: 14px; max-width: 90vw; z-index: 1000; display:none; }
+    .toast.show { display: block; animation: slideUp .3s ease-out; }
+    @keyframes slideUp { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+
+    @media(max-width:600px) {
+      .stats { grid-template-columns: repeat(2, 1fr); }
+      .price { font-size: 24px; }
+    }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>🏠 Casa Milano — Dashboard</h1>
-    <p>Aggiornato: 18/05/2026 · Ultimi 30 giorni · Solo annunci attivi su Immobiliare.it</p>
+    <p>Aggiornato: 18/05/2026 · Annunci attivi su Immobiliare.it · score ≥ 6.0 · ultimi 30 giorni</p>
   </div>
   <div class="stats">
     <div class="stat"><div class="stat-val">2</div><div class="stat-lbl">In dashboard</div></div>
     <div class="stat"><div class="stat-val">0</div><div class="stat-lbl">❤️ Preferiti</div></div>
-    <div class="stat"><div class="stat-val">5</div><div class="stat-lbl">Processati (30gg)</div></div>
+    <div class="stat"><div class="stat-val">5</div><div class="stat-lbl">Processati 30gg</div></div>
     <div class="stat"><div class="stat-val">2</div><div class="stat-lbl">Nuovi oggi</div></div>
     <div class="stat"><div class="stat-val">6.5</div><div class="stat-lbl">Score max</div></div>
   </div>
+  <div class="tip">
+    💡 <strong>Per salvare un annuncio nei preferiti</strong>: clicca il 🤍 nell'angolo della card. Il comando viene copiato negli appunti — incollalo nella chat con Claude per salvarlo definitivamente.
+  </div>
   <div class="main">
     
-    <div class="section-title">Annunci attivi — score ≥ 6.0, ultimi 30 giorni</div>
-    <div style="border:1px solid #3b82f6;background:#eff6ff;border-radius:8px;padding:16px;margin-bottom:12px"><img src="https://pic.im-cdn.it/image/1780230217/xxl-c.jpg" loading="lazy" style="width:100%;max-width:100%;border-radius:6px;margin-bottom:10px;object-fit:cover;max-height:280px"><div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px"><strong>★★★★★★☆☆☆☆ 6.5/10</strong><span style="background:#3b82f6;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;margin-left:8px">📩 NOTIFICATO</span><span style="margin-left:auto"></span></div><div style="font-size:14px;color:#1e293b;margin-bottom:4px"><strong>Bilocale via Fiuggi 12/7, Istria, Milano</strong></div><div style="font-size:13px;color:#475569;margin-bottom:4px">💰 €285.000 · 81mq · Maggiolina/Istria · 2026-05-18 · Piano —</div><div style="font-size:12px;color:#64748b;margin-bottom:8px"></div><a href="https://www.immobiliare.it/annunci/123095155" style="font-size:12px;color:#3b82f6;text-decoration:none" target="_blank">Vedi annuncio →</a></div>
-<div style="border:1px solid #3b82f6;background:#eff6ff;border-radius:8px;padding:16px;margin-bottom:12px"><img src="https://pic.im-cdn.it/image/1925599198/xxl-c.jpg" loading="lazy" style="width:100%;max-width:100%;border-radius:6px;margin-bottom:10px;object-fit:cover;max-height:280px"><div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:6px"><strong>★★★★★★☆☆☆☆ 6.5/10</strong><span style="background:#3b82f6;color:#fff;padding:2px 8px;border-radius:4px;font-size:11px;margin-left:8px">📩 NOTIFICATO</span><span style="margin-left:auto"></span></div><div style="font-size:14px;color:#1e293b;margin-bottom:4px"><strong>Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano</strong></div><div style="font-size:13px;color:#475569;margin-bottom:4px">💰 €369.000 · 90mq · Quartiere Adriano · 2026-05-18 · Piano —</div><div style="font-size:12px;color:#64748b;margin-bottom:8px"></div><a href="https://www.immobiliare.it/annunci/129129934" style="font-size:12px;color:#3b82f6;text-decoration:none" target="_blank">Vedi annuncio →</a></div>
+    <div class="section-title">Annunci attivi</div>
+    <div class="card">
+  <img src="https://pic.im-cdn.it/image/1780230217/xxl-c.jpg" loading="lazy" class="card-photo" alt="Bilocale via Fiuggi 12/7, Istria, Milano">
+  <div class="card-top">
+    <div class="price">€285.000</div>
+    <div class="badges">
+      <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
+    </div>
+    <button class="heart-btn" onclick="favorite('https://www.immobiliare.it/annunci/123095155', 'Bilocale via Fiuggi 12/7, Istria, Milano')" title="Aggiungi ai preferiti">🤍</button>
   </div>
+  <div class="title">Bilocale via Fiuggi 12/7, Istria, Milano</div>
+  <div class="location">📍 <strong>Maggiolina/Istria</strong>  ·  📅 2026-05-18</div>
+  <div class="details">📏 81mq</div>
+  
+  
+  <a class="cta" href="https://www.immobiliare.it/annunci/123095155" target="_blank">Vedi su Immobiliare.it →</a>
+</div>
+<div class="card">
+  <img src="https://pic.im-cdn.it/image/1925599198/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano">
+  <div class="card-top">
+    <div class="price">€369.000</div>
+    <div class="badges">
+      <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
+    </div>
+    <button class="heart-btn" onclick="favorite('https://www.immobiliare.it/annunci/129129934', 'Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano')" title="Aggiungi ai preferiti">🤍</button>
+  </div>
+  <div class="title">Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano</div>
+  <div class="location">📍 <strong>Quartiere Adriano</strong>  ·  📅 2026-05-18</div>
+  <div class="details">📏 90mq</div>
+  
+  
+  <a class="cta" href="https://www.immobiliare.it/annunci/129129934" target="_blank">Vedi su Immobiliare.it →</a>
+</div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+  function favorite(url, titolo) {
+    const cmd = 'preferito: ' + url + '\nnote: (aggiungi una nota qui se vuoi)';
+    navigator.clipboard.writeText(cmd).then(() => {
+      showToast('✓ Comando copiato! Incollalo nella chat con Claude per salvare "' + titolo + '" nei preferiti.');
+    }).catch(() => {
+      prompt('Copia questo testo e incollalo nella chat con Claude:', cmd);
+    });
+  }
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4500);
+  }
+  </script>
 </body>
 </html>
