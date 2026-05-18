@@ -8,9 +8,10 @@
 - Immobili residenziali (appartamenti, trilocali, quadrilocali, loft)
 
 ## Budget
-- **Massimo assoluto**: € 360.000
+- **Massimo assoluto**: € 450.000
 - **Fascia ideale**: € 230.000 – 310.000
-- **Accettabile**: € 310.000 – 360.000
+- **Accettabile**: € 310.000 – 380.000
+- **Tollerato (solo zone top o caratteristiche eccellenti)**: € 380.000 – 450.000
 
 ## Caratteristiche obbligatorie
 - Superficie: minimo 80 mq, massimo 120 mq
@@ -61,7 +62,7 @@ Sesto San Giovanni solo se max 5 min a piedi da MM.
 - Superficie < 80 mq o > 120 mq
 
 ## Note di contesto di mercato
-- A €360k con min 80mq, il prezzo/mq ideale è ≤ €4.500/mq
+- A €450k con min 80mq, il prezzo/mq ideale è ≤ €5.600/mq (era €4.500/mq a €360k)
 - Zona 9 (Pratocentenaro, Turro, Greco): €2.500–3.500/mq → ottimo rapporto qualità/prezzo
 - Lambrate: €3.500–4.500/mq → budget fattibile
 - Isola/NoLo: €4.500–5.500/mq → al limite, possibile con 80mq

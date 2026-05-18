@@ -17,7 +17,7 @@ Cron 06:00 UTC → GitHub Actions runner → Claude Code agent (questa istanza)
 
 - **Apify actor id**: `sPIR3lEdL9H69xrmi` (alias `azzouzana~immobiliare-it-listing-page-scraper-by-search-url`)
 - **Pricing Apify**: $0.001/listing (pay-per-event dal 2026-05-04) → ~$2/mese a 60 listing/giorno
-- **Search URL**: `https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=360000&superficieMinima=80&ordinamento=data_pubblicazione_decrescente`
+- **Search URL**: `https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=450000&superficieMinima=80&ordinamento=data_pubblicazione_decrescente`
 
 **Niente fallback**. Se Apify fallisce → email `[INFRA]` esplicita e ABORT. Mai usare WebSearch né WebFetch sui portali (immobiliare.it diretto, gohome.it, tecnocasa.it, idealista.it, casa.it, wikicasa.it, bakeca.it): sono dietro Cloudflare 403 e i candidati senza body verificabile producono notifiche sbagliate.
 
@@ -124,7 +124,7 @@ Per ogni item dell'array Apify, estrai:
    - `piano in ("T","R","S")` senza "giardino privato" in descrizione → ESCLUDI
    - "asta giudiziaria" / "asta" nel titolo o descrizione → ESCLUDI
    - `mq < 80` o `mq > 120` → ESCLUDI
-   - `prezzo > 360000` → ESCLUDI
+   - `prezzo > 450000` → ESCLUDI
    - zona in lista esclusione (Quarto Oggiaro, Lorenteggio, Corvetto, Gratosoglio, Stadera, Baggio) → ESCLUDI
    - fuori comune Milano (salvo Sesto S. Giovanni con MM ≤ 5 min) → ESCLUDI
 
@@ -133,7 +133,7 @@ Per gli esclusi: aggiungi a `annunci_visti.json` con `punteggio: 0`, `note: "ESC
 ### Step 5 — Scoring (per i superstiti)
 
 Scala 0–10 come da `criteri.md`:
-- Prezzo: ≤310k +3 | 310–360k +1
+- Prezzo: ≤310k +3 | 310–380k +1.5 | 380–450k +1
 - Zona: 1=top +3 | 2=ottima +2 | 3=buona +1 | 4=accettabile +0.5
 - ≥90mq +1 | balcone/terrazzo +0.5 | 2+ bagni +0.5 | piano ≥3 +0.5 | box/posto auto +0.5 | classe energetica A/B +0.5
 
