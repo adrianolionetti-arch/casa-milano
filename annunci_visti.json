@@ -4,7 +4,8 @@
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
     "ultima_sessione": "2026-05-15T12:53:28.602529",
     "ultimo_aggiornamento": "2026-05-15",
-    "totale_annunci": 131
+    "totale_annunci": 131,
+    "last_updated": "2026-05-18"
   },
   "annunci": [
     {
@@ -2017,6 +2018,71 @@
       "data_vista": "2026-05-15",
       "notificato": true,
       "note": "ESCLUSO — no ascensore"
+    },
+    {
+      "id": "immobiliare-114922193",
+      "url": "https://www.immobiliare.it/annunci/114922193",
+      "titolo": "Appartamenti e Attici di nuova costruzione a Milano",
+      "prezzo": 276000,
+      "zona": "Bisceglie",
+      "mq": 55,
+      "punteggio": 0,
+      "foto_url": "https://pic.im-cdn.it/image/1881975591/xxl-c.jpg",
+      "data_vista": "2026-05-18",
+      "notificato": true,
+      "note": "ESCLUSO — superficie 55mq (<80)"
+    },
+    {
+      "id": "immobiliare-125334501",
+      "url": "https://www.immobiliare.it/annunci/125334501",
+      "titolo": "Trilocale viale Zara 114, Maggiolina, Milano",
+      "prezzo": 379000,
+      "zona": "Maggiolina",
+      "mq": 80,
+      "punteggio": 5.8,
+      "foto_url": "https://pic.im-cdn.it/image/1834756327/xxl-c.jpg",
+      "data_vista": "2026-05-18",
+      "notificato": false,
+      "note": "Score 5.8 — sotto soglia 6"
+    },
+    {
+      "id": "immobiliare-123095155",
+      "url": "https://www.immobiliare.it/annunci/123095155",
+      "titolo": "Bilocale via Fiuggi 12/7, Istria, Milano",
+      "prezzo": 285000,
+      "zona": "Maggiolina/Istria",
+      "mq": 81,
+      "punteggio": 6.5,
+      "foto_url": "https://pic.im-cdn.it/image/1780230217/xxl-c.jpg",
+      "data_vista": "2026-05-18",
+      "notificato": true,
+      "note": ""
+    },
+    {
+      "id": "immobiliare-127368567",
+      "url": "https://www.immobiliare.it/annunci/127368567",
+      "titolo": "Trilocale via Ruggero di Lauria 2, Sempione, Milano",
+      "prezzo": 450000,
+      "zona": "Sempione",
+      "mq": 95,
+      "punteggio": 0,
+      "foto_url": "https://pic.im-cdn.it/image/1882838675/xxl-c.jpg",
+      "data_vista": "2026-05-18",
+      "notificato": true,
+      "note": "ESCLUSO — piano rialzato (R) senza giardino privato"
+    },
+    {
+      "id": "immobiliare-119798760",
+      "url": "https://www.immobiliare.it/annunci/119798760",
+      "titolo": "Appartamenti e Attici di nuova costruzione a Milano",
+      "prezzo": 295000,
+      "zona": "Dergano",
+      "mq": 63,
+      "punteggio": 0,
+      "foto_url": "https://pic.im-cdn.it/image/1896252208/xxl-c.jpg",
+      "data_vista": "2026-05-18",
+      "notificato": true,
+      "note": "ESCLUSO — superficie 63mq (<80)"
     }
   ]
 }
