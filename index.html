@@ -17,8 +17,11 @@
     .stat-val { font-size: 26px; font-weight: 700; color: #0f172a; line-height: 1; }
     .stat-lbl { font-size: 11px; color: #64748b; margin-top: 4px; text-transform: uppercase; letter-spacing: .3px; }
 
-    .tip { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; margin: 12px 20px; border-radius: 6px; font-size: 13px; color: #78350f; max-width: 900px; margin-left: auto; margin-right: auto; }
-    .tip strong { color: #92400e; }
+    .toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 20px; max-width: 900px; margin: 0 auto; flex-wrap: wrap; }
+    .toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: #334155; cursor: pointer; user-select: none; }
+    .toggle input { width: 18px; height: 18px; cursor: pointer; accent-color: #ec4899; }
+    .clear-btn { background: #fff; border: 1px solid #fbcfe8; color: #be185d; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: background .15s; }
+    .clear-btn:hover { background: #fdf2f8; }
 
     .main { padding: 0 20px 40px; max-width: 900px; margin: 0 auto; }
     .section-title { font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: .8px; margin: 24px 0 12px; }
@@ -40,8 +43,9 @@
     .score-badge.manual { background: #ec4899; }
     .notif-badge { background: #16a34a; color:#fff; padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; }
 
-    .heart-btn, .heart-badge { background: none; border: none; font-size: 24px; cursor: pointer; padding: 4px; border-radius: 50%; transition: transform .15s; line-height: 1; }
-    .heart-btn:hover { transform: scale(1.15); background: #fce7f3; }
+    .heart-btn, .heart-badge { background: none; border: none; font-size: 26px; cursor: pointer; padding: 4px; border-radius: 50%; transition: transform .15s; line-height: 1; }
+    .heart-btn:hover { transform: scale(1.2); background: #fce7f3; }
+    .heart-btn.filled { transform: scale(1.1); }
     .heart-badge.filled { cursor: default; }
 
     .title { padding: 0 18px; font-size: 15px; font-weight: 600; color: #1e293b; margin-bottom: 8px; line-height: 1.35; }
@@ -78,8 +82,12 @@
     <div class="stat"><div class="stat-val">2</div><div class="stat-lbl">Nuovi oggi</div></div>
     <div class="stat"><div class="stat-val">6.5</div><div class="stat-lbl">Score max</div></div>
   </div>
-  <div class="tip">
-    💡 <strong>Per salvare un annuncio nei preferiti</strong>: clicca il 🤍 nell'angolo della card. Il comando viene copiato negli appunti — incollalo nella chat con Claude per salvarlo definitivamente.
+  <div class="toolbar">
+    <label class="toggle">
+      <input type="checkbox" id="filter-fav" onchange="applyFilter()">
+      <span>Mostra solo ❤️ preferiti (<span id="fav-count">0</span>)</span>
+    </label>
+    <button class="clear-btn" onclick="clearFavs()" id="clear-btn" style="display:none">Svuota preferiti</button>
   </div>
   <div class="main">
     
@@ -91,7 +99,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" onclick="favorite('https://www.immobiliare.it/annunci/123095155', 'Bilocale via Fiuggi 12/7, Istria, Milano')" title="Aggiungi ai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-123095155" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
   </div>
   <div class="title">Bilocale via Fiuggi 12/7, Istria, Milano</div>
   <div class="location">📍 <strong>Maggiolina/Istria</strong>  ·  📅 2026-05-18</div>
@@ -107,7 +115,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" onclick="favorite('https://www.immobiliare.it/annunci/129129934', 'Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano')" title="Aggiungi ai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-129129934" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
   </div>
   <div class="title">Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano</div>
   <div class="location">📍 <strong>Quartiere Adriano</strong>  ·  📅 2026-05-18</div>
@@ -121,20 +129,78 @@
   <div id="toast" class="toast"></div>
 
   <script>
-  function favorite(url, titolo) {
-    const cmd = 'preferito: ' + url + '\nnote: (aggiungi una nota qui se vuoi)';
-    navigator.clipboard.writeText(cmd).then(() => {
-      showToast('✓ Comando copiato! Incollalo nella chat con Claude per salvare "' + titolo + '" nei preferiti.');
-    }).catch(() => {
-      prompt('Copia questo testo e incollalo nella chat con Claude:', cmd);
+  const FAVS_KEY = 'casa-milano-favs';
+
+  function getFavs() {
+    try { return JSON.parse(localStorage.getItem(FAVS_KEY) || '[]'); }
+    catch(e) { return []; }
+  }
+  function saveFavs(arr) {
+    localStorage.setItem(FAVS_KEY, JSON.stringify(arr));
+    updateFavCount();
+  }
+  function updateFavCount() {
+    const n = getFavs().length;
+    document.getElementById('fav-count').textContent = n;
+    document.getElementById('clear-btn').style.display = n > 0 ? '' : 'none';
+  }
+  function toggleFav(btn) {
+    const id = btn.dataset.id;
+    if (!id) return;
+    let favs = getFavs();
+    const idx = favs.indexOf(id);
+    if (idx === -1) {
+      favs.push(id);
+      btn.textContent = '❤️';
+      btn.classList.add('filled');
+      showToast('❤️ Aggiunto ai preferiti');
+    } else {
+      favs.splice(idx, 1);
+      btn.textContent = '🤍';
+      btn.classList.remove('filled');
+      showToast('Rimosso dai preferiti');
+    }
+    saveFavs(favs);
+    applyFilter();
+  }
+  function applyFilter() {
+    const onlyFav = document.getElementById('filter-fav').checked;
+    const favs = getFavs();
+    document.querySelectorAll('.card, .card-fav').forEach(c => {
+      const btn = c.querySelector('.heart-btn');
+      const isFav = btn && favs.includes(btn.dataset.id);
+      const isPersistFav = c.classList.contains('card-fav');
+      c.style.display = (!onlyFav || isFav || isPersistFav) ? '' : 'none';
     });
+  }
+  function clearFavs() {
+    if (!confirm('Sicuro di voler svuotare i preferiti (solo questo browser)?')) return;
+    saveFavs([]);
+    document.querySelectorAll('.heart-btn.filled').forEach(b => {
+      b.textContent = '🤍';
+      b.classList.remove('filled');
+    });
+    applyFilter();
+    showToast('Preferiti svuotati');
   }
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 4500);
+    setTimeout(() => t.classList.remove('show'), 2500);
   }
+
+  // Init: marca i preferiti già salvati al load
+  document.addEventListener('DOMContentLoaded', () => {
+    const favs = getFavs();
+    document.querySelectorAll('.heart-btn').forEach(btn => {
+      if (favs.includes(btn.dataset.id)) {
+        btn.textContent = '❤️';
+        btn.classList.add('filled');
+      }
+    });
+    updateFavCount();
+  });
   </script>
 </body>
 </html>
