@@ -12,5 +12,71 @@
       "removed_count": 138
     }
   },
-  "annunci": []
+  "annunci": [
+    {
+      "id": "immobiliare-114922193",
+      "url": "https://www.immobiliare.it/annunci/114922193",
+      "titolo": "Appartamenti e Attici di nuova costruzione a Milano",
+      "prezzo": 276000,
+      "zona": "Bisceglie",
+      "mq": 55,
+      "punteggio": 0,
+      "foto_url": "https://pic.im-cdn.it/image/1881975591/xxl-c.jpg",
+      "data_vista": "2026-05-18",
+      "notificato": true,
+      "note": "ESCLUSO — superficie 55mq (<80)"
+    },
+    {
+      "id": "immobiliare-125334501",
+      "url": "https://www.immobiliare.it/annunci/125334501",
+      "titolo": "Trilocale viale Zara 114, Maggiolina, Milano",
+      "prezzo": 379000,
+      "zona": "Maggiolina",
+      "mq": 80,
+      "punteggio": 5.8,
+      "foto_url": "https://pic.im-cdn.it/image/1834756327/xxl-c.jpg",
+      "data_vista": "2026-05-18",
+      "notificato": false,
+      "note": "Score 5.8 — sotto soglia 6"
+    },
+    {
+      "id": "immobiliare-123095155",
+      "url": "https://www.immobiliare.it/annunci/123095155",
+      "titolo": "Bilocale via Fiuggi 12/7, Istria, Milano",
+      "prezzo": 285000,
+      "zona": "Maggiolina/Istria",
+      "mq": 81,
+      "punteggio": 6.5,
+      "foto_url": "https://pic.im-cdn.it/image/1780230217/xxl-c.jpg",
+      "data_vista": "2026-05-18",
+      "notificato": true,
+      "note": ""
+    },
+    {
+      "id": "immobiliare-128383584",
+      "url": "https://www.immobiliare.it/annunci/128383584",
+      "titolo": "Trilocale via Antonio Pasinetti 12, Ripamonti - Fondazione Prada, Milano",
+      "prezzo": 445000,
+      "mq": 100,
+      "zona": "Ripamonti - Fondazione Prada",
+      "punteggio": 5.0,
+      "foto_url": "https://pic.im-cdn.it/image/1907473672/xxl-c.jpg",
+      "data_vista": "2026-05-18",
+      "notificato": false,
+      "note": "Score 5.0 — sotto soglia 6"
+    },
+    {
+      "id": "immobiliare-129129934",
+      "url": "https://www.immobiliare.it/annunci/129129934",
+      "titolo": "Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano",
+      "prezzo": 369000,
+      "mq": 90,
+      "zona": "Quartiere Adriano",
+      "punteggio": 6.5,
+      "foto_url": "https://pic.im-cdn.it/image/1925599198/xxl-c.jpg",
+      "data_vista": "2026-05-18",
+      "notificato": true,
+      "note": ""
+    }
+  ]
 }
