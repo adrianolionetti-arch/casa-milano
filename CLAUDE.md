@@ -60,30 +60,38 @@ Leggi `criteri.md` e `annunci_visti.json`. Memorizza in memoria tutti gli `id` e
 
 ### Step 2 — Recupero dati Apify (UNICA FONTE)
 
-Esegui una **run sincrona** dell'attore (~10-30 sec di durata):
+**⚠️ UNA SOLA CHIAMATA**: NON fare retry, NON chiamare l'attore due volte nella stessa sessione. Sul piano free Apify il rate limit è 30 min tra una run e l'altra → la 2ª chiamata fallisce SEMPRE e brucia inutilmente la quota giornaliera (5 run/giorno). Hai un solo colpo per sessione, sparalo bene.
+
+Lancia lo script deterministico (UNA POST sola, gestisce tutti i failure mode):
 
 ```bash
-APIFY_RESULT=$(curl -sS -X POST \
-  "https://api.apify.com/v2/acts/${APIFY_ACTOR_ID}/run-sync-get-dataset-items?token=${APIFY_TOKEN}&timeout=120" \
-  -H "Content-Type: application/json" \
-  -d '{"startUrl":"https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=360000&superficieMinima=80&ordinamento=data_pubblicazione_decrescente","maxListings":60}' \
-  -w "\nHTTP=%{http_code}\n")
+python3 scripts/fetch_apify.py
+EXIT=$?
 ```
 
-Estrai HTTP code. Se ≠ 200 → vedi Step 2d.
+Comportamento:
+- `EXIT=0` → success, listing in `/tmp/apify_items.json` (array JSON). Continua con Step 3.
+- `EXIT≠0` → INFRA failure. Lo stderr dello script contiene il dettaglio. Vedi Step 2d.
 
-`APIFY_RESULT` (senza l'ultima riga `HTTP=...`) è un array JSON di oggetti listing. Salvalo in `/tmp/apify_items.json` per processare con Python/jq.
+**NON re-eseguire `fetch_apify.py`** anche se sospetti che la prima call sia andata storta. Aspetta la prossima sessione (cron domani).
 
 **Step 2d — Failure modes (espliciti, niente fallback silenzioso)**
 
-Se uno di questi accade, invia email con oggetto `🏠 [INFRA] Ricerca Casa Milano — <motivo>` e abortisci senza scrivere nulla nel DB:
+Se `fetch_apify.py` esce con code ≠ 0:
+1. Cattura lo stderr dello script
+2. Invia email con `python3 scripts/send_email.py "🏠 [INFRA] Casa Milano — <motivo breve>" /tmp/infra_body.html`
+3. Salva `report/YYYY-MM-DD.md` con la stessa info
+4. Committa + pusha
+5. **NON tocca `annunci_visti.json` né `index.html`**
+6. Termina la sessione
 
-- curl ritorna HTTP code ≠ 200 (timeout, 5xx, 4xx)
-- Risposta non parsabile come JSON
-- Array vuoto `[]`
-- Nessun item contiene `id` e `directLink`
-
-Corpo email: oggetto + dettaglio tecnico (HTTP code, prime 500 char del response body) + link a Apify console (`https://console.apify.com/actors/sPIR3lEdL9H69xrmi/runs`). Salva report con stesso contenuto.
+Esempio body INFRA HTML:
+```html
+<h2>🏠 [INFRA] Casa Milano — <motivo></h2>
+<p>Sessione 2026-XX-XX abortita.</p>
+<pre><stderr di fetch_apify.py></pre>
+<p><a href="https://console.apify.com/actors/sPIR3lEdL9H69xrmi/runs">Apify console</a></p>
+```
 
 ### Step 3 — Estrazione campi normalizzati
 
