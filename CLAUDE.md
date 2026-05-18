@@ -190,8 +190,19 @@ Destinatari: `adrianolionetti@gmail.com`, `alessia.curtopelle@gmail.com` (entram
 
 **⚠️ LINK DASHBOARD — VALORE FISSO**: il link "Apri la dashboard" nel body DEVE essere **esattamente** il valore della env var `$DASHBOARD_URL` (oggi `https://adrianolionetti-arch.github.io/casa-milano/`). MAI inventare URL alternativi tipo `casa-milano.vercel.app`, `casamilano.it`, `my-dashboard.netlify.app` o simili: la dashboard è ospitata SOLO su GitHub Pages a quell'URL. Se il body non contiene esattamente `$DASHBOARD_URL` riscrivilo prima di inviare.
 
+**⚠️ HEADER OBBLIGATORIO**: ogni email (digest, alert, nessuna novità) DEVE iniziare con questo blocco pulsante centrato — incollalo letterale come primo elemento del body, prima del titolo:
+
+```html
+<div style="text-align:center;margin:0 0 24px 0;">
+  <a href="$DASHBOARD_URL" style="display:inline-block;background:#0071e3;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-size:16px;font-weight:600;box-shadow:0 2px 6px rgba(0,113,227,0.25);">📊 Apri la dashboard →</a>
+</div>
+```
+
 **Template "nessuna novità"** (caso N == 0, body completo, niente improvvisazioni):
 ```html
+<div style="text-align:center;margin:0 0 24px 0;">
+  <a href="$DASHBOARD_URL" style="display:inline-block;background:#0071e3;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-size:16px;font-weight:600;box-shadow:0 2px 6px rgba(0,113,227,0.25);">📊 Apri la dashboard →</a>
+</div>
 <h2>🏠 Casa Milano — sessione del <data></h2>
 <p>Nessun annuncio nuovo con score ≥ 6 oggi.</p>
 <ul>
@@ -200,10 +211,9 @@ Destinatari: `adrianolionetti@gmail.com`, `alessia.curtopelle@gmail.com` (entram
   <li>Scartati REGOLA #0 (keyword gate): <S></li>
   <li>Esclusi per criteri: <E></li>
 </ul>
-<p><a href="$DASHBOARD_URL">📊 Apri la dashboard completa →</a></p>
 ```
 
-**Corpo HTML** per ogni annuncio nuovo score ≥ 6:
+**Corpo HTML** per ogni annuncio nuovo score ≥ 6 (le card vanno DOPO l'header pulsante):
 ```html
 <div style="margin:20px 0;padding:16px;border:1px solid #eee;border-radius:8px;">
   <img src="<foto_url>" style="width:100%;max-width:500px;border-radius:6px;margin-bottom:12px">
