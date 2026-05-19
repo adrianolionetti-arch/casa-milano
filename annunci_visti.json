@@ -2,10 +2,10 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-18T00:00:00",
-    "ultimo_aggiornamento": "2026-05-18",
-    "totale_annunci": 138,
-    "last_updated": "2026-05-18",
+    "ultima_sessione": "2026-05-19T00:00:00",
+    "ultimo_aggiornamento": "2026-05-19",
+    "totale_annunci": 141,
+    "last_updated": "2026-05-19",
     "reset": {
       "date": "2026-05-18",
       "rationale": "Pulizia chirurgica post-budget update (360k -> 450k) e fix double-call Apify. Rimossi tutti SCARTATO/ESCLUSO storici + entry post 2026-05-15 (durante INFRA fail).",
@@ -75,6 +75,45 @@
       "punteggio": 6.5,
       "foto_url": "https://pic.im-cdn.it/image/1925599198/xxl-c.jpg",
       "data_vista": "2026-05-18",
+      "notificato": true,
+      "note": ""
+    },
+    {
+      "id": "immobiliare-127769696",
+      "url": "https://www.immobiliare.it/annunci/127769696",
+      "titolo": "Appartamenti di nuova costruzione a Milano",
+      "prezzo": 225000,
+      "zona": "Quinto Romano",
+      "mq": 73,
+      "punteggio": 0,
+      "foto_url": "https://pic.im-cdn.it/image/1892581650/xxl-c.jpg",
+      "data_vista": "2026-05-19",
+      "notificato": true,
+      "note": "ESCLUSO — superficie 73mq (<80)"
+    },
+    {
+      "id": "immobiliare-129070674",
+      "url": "https://www.immobiliare.it/annunci/129070674",
+      "titolo": "Trilocale via Vincenzo da Seregno 11, Affori, Milano",
+      "prezzo": 379000,
+      "zona": "Affori",
+      "mq": 85,
+      "punteggio": 5.5,
+      "foto_url": "https://pic.im-cdn.it/image/1924009754/xxl-c.jpg",
+      "data_vista": "2026-05-19",
+      "notificato": false,
+      "note": "Score 5.5 — sotto soglia 6"
+    },
+    {
+      "id": "immobiliare-127844942",
+      "url": "https://www.immobiliare.it/annunci/127844942",
+      "titolo": "Trilocale via Palmanova 213/A, Crescenzago, Milano",
+      "prezzo": 289000,
+      "zona": "Crescenzago",
+      "mq": 90,
+      "punteggio": 7.3,
+      "foto_url": "https://pic.im-cdn.it/image/1894460378/xxl-c.jpg",
+      "data_vista": "2026-05-19",
       "notificato": true,
       "note": ""
     }
