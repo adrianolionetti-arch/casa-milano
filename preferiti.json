@@ -3,5 +3,18 @@
     "creato": "2026-05-18",
     "descrizione": "Annunci preferiti aggiunti manualmente da Adriano. Ogni entry e' una listing che lui vuole tenere d'occhio, indipendentemente dallo score automatico."
   },
-  "annunci": []
+  "annunci": [
+    {
+      "id": "immobiliare-126127111",
+      "url": "https://www.immobiliare.it/annunci/126127111/",
+      "titolo": "Quadrilocale Milano (Tempocasa rif. 6415246)",
+      "prezzo": null,
+      "mq": null,
+      "zona": null,
+      "foto_url": null,
+      "agenzia": "Tempocasa",
+      "data_aggiunto": "2026-05-20",
+      "note_personali": "Cross-post Tempocasa (rif. 6415246). Dati completi da recuperare appena Apify rate limit si sblocca."
+    }
+  ]
 }
