@@ -1,0 +1,71 @@
+name: Process Preferito Issue
+
+on:
+  issues:
+    types: [opened, labeled]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  process:
+    if: |
+      contains(github.event.issue.labels.*.name, 'preferito') ||
+      startsWith(github.event.issue.title, 'preferito:') ||
+      startsWith(github.event.issue.title, 'Preferito:')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Write issue body to file
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          mkdir -p /tmp
+          printf '%s' "$ISSUE_BODY" > /tmp/issue_body.txt
+          echo "--- issue body received ---"
+          head -20 /tmp/issue_body.txt
+
+      - name: Process issue → preferiti.json
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+        run: |
+          python3 scripts/process_favorite_issue.py /tmp/issue_body.txt
+
+      - name: Rebuild dashboard
+        run: python3 scripts/build_dashboard.py
+
+      - name: Commit & push
+        run: |
+          git config user.email 'agent@casa-milano.local'
+          git config user.name 'Casa Milano Agent'
+          if git diff --quiet; then
+            echo "Nessuna modifica da committare"
+            exit 0
+          fi
+          git add preferiti.json index.html
+          git commit -m "Aggiungi preferito da issue #${{ github.event.issue.number }}"
+          git push origin main
+
+      - name: Comment + close issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '✅ Preferito aggiunto al [dashboard](https://adrianolionetti-arch.github.io/casa-milano/) (~30 sec).'
+            });
+            await github.rest.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: 'closed'
+            });
