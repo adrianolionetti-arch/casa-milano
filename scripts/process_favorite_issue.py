@@ -80,8 +80,10 @@ def enrich_via_apify(url: str) -> dict:
         return {}
 
     if not isinstance(data, list):
+        print(f"[apify enrich] unexpected response type: {type(data).__name__}", file=sys.stderr)
         return {}
 
+    print(f"[apify enrich] {len(data)} item(s) returned for {url}", file=sys.stderr)
     target_id = extract_id_from_url(url)
     target_num = target_id.split("-")[-1] if target_id else None
 
@@ -91,6 +93,12 @@ def enrich_via_apify(url: str) -> dict:
             item = it
             break
     if not item:
+        if data:
+            sample = [str((it or {}).get("id")) for it in data[:3] if isinstance(it, dict)]
+            print(
+                f"[apify enrich] no item matches id={target_num}; first ids returned: {sample}",
+                file=sys.stderr,
+            )
         return {}
 
     props = (item.get("properties") or [{}])[0]
