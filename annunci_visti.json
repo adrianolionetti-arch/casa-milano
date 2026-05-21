@@ -2,10 +2,10 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-19T00:00:00",
-    "ultimo_aggiornamento": "2026-05-19",
-    "totale_annunci": 141,
-    "last_updated": "2026-05-19",
+    "ultima_sessione": "2026-05-21T00:00:00",
+    "ultimo_aggiornamento": "2026-05-21",
+    "totale_annunci": 144,
+    "last_updated": "2026-05-21",
     "reset": {
       "date": "2026-05-18",
       "rationale": "Pulizia chirurgica post-budget update (360k -> 450k) e fix double-call Apify. Rimossi tutti SCARTATO/ESCLUSO storici + entry post 2026-05-15 (durante INFRA fail).",
@@ -116,6 +116,45 @@
       "data_vista": "2026-05-19",
       "notificato": true,
       "note": ""
+    },
+    {
+      "id": "immobiliare-127728556",
+      "url": "https://www.immobiliare.it/annunci/127728556",
+      "titolo": "Trilocale viale Ungheria 15, Viale Ungheria - Mecenate, Milano",
+      "prezzo": 235000,
+      "zona": "Viale Ungheria - Mecenate",
+      "mq": 80,
+      "punteggio": 0,
+      "foto_url": "https://pic.im-cdn.it/image/1891489522/xxl-c.jpg",
+      "data_vista": "2026-05-21",
+      "notificato": true,
+      "note": "ESCLUSO — piano rialzato senza giardino privato"
+    },
+    {
+      "id": "immobiliare-129233134",
+      "url": "https://www.immobiliare.it/annunci/129233134",
+      "titolo": "Trilocale via Mario Borsa, Gallaratese, Milano",
+      "prezzo": 399000,
+      "zona": "Gallaratese",
+      "mq": 100,
+      "punteggio": 3.5,
+      "foto_url": "https://pic.im-cdn.it/image/1928014504/xxl-c.jpg",
+      "data_vista": "2026-05-21",
+      "notificato": false,
+      "note": "Score 3.5 — sotto soglia 6"
+    },
+    {
+      "id": "immobiliare-127021175",
+      "url": "https://www.immobiliare.it/annunci/127021175",
+      "titolo": "Trilocale via Fryderyk Chopin 9, Vigentino - Fatima, Milano",
+      "prezzo": 379000,
+      "zona": "Vigentino - Fatima",
+      "mq": 110,
+      "punteggio": 4.5,
+      "foto_url": "https://pic.im-cdn.it/image/1896146892/xxl-c.jpg",
+      "data_vista": "2026-05-21",
+      "notificato": false,
+      "note": "Score 4.5 — sotto soglia 6"
     }
   ]
 }
