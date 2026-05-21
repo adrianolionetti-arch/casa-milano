@@ -126,8 +126,38 @@ def main(issue_body_path: str) -> int:
     # Carica preferiti esistenti
     with open(PREFERITI_PATH, encoding="utf-8") as f:
         pj = json.load(f)
-    existing_ids = {a.get("id") for a in pj.get("annunci", [])}
-    if listing_id in existing_ids:
+    annunci_list = pj.setdefault("annunci", [])
+    existing_idx = next(
+        (i for i, a in enumerate(annunci_list) if a.get("id") == listing_id),
+        None,
+    )
+    if existing_idx is not None:
+        existing = annunci_list[existing_idx]
+        ENRICH_FIELDS = ("prezzo", "mq", "zona", "foto_url", "indirizzo", "agenzia")
+        missing = [k for k in ENRICH_FIELDS if not existing.get(k)]
+        existing_url = existing.get("url") or url
+        if missing and "immobiliare.it" in existing_url:
+            print(
+                f"Listing {listing_id} già presente, campi vuoti: {missing} — retry enrichment...",
+                file=sys.stderr,
+            )
+            enriched = enrich_via_apify(existing_url)
+            updated_fields = []
+            for k, v in enriched.items():
+                if v and not existing.get(k):
+                    existing[k] = v
+                    updated_fields.append(k)
+            if updated_fields:
+                with open(PREFERITI_PATH, "w", encoding="utf-8") as f:
+                    json.dump(pj, f, indent=2, ensure_ascii=False)
+                print(
+                    f"OK: preferito {listing_id} arricchito — aggiornati: {updated_fields}"
+                )
+            else:
+                print(
+                    f"Listing {listing_id}: enrichment non ha prodotto dati nuovi — skip"
+                )
+            return 0
         print(f"Listing {listing_id} già nei preferiti — skip")
         return 0
 
