@@ -15,6 +15,19 @@
       "agenzia": "Tempocasa",
       "data_aggiunto": "2026-05-20",
       "note_personali": "Cross-post Tempocasa (rif. 6415246). Dati completi da recuperare appena Apify rate limit si sblocca."
+    },
+    {
+      "id": "immobiliare-124615727",
+      "url": "https://www.immobiliare.it/annunci/124615727/?entryPoint=related#foto15",
+      "titolo": "Trilocale piazza dei Daini 4, Bicocca, Milano | 3 locali | 115 m²",
+      "prezzo": 485000,
+      "mq": null,
+      "zona": null,
+      "indirizzo": null,
+      "foto_url": null,
+      "agenzia": "immobiliare.it",
+      "data_aggiunto": "2026-05-21",
+      "note_personali": ""
     }
   ]
 }
