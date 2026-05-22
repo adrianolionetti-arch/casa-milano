@@ -16,7 +16,7 @@ Cron 06:00 UTC → GitHub Actions runner → Claude Code agent (questa istanza)
 ```
 
 - **Apify actor id**: `sPIR3lEdL9H69xrmi` (alias `azzouzana~immobiliare-it-listing-page-scraper-by-search-url`)
-- **Pricing Apify**: $0.001/listing (pay-per-event dal 2026-05-04) → ~$2/mese a 60 listing/giorno
+- **Apify plan**: paid (nessun rate limit, nessun cap giornaliero). Costo $0.001/listing → ~$2/mese a 60 listing/giorno
 - **Search URL**: `https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=450000&superficieMinima=80&ordinamento=data_pubblicazione_decrescente`
 
 **Niente fallback**. Se Apify fallisce → email `[INFRA]` esplicita e ABORT. Mai usare WebSearch né WebFetch sui portali (immobiliare.it diretto, gohome.it, tecnocasa.it, idealista.it, casa.it, wikicasa.it, bakeca.it): sono dietro Cloudflare 403 e i candidati senza body verificabile producono notifiche sbagliate.
@@ -60,20 +60,18 @@ Leggi `criteri.md` e `annunci_visti.json`. Memorizza in memoria tutti gli `id` e
 
 ### Step 2 — Recupero dati Apify (UNICA FONTE)
 
-**⚠️ UNA SOLA CHIAMATA**: NON fare retry, NON chiamare l'attore due volte nella stessa sessione. Sul piano free Apify il rate limit è 30 min tra una run e l'altra → la 2ª chiamata fallisce SEMPRE e brucia inutilmente la quota giornaliera (5 run/giorno). Hai un solo colpo per sessione, sparalo bene.
-
-Lancia lo script deterministico (UNA POST sola, gestisce tutti i failure mode):
+Lancia lo script deterministico (fa POST a run-sync con retry interno su failure transienti):
 
 ```bash
 python3 scripts/fetch_apify.py
 EXIT=$?
 ```
 
+Lo script tenta fino a 3 volte su HTTP 5xx / 408 / 429 con backoff (5s, 15s). Su piano paid Apify non c'è rate limit, quindi i retry sono safe.
+
 Comportamento:
 - `EXIT=0` → success, listing in `/tmp/apify_items.json` (array JSON). Continua con Step 3.
-- `EXIT≠0` → INFRA failure. Lo stderr dello script contiene il dettaglio. Vedi Step 2d.
-
-**NON re-eseguire `fetch_apify.py`** anche se sospetti che la prima call sia andata storta. Aspetta la prossima sessione (cron domani).
+- `EXIT≠0` → INFRA failure (dopo i retry). Lo stderr dello script contiene il dettaglio. Vedi Step 2d.
 
 **Step 2d — Failure modes (espliciti, niente fallback silenzioso)**
 
