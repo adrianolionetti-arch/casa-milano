@@ -94,9 +94,9 @@ def enrich_via_apify(url: str) -> dict:
             break
     if not item:
         if data:
-            sample = [str((it or {}).get("id")) for it in data[:3] if isinstance(it, dict)]
+            snippet = json.dumps(data[0], ensure_ascii=False)[:600]
             print(
-                f"[apify enrich] no item matches id={target_num}; first ids returned: {sample}",
+                f"[apify enrich] no item matches id={target_num}; first item payload: {snippet}",
                 file=sys.stderr,
             )
         return {}
