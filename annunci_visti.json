@@ -2,10 +2,10 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-21T00:00:00",
-    "ultimo_aggiornamento": "2026-05-21",
-    "totale_annunci": 144,
-    "last_updated": "2026-05-21",
+    "ultima_sessione": "2026-05-22T00:00:00",
+    "ultimo_aggiornamento": "2026-05-22",
+    "totale_annunci": 146,
+    "last_updated": "2026-05-22",
     "reset": {
       "date": "2026-05-18",
       "rationale": "Pulizia chirurgica post-budget update (360k -> 450k) e fix double-call Apify. Rimossi tutti SCARTATO/ESCLUSO storici + entry post 2026-05-15 (durante INFRA fail).",
@@ -155,6 +155,32 @@
       "data_vista": "2026-05-21",
       "notificato": false,
       "note": "Score 4.5 — sotto soglia 6"
+    },
+    {
+      "id": "immobiliare-128774272",
+      "url": "https://www.immobiliare.it/annunci/128774272",
+      "titolo": "Trilocale viale Sarca 41, Ca' Granda, Milano",
+      "prezzo": 375000,
+      "mq": 83,
+      "zona": "Ca' Granda (Bicocca-Niguarda)",
+      "punteggio": 5.0,
+      "foto_url": "https://pic.im-cdn.it/image/1917049128/xxl-c.jpg",
+      "data_vista": "2026-05-22",
+      "notificato": false,
+      "note": "Score 5.0 — sotto soglia 6"
+    },
+    {
+      "id": "immobiliare-128951952",
+      "url": "https://www.immobiliare.it/annunci/128951952",
+      "titolo": "Trilocale via Giuseppe Avezzana 14, Corvetto, Milano",
+      "prezzo": 320000,
+      "mq": 85,
+      "zona": "Corvetto",
+      "punteggio": 0,
+      "foto_url": "https://pic.im-cdn.it/image/1921158732/xxl-c.jpg",
+      "data_vista": "2026-05-22",
+      "notificato": true,
+      "note": "ESCLUSO — zona esclusa (Corvetto)"
     }
   ]
 }
