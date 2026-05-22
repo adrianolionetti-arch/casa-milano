@@ -1,27 +1,26 @@
 #!/usr/bin/env python3
-"""Fa UNA SOLA chiamata Apify run-sync-get-dataset-items e scrive il risultato.
+"""Chiama Apify run-sync-get-dataset-items e scrive il risultato in /tmp.
 
-Sostituisce il curl Bash in CLAUDE.md Step 2 — l'agente faceva doppia chiamata
-(2026-05-16 e 5-17 hanno generato 2 run Apify in 17-40 sec → 2° colpiva il
-rate limit free 30-min → INFRA email anche se la 1ª era SUCCEEDED).
+Su piano paid Apify (no rate limit), fa fino a 3 tentativi su errori
+transienti (HTTP 408 timeout, 429, 5xx) con backoff 5s/15s.
 
 Logica:
 - POST run-sync con timeout 120s
-- Se HTTP != 201 → exit 2 (INFRA)
-- Se risposta non è JSON array → exit 3 (INFRA)
-- Se array vuoto → exit 4 (INFRA)
-- Se nessun item ha `id` + `directLink` → exit 5 (INFRA: rate-limit response wrapped come item)
+- HTTP 5xx/408/429 → retry (max 3 tentativi totali)
+- HTTP 201 → check payload
+- HTTP altro non-retriable → exit 2 (INFRA)
+- Risposta non JSON array → exit 3 (INFRA)
+- Array vuoto → exit 4 (INFRA)
+- Nessun item con `id` + `directLink` → exit 5 (INFRA)
 - Altrimenti scrive items in OUTPUT_PATH e stampa il count → exit 0
 
 Output: /tmp/apify_items.json (array di oggetti listing Apify)
 Env richiesti: APIFY_TOKEN, APIFY_ACTOR_ID
-
-NON FA RETRY. Una chiamata sola. Se fallisce, l'agente deve mandare email INFRA
-e abortire — la 2° chiamata interna a 30 min becca il rate limit del free plan.
 """
 import json
 import os
 import sys
+import time
 import urllib.error
 import urllib.request
 
@@ -33,6 +32,45 @@ SEARCH_URL = (
 MAX_LISTINGS = 60
 OUTPUT_PATH = "/tmp/apify_items.json"
 TIMEOUT_SEC = 150  # un po' più del timeout=120 Apify-side
+MAX_ATTEMPTS = 3
+BACKOFFS_SEC = [5, 15]  # tra tentativo 1→2 e 2→3
+RETRIABLE_CODES = {408, 429, 500, 502, 503, 504}
+
+
+def fetch_with_retry(url: str, body: bytes) -> tuple[int, bytes]:
+    """POST con retry su HTTP 408/429/5xx. Ritorna (http_code, raw_bytes).
+
+    Solleva RuntimeError se tutti i tentativi falliscono per errori di rete.
+    Errori HTTP non-retriable vengono ritornati al chiamante (no raise).
+    """
+    last_err = None
+    for attempt in range(1, MAX_ATTEMPTS + 1):
+        req = urllib.request.Request(
+            url, data=body,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            resp = urllib.request.urlopen(req, timeout=TIMEOUT_SEC)
+            return resp.getcode(), resp.read()
+        except urllib.error.HTTPError as e:
+            code = e.code
+            raw = e.read()
+            if code not in RETRIABLE_CODES:
+                return code, raw
+            last_err = f"HTTP {code}"
+        except Exception as e:
+            last_err = f"network error: {e}"
+
+        if attempt < MAX_ATTEMPTS:
+            sleep_sec = BACKOFFS_SEC[attempt - 1]
+            print(
+                f"WARN: tentativo {attempt}/{MAX_ATTEMPTS} fallito ({last_err}), retry in {sleep_sec}s",
+                file=sys.stderr,
+            )
+            time.sleep(sleep_sec)
+
+    raise RuntimeError(last_err or "exhausted retries")
 
 
 def main() -> int:
@@ -48,32 +86,26 @@ def main() -> int:
     )
     body = json.dumps({"startUrl": SEARCH_URL, "maxListings": MAX_LISTINGS}).encode()
 
-    req = urllib.request.Request(
-        url,
-        data=body,
-        headers={"Content-Type": "application/json"},
-        method="POST",
-    )
-
     try:
-        resp = urllib.request.urlopen(req, timeout=TIMEOUT_SEC)
-        http_code = resp.getcode()
-        raw = resp.read()
-    except urllib.error.HTTPError as e:
-        http_code = e.code
-        raw = e.read()
-    except Exception as e:
-        print(f"INFRA: network error: {e}", file=sys.stderr)
+        http_code, raw = fetch_with_retry(url, body)
+    except RuntimeError as e:
+        print(f"INFRA: tutti i {MAX_ATTEMPTS} tentativi falliti: {e}", file=sys.stderr)
         return 6
 
     if http_code != 201:
-        print(f"INFRA: HTTP {http_code}\nBody (first 500): {raw[:500].decode('utf-8', errors='replace')}", file=sys.stderr)
+        print(
+            f"INFRA: HTTP {http_code}\nBody (first 500): {raw[:500].decode('utf-8', errors='replace')}",
+            file=sys.stderr,
+        )
         return 2
 
     try:
         data = json.loads(raw)
     except json.JSONDecodeError as e:
-        print(f"INFRA: response not JSON: {e}\nBody (first 500): {raw[:500].decode('utf-8', errors='replace')}", file=sys.stderr)
+        print(
+            f"INFRA: response not JSON: {e}\nBody (first 500): {raw[:500].decode('utf-8', errors='replace')}",
+            file=sys.stderr,
+        )
         return 3
 
     if not isinstance(data, list) or len(data) == 0:
@@ -82,8 +114,10 @@ def main() -> int:
 
     valid = [it for it in data if isinstance(it, dict) and it.get("id") and it.get("directLink")]
     if not valid:
-        # Caso tipico: rate limit free wrappato come item: [{"message": "Rate limit active..."}]
-        print(f"INFRA: 0 item validi su {len(data)} ricevuti. Probabile rate limit. Item[0]: {str(data[0])[:300]}", file=sys.stderr)
+        print(
+            f"INFRA: 0 item validi su {len(data)} ricevuti. Item[0]: {str(data[0])[:300]}",
+            file=sys.stderr,
+        )
         return 5
 
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
