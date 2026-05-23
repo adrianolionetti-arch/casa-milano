@@ -66,7 +66,7 @@ def enrich_via_apify(url: str) -> dict:
         f"https://api.apify.com/v2/acts/{APIFY_SINGLE_ACTOR}"
         f"/run-sync-get-dataset-items?token={token}&timeout=90"
     )
-    body = json.dumps({"itemsUrls": [url]}).encode()
+    body = json.dumps({"startUrls": [url]}).encode()
     req = urllib.request.Request(
         api_url, data=body,
         headers={"Content-Type": "application/json"},
