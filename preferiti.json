@@ -8,13 +8,14 @@
       "id": "immobiliare-126127111",
       "url": "https://www.immobiliare.it/annunci/126127111/",
       "titolo": "Quadrilocale Milano (Tempocasa rif. 6415246)",
-      "prezzo": null,
-      "mq": null,
-      "zona": null,
-      "foto_url": null,
+      "prezzo": 425000,
+      "mq": 109,
+      "zona": "Prato Centenaro",
+      "foto_url": "https://pwm.im-cdn.it/image/1853217941/xxl.jpg",
       "agenzia": "Tempocasa",
       "data_aggiunto": "2026-05-20",
-      "note_personali": "Cross-post Tempocasa (rif. 6415246). Dati completi da recuperare appena Apify rate limit si sblocca."
+      "note_personali": "Cross-post Tempocasa (rif. 6415246). Dati completi da recuperare appena Apify rate limit si sblocca.",
+      "indirizzo": "Via val maira 11"
     },
     {
       "id": "immobiliare-124615727",
