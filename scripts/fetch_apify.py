@@ -31,14 +31,27 @@ SEARCH_URL = (
 )
 MAX_LISTINGS = 60
 OUTPUT_PATH = "/tmp/apify_items.json"
-TIMEOUT_SEC = 150  # un po' più del timeout=120 Apify-side
+APIFY_TIMEOUT = 180  # secondi: timeout actor-side passato come querystring
+TIMEOUT_SEC = APIFY_TIMEOUT + 40  # client HTTP timeout, un po' più dell'actor
 MAX_ATTEMPTS = 3
 BACKOFFS_SEC = [5, 15]  # tra tentativo 1→2 e 2→3
 RETRIABLE_CODES = {408, 429, 500, 502, 503, 504}
 
 
+def _is_run_failed(http_code: int, raw: bytes) -> bool:
+    """HTTP 400 con error.type=run-failed = actor-side timeout/crash, retriable."""
+    if http_code != 400:
+        return False
+    try:
+        payload = json.loads(raw)
+        return (payload.get("error") or {}).get("type") == "run-failed"
+    except Exception:
+        return False
+
+
 def fetch_with_retry(url: str, body: bytes) -> tuple[int, bytes]:
-    """POST con retry su HTTP 408/429/5xx. Ritorna (http_code, raw_bytes).
+    """POST con retry su HTTP 408/429/5xx e su HTTP 400 con run-failed.
+    Ritorna (http_code, raw_bytes).
 
     Solleva RuntimeError se tutti i tentativi falliscono per errori di rete.
     Errori HTTP non-retriable vengono ritornati al chiamante (no raise).
@@ -56,9 +69,9 @@ def fetch_with_retry(url: str, body: bytes) -> tuple[int, bytes]:
         except urllib.error.HTTPError as e:
             code = e.code
             raw = e.read()
-            if code not in RETRIABLE_CODES:
+            if code not in RETRIABLE_CODES and not _is_run_failed(code, raw):
                 return code, raw
-            last_err = f"HTTP {code}"
+            last_err = f"HTTP {code}" + (" (run-failed)" if _is_run_failed(code, raw) else "")
         except Exception as e:
             last_err = f"network error: {e}"
 
@@ -82,7 +95,7 @@ def main() -> int:
 
     url = (
         f"https://api.apify.com/v2/acts/{actor_id}"
-        f"/run-sync-get-dataset-items?token={token}&timeout=120"
+        f"/run-sync-get-dataset-items?token={token}&timeout={APIFY_TIMEOUT}"
     )
     body = json.dumps({"startUrl": SEARCH_URL, "maxListings": MAX_LISTINGS}).encode()
 
