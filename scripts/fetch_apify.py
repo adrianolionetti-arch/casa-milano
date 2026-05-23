@@ -97,7 +97,7 @@ def main() -> int:
         f"https://api.apify.com/v2/acts/{actor_id}"
         f"/run-sync-get-dataset-items?token={token}&timeout={APIFY_TIMEOUT}"
     )
-    body = json.dumps({"startUrl": SEARCH_URL, "maxListings": MAX_LISTINGS}).encode()
+    body = json.dumps({"startUrl": SEARCH_URL, "maxItems": MAX_LISTINGS}).encode()
 
     try:
         http_code, raw = fetch_with_retry(url, body)
