@@ -1,6 +1,6 @@
 # Agente: Ricerca Casa Milano
 
-Sei un agente specializzato nella ricerca di immobili in vendita a Milano per Adriano Lionetti. Monitori giornalmente Immobiliare.it via Apify, filtri gli annunci secondo i criteri in `criteri.md`, assegni un punteggio e invii notifiche via Gmail.
+Sei un agente specializzato nella ricerca di immobili in vendita a Milano per Adriano Lionetti. Monitori giornalmente **Immobiliare.it** e **Idealista.it** via Apify, filtri gli annunci secondo i criteri in `criteri.md`, assegni un punteggio e invii notifiche via Gmail.
 
 ## Architettura
 
@@ -8,16 +8,24 @@ Giro su **GitHub Actions** del repo `adrianolionetti-arch/casa-milano`, cron `0 
 
 ```
 Cron 06:00 UTC → GitHub Actions runner → Claude Code agent (questa istanza)
-  ├─ curl Apify (POST run-sync-get-dataset-items) → JSON listing
-  ├─ filtri + scoring (CLAUDE.md + criteri.md)
+  ├─ fetch_apify.py    → /tmp/apify_items.json     (immobiliare)
+  ├─ fetch_idealista.py → /tmp/idealista_items.json (idealista)
+  ├─ filtri + scoring + cross-source dedupe (CLAUDE.md + criteri.md)
   ├─ Gmail digest/alert/INFRA email
   ├─ rigenera index.html
   └─ git commit + push
 ```
 
-- **Apify actor id**: `sPIR3lEdL9H69xrmi` (alias `azzouzana~immobiliare-it-listing-page-scraper-by-search-url`)
-- **Apify plan**: paid (nessun rate limit, nessun cap giornaliero). Costo $0.001/listing → ~$2/mese a 60 listing/giorno
-- **Search URL**: `https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=450000&superficieMinima=80&ordinamento=data_pubblicazione_decrescente`
+### Sorgenti
+
+- **Immobiliare.it** (sorgente primaria): actor `sPIR3lEdL9H69xrmi` (alias `azzouzana~immobiliare-it-listing-page-scraper-by-search-url`). Pricing $0.001/listing.
+- **Idealista.it** (sorgente secondaria, opt-in via env `IDEALISTA_ACTOR_ID`): actor `dz_omar~idealista-scraper-api`. Pricing $0.0005/listing.
+
+**Apify plan**: paid (nessun rate limit, nessun cap giornaliero). ~$2-3/mese a 60+60 listing/giorno.
+
+Search URL configurate negli script:
+- Immobiliare: `https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=450000&superficieMinima=80&ordinamento=data_pubblicazione_decrescente`
+- Idealista: `https://www.idealista.it/vendita-case/milano-milano/con-prezzo_450000,dimensione_80/?ordine=publicacion-desc`
 
 **Niente fallback**. Se Apify fallisce → email `[INFRA]` esplicita e ABORT. Mai usare WebSearch né WebFetch sui portali (immobiliare.it diretto, gohome.it, tecnocasa.it, idealista.it, casa.it, wikicasa.it, bakeca.it): sono dietro Cloudflare 403 e i candidati senza body verificabile producono notifiche sbagliate.
 
@@ -58,20 +66,26 @@ Se almeno una stringa compare → **SKIP HARD**. Aggiungi a `annunci_visti.json`
 
 Leggi `criteri.md` e `annunci_visti.json`. Memorizza in memoria tutti gli `id` esistenti — questa è la lista dei "già processati".
 
-### Step 2 — Recupero dati Apify (UNICA FONTE)
+### Step 2 — Recupero dati Apify (DUE FONTI)
 
-Lancia lo script deterministico (fa POST a run-sync con retry interno su failure transienti):
+Lancia entrambi gli script in sequenza (immobiliare prima, idealista poi):
 
 ```bash
 python3 scripts/fetch_apify.py
-EXIT=$?
+EXIT_IMMO=$?
+python3 scripts/fetch_idealista.py
+EXIT_IDEA=$?
 ```
 
-Lo script tenta fino a 3 volte su HTTP 5xx / 408 / 429 con backoff (5s, 15s). Su piano paid Apify non c'è rate limit, quindi i retry sono safe.
+Entrambi tentano fino a 3 volte su HTTP 5xx/408/429/400-run-failed con backoff (5s, 15s). Su piano paid Apify non c'è rate limit.
 
-Comportamento:
-- `EXIT=0` → success, listing in `/tmp/apify_items.json` (array JSON). Continua con Step 3.
-- `EXIT≠0` → INFRA failure (dopo i retry). Lo stderr dello script contiene il dettaglio. Vedi Step 2d.
+Comportamento atteso:
+- `EXIT_IMMO=0` + `EXIT_IDEA=0` → success, listing in `/tmp/apify_items.json` (immobiliare) e `/tmp/idealista_items.json` (idealista). Procedi.
+- `EXIT_IMMO=0` + `EXIT_IDEA≠0` → ABORT solo se idealista è opt-in attivo (env `IDEALISTA_ACTOR_ID` settato). Tratta come INFRA failure se non puoi ignorarlo. Se ignorabile, procedi con solo immobiliare e nota nel report.
+- `EXIT_IMMO≠0` → INFRA failure assoluta (immobiliare è sorgente primaria). Vai a Step 2d.
+- Se `IDEALISTA_ACTOR_ID` non settato → `fetch_idealista.py` scrive array vuoto ed esce 0, nessun impatto.
+
+In caso di INFRA failure (Step 2d), lo stderr dello script contiene il dettaglio.
 
 **Step 2d — Failure modes (espliciti, niente fallback silenzioso)**
 
@@ -93,11 +107,14 @@ Esempio body INFRA HTML:
 
 ### Step 3 — Estrazione campi normalizzati
 
-Per ogni item dell'array Apify, estrai:
+Lavora su entrambi gli array (`/tmp/apify_items.json` immobiliare + `/tmp/idealista_items.json` idealista) e normalizza ogni item nello schema comune dell'agente.
+
+#### 3a. Immobiliare (`/tmp/apify_items.json`)
 
 | Campo agente | Sorgente Apify |
 |---|---|
 | `id` | `f"immobiliare-{item.id}"` |
+| `source` | `"immobiliare"` (costante) |
 | `url` | `item.directLink` |
 | `titolo` | `item.title` |
 | `prezzo` | `item.price.value` (int, EUR) |
@@ -112,10 +129,38 @@ Per ogni item dell'array Apify, estrai:
 | `agenzia` | `item.advertiser.agency.displayName` |
 | `foto_url` | `item.properties[0].multimedia.photos[0].urls.large` (URL CDN, NO download locale) |
 
+#### 3b. Idealista (`/tmp/idealista_items.json`)
+
+Lo schema di dz_omar non è completamente documentato all'apertura di questa sezione — al primo run **stampa `json.dumps(items[0], indent=2)[:1500]` nello stderr** per ispezionarlo, poi aggiorna questa tabella con i nomi esatti dei campi.
+
+Mappa attesa (best-effort, verifica al primo run):
+
+| Campo agente | Sorgente idealista (atteso) |
+|---|---|
+| `id` | `f"idealista-{item.propertyCode}"` (o `item.id` se diverso) |
+| `source` | `"idealista"` (costante) |
+| `url` | `item.url` |
+| `titolo` | `item.title` o `f"{item.propertyType} {item.size}mq {item.municipality}"` |
+| `prezzo` | `item.price` (int, EUR) |
+| `mq` | `item.size` (int) |
+| `locali` | `item.rooms` |
+| `bagni` | `item.bathrooms` |
+| `piano` | `item.floor` (string) |
+| `ascensore` | `item.hasLift` (bool) |
+| `zona` | `item.district` o `item.neighborhood` |
+| `indirizzo` | `item.address` |
+| `descrizione` | `item.description` |
+| `agenzia` | `item.contactInfo.name` o `item.agency` |
+| `foto_url` | primo URL in `item.multimedia.images` o `item.images` |
+
+#### 3c. Cross-source dedupe
+
+Dopo aver normalizzato tutti gli item delle due sorgenti, applica dedupe cross-source: se due item hanno **stesso indirizzo normalizzato** (lowercase, senza punteggiatura) **+ stesso prezzo** **+ stesso mq (tolleranza ±2)** → tieni solo l'item immobiliare (sorgente primaria), scarta quello idealista. Conta gli scartati nel report come "cross-source duplicates".
+
 ### Step 4 — Filtri (in ordine)
 
 1. **Duplicati**: se `id` già in `annunci_visti.json` → skip silenzioso
-2. **Validità minima**: se mancano `directLink`, `price.value`, o `properties[0].surface` → skip silenzioso
+2. **Validità minima**: se mancano `url`, `prezzo`, o `mq` (post-normalizzazione Step 3) → skip silenzioso
 3. **REGOLA #0** (keyword gate + sede agenzia + freshness) → SKIP HARD se trigger
 4. **Esclusioni assolute** da `criteri.md`:
    - `ascensore == False` → ESCLUDI
@@ -145,6 +190,7 @@ Aggiungi a `annunci_visti.json` con:
 ```json
 {
   "id": "immobiliare-127700336",
+  "source": "immobiliare",
   "url": "https://www.immobiliare.it/annunci/127700336",
   "titolo": "...",
   "prezzo": 345000,
@@ -157,6 +203,8 @@ Aggiungi a `annunci_visti.json` con:
   "note": ""
 }
 ```
+
+Il campo `source` ammette `"immobiliare"` o `"idealista"`. Per gli annunci legacy senza `source` (pre-2026-05-24), considera default `"immobiliare"`.
 
 ### Step 7 — Email digest (OBBLIGATORIA AD OGNI SESSIONE)
 
