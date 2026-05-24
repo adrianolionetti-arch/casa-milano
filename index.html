@@ -1188,24 +1188,6 @@
           { type: 'text', text: SYSTEM_PROMPT },
           { type: 'text', text: 'DATI ANNUNCI:\n' + LISTINGS_JSON_STR, cache_control: { type: 'ephemeral' } }
         ],
-        output_config: {
-          format: {
-            type: 'json_schema',
-            schema: {
-              type: 'object',
-              properties: {
-                message: { type: 'string', description: 'Risposta testuale in italiano, max 4 frasi' },
-                filter_ids: {
-                  type: 'array',
-                  items: { type: 'string' },
-                  description: 'ID degli annunci da mostrare. Vuoto = mostra tutti.'
-                }
-              },
-              required: ['message', 'filter_ids'],
-              additionalProperties: false
-            }
-          }
-        },
         messages: apiMessages
       };
 
@@ -1236,9 +1218,21 @@
       const textBlock = (data.content || []).find(b => b.type === 'text');
       if (!textBlock) { appendError('Risposta vuota dal modello.'); conversation.pop(); return; }
 
+      // Estrae JSON anche se il modello lo wrappa in ```json ... ``` o aggiunge testo
+      function extractJson(s) {
+        const fence = s.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (fence) return fence[1].trim();
+        const first = s.indexOf('{');
+        const last = s.lastIndexOf('}');
+        if (first !== -1 && last > first) return s.slice(first, last + 1);
+        return s.trim();
+      }
       let parsed;
-      try { parsed = JSON.parse(textBlock.text); }
-      catch (e) { appendError('Risposta non parseable: ' + textBlock.text.slice(0, 200)); conversation.pop(); return; }
+      try { parsed = JSON.parse(extractJson(textBlock.text)); }
+      catch (e) {
+        // Fallback: trattalo come messaggio plain, niente filter
+        parsed = { message: textBlock.text.trim(), filter_ids: [] };
+      }
 
       const message = parsed.message || '(nessun messaggio)';
       const filterIds = Array.isArray(parsed.filter_ids) ? parsed.filter_ids : [];
