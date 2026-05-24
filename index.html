@@ -1066,31 +1066,144 @@
     document.getElementById('chat-input').focus();
   }
 
-  window.showSetup = function() {
+  // ===== Crypto helpers (AES-GCM 256 + PBKDF2-SHA256, Web Crypto API) =====
+  const ENC_CONFIG_URL = 'chatbot-key.enc.json';
+  const PBKDF2_ITERATIONS = 200000;
+
+  function b64enc(buf) {
+    const bytes = new Uint8Array(buf);
+    let s = '';
+    for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return btoa(s);
+  }
+  function b64dec(s) {
+    const bin = atob(s);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return bytes;
+  }
+  async function deriveKey(password, salt) {
+    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt, iterations: PBKDF2_ITERATIONS, hash: 'SHA-256' },
+      km, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
+    );
+  }
+  async function encryptKey(apiKey, password) {
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const key = await deriveKey(password, salt);
+    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(apiKey));
+    return {
+      version: 1, kdf: 'PBKDF2-SHA256', iterations: PBKDF2_ITERATIONS,
+      salt: b64enc(salt), iv: b64enc(iv), ciphertext: b64enc(ct)
+    };
+  }
+  async function decryptKey(config, password) {
+    const key = await deriveKey(password, b64dec(config.salt));
+    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64dec(config.iv) }, key, b64dec(config.ciphertext));
+    return new TextDecoder().decode(pt);
+  }
+  async function fetchEncConfig() {
+    try {
+      const resp = await fetch(ENC_CONFIG_URL, { cache: 'no-store' });
+      if (!resp.ok) return null;
+      return await resp.json();
+    } catch (e) { return null; }
+  }
+
+  // ===== Setup UI (password-mode default, admin-mode via ?admin=1) =====
+  window.showSetup = async function() {
     document.getElementById('chat-input-row').style.display = 'none';
     const body = document.getElementById('chat-body');
     body.className = 'chat-setup';
-    const existing = getApiKey();
-    body.innerHTML =
-      '<h4>🔑 API Key Anthropic</h4>' +
-      '<p>Per usare il chatbot serve una API key Anthropic. Salvata <strong>solo nel tuo browser</strong> (localStorage), mai inviata altrove. La key viene usata direttamente per chiamare api.anthropic.com.</p>' +
-      '<p>Crea una key gratuita su <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>. Il chatbot usa Haiku 4.5 (~0.005€ per domanda con cache attiva).</p>' +
-      '<input type="password" id="api-key-input" placeholder="sk-ant-..." value="' + (existing ? existing.slice(0, 8) + '...' + existing.slice(-4) : '') + '">' +
-      '<button class="save-btn" onclick="saveApiKey()">Salva e inizia</button>' +
-      (existing ? '<p style="text-align:center;margin-top:14px"><a href="#" onclick="clearApiKey(); return false;" style="color:#dc2626;font-size:12px">Rimuovi key salvata</a></p>' : '');
-    document.getElementById('api-key-input').focus();
+    body.innerHTML = '<p style="text-align:center;color:#64748b">Caricamento...</p>';
+
+    const isAdmin = new URLSearchParams(location.search).get('admin') === '1';
+    const config = await fetchEncConfig();
+    const hasKey = !!getApiKey();
+
+    if (hasKey && !isAdmin) {
+      // Già sbloccato: pannello impostazioni
+      body.innerHTML =
+        '<h4>⚙ Impostazioni chatbot</h4>' +
+        '<p>Chatbot sbloccato. La API key è in localStorage di questo browser.</p>' +
+        '<p style="font-size:12px;color:#64748b">Modello: <strong>claude-haiku-4-5</strong>. Costo: ~0.005€ per domanda con cache attiva. Vedi consumo su <a href="https://console.anthropic.com/settings/usage" target="_blank">console Anthropic</a>.</p>' +
+        '<button class="save-btn" style="background:#dc2626;margin-top:12px" onclick="clearApiKey()">Disconnetti (rimuovi key locale)</button>' +
+        '<p style="text-align:center;margin-top:16px"><a href="#" onclick="renderChat();return false;" style="color:#0071e3;font-size:13px">← Torna alla chat</a></p>';
+      return;
+    }
+
+    if (config && !isAdmin) {
+      // Modalità utente: solo password
+      body.innerHTML =
+        '<h4>🔒 Password</h4>' +
+        '<p>Inserisci la password condivisa per sbloccare il chatbot. La key viene decriptata localmente e salvata nel tuo browser — non serve riempiarla a ogni sessione.</p>' +
+        '<input type="password" id="pwd-input" placeholder="password">' +
+        '<button class="save-btn" onclick="unlockWithPassword()">Sblocca</button>' +
+        '<p style="text-align:center;margin-top:16px;font-size:11px;color:#94a3b8">' +
+        'Password persa? Apri la pagina con <code>?admin=1</code> per rigenerare la config.</p>';
+      const input = document.getElementById('pwd-input');
+      input.focus();
+      input.addEventListener('keydown', e => { if (e.key === 'Enter') unlockWithPassword(); });
+    } else {
+      // Modalità admin: setup iniziale o rigenerazione
+      body.innerHTML =
+        '<h4>⚙ Setup iniziale (admin)</h4>' +
+        '<p>Inserisci l\'API key Anthropic (<a href="https://console.anthropic.com/settings/keys" target="_blank">console</a>) e scegli una password condivisa.</p>' +
+        '<p>Verrà generato un file <code>chatbot-key.enc.json</code> da committare nella root del repo. Dopo il deploy, ogni device userà solo la password per sbloccare.</p>' +
+        '<input type="password" id="api-key-input" placeholder="sk-ant-...">' +
+        '<input type="password" id="admin-pwd1" placeholder="password (min 8 caratteri)">' +
+        '<input type="password" id="admin-pwd2" placeholder="ripeti password">' +
+        '<button class="save-btn" onclick="generateConfig()">🔐 Genera + Scarica</button>' +
+        (config ? '<p style="margin-top:12px;font-size:12px;color:#0071e3;text-align:center">⚠ Config esistente. Generando uno nuovo invaliderai la password precedente.</p>' : '');
+      document.getElementById('api-key-input').focus();
+    }
   };
 
-  window.saveApiKey = function() {
-    const val = document.getElementById('api-key-input').value.trim();
-    if (!val || val.includes('...')) { alert('Inserisci una API key valida (sk-ant-...)'); return; }
-    if (!val.startsWith('sk-ant-')) { alert('La key dovrebbe iniziare con "sk-ant-"'); return; }
-    setApiKey(val);
-    renderChat();
+  window.unlockWithPassword = async function() {
+    const pwd = document.getElementById('pwd-input').value;
+    if (!pwd) return;
+    const btn = document.querySelector('.chat-setup .save-btn');
+    btn.disabled = true; btn.textContent = 'Sblocco...';
+    try {
+      const config = await fetchEncConfig();
+      if (!config) { alert('Config encrypted non trovato sul server'); return; }
+      const apiKey = await decryptKey(config, pwd);
+      if (!apiKey.startsWith('sk-ant-')) throw new Error('decrypt produced invalid key');
+      setApiKey(apiKey);
+      renderChat();
+    } catch (e) {
+      btn.disabled = false; btn.textContent = 'Sblocca';
+      alert('Password sbagliata');
+    }
+  };
+
+  window.generateConfig = async function() {
+    const apiKey = document.getElementById('api-key-input').value.trim();
+    const pwd1 = document.getElementById('admin-pwd1').value;
+    const pwd2 = document.getElementById('admin-pwd2').value;
+    if (!apiKey.startsWith('sk-ant-')) { alert('API key deve iniziare con sk-ant-'); return; }
+    if (pwd1.length < 8) { alert('Password almeno 8 caratteri'); return; }
+    if (pwd1 !== pwd2) { alert('Le due password non coincidono'); return; }
+
+    const config = await encryptKey(apiKey, pwd1);
+    const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'chatbot-key.enc.json'; a.click();
+    URL.revokeObjectURL(url);
+    alert(
+      'File scaricato. Prossimi passi:\n\n' +
+      '1. Sposta chatbot-key.enc.json nella root del repo casa-milano\n' +
+      '2. git add chatbot-key.enc.json && git commit && git push\n' +
+      '3. Aspetta ~2 min per il deploy Pages\n' +
+      '4. Rinfresca la pagina (senza ?admin=1) — da ora basta la password.'
+    );
   };
 
   window.clearApiKey = function() {
-    if (!confirm('Rimuovere la API key dal browser?')) return;
+    if (!confirm('Rimuovere la API key locale? Dovrai re-inserire la password.')) return;
     localStorage.removeItem(KEY_API);
     showSetup();
   };
