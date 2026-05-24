@@ -691,6 +691,10 @@ def build(dry_run: bool = False) -> int:
             f'{preferiti_cards}'
         )
 
+    # JS-side: lista degli id che sono preferiti persistenti (da preferiti.json).
+    # Viene unita con localStorage per ottenere il set completo dei preferiti.
+    persistent_fav_ids_json = json.dumps([p.get("id") for p in preferiti_sorted if p.get("id")])
+
     cards = "\n".join(card(a, in_preferiti_set=preferiti_ids) for a in dash)
     empty = (
         '<div class="empty">Nessun annuncio attivo. La prossima sessione Apify popolerà la lista.</div>'
@@ -776,7 +780,7 @@ def build(dry_run: bool = False) -> int:
   </div>
   <div class="stats">
     <div class="stat"><div class="stat-val">{len(dash)}</div><div class="stat-lbl">In dashboard</div></div>
-    <div class="stat"><div class="stat-val">{len(preferiti_sorted)}</div><div class="stat-lbl">❤️ Preferiti</div></div>
+    <div class="stat"><div class="stat-val" id="kpi-fav-count">{len(preferiti_sorted)}</div><div class="stat-lbl">❤️ Preferiti</div></div>
     <div class="stat"><div class="stat-val">{total_30d}</div><div class="stat-lbl">Processati 30gg</div></div>
     <div class="stat"><div class="stat-val">{nuovi_oggi}</div><div class="stat-lbl">Nuovi oggi</div></div>
     <div class="stat"><div class="stat-val">{score_max}</div><div class="stat-lbl">Score max</div></div>
@@ -798,34 +802,57 @@ def build(dry_run: bool = False) -> int:
 
   <script>
   const FAVS_KEY = 'casa-milano-favs';
+  // ID dei preferiti persistenti (preferiti.json sul server)
+  const PERSISTENT_FAV_IDS = new Set({persistent_fav_ids_json});
 
   function getFavs() {{
     try {{ return JSON.parse(localStorage.getItem(FAVS_KEY) || '[]'); }}
     catch(e) {{ return []; }}
+  }}
+  function getAllFavIds() {{
+    // Unione: persistenti (preferiti.json) + locali (localStorage)
+    return new Set([...PERSISTENT_FAV_IDS, ...getFavs()]);
   }}
   function saveFavs(arr) {{
     localStorage.setItem(FAVS_KEY, JSON.stringify(arr));
     updateFavCount();
   }}
   function updateFavCount() {{
-    const n = getFavs().length;
+    const n = getAllFavIds().size;
     document.getElementById('fav-count').textContent = n;
-    document.getElementById('clear-btn').style.display = n > 0 ? '' : 'none';
+    const kpiEl = document.getElementById('kpi-fav-count');
+    if (kpiEl) kpiEl.textContent = n;
+    // "Svuota" pulisce solo localStorage, quindi mostralo solo se ci sono local favs
+    document.getElementById('clear-btn').style.display = getFavs().length > 0 ? '' : 'none';
+  }}
+  function styleCardAsFav(card, btn) {{
+    if (card) card.classList.add('card-fav');
+    if (btn) {{
+      btn.textContent = '❤️';
+      btn.classList.add('filled');
+    }}
+  }}
+  function unstyleCardAsFav(card, btn, id) {{
+    // Rimuovi solo se NON è un preferito persistente (quelli restano sempre rosa)
+    if (card && id && !PERSISTENT_FAV_IDS.has(id)) card.classList.remove('card-fav');
+    if (btn) {{
+      btn.textContent = '🤍';
+      btn.classList.remove('filled');
+    }}
   }}
   function toggleFav(btn) {{
     const id = btn.dataset.id;
     if (!id) return;
+    const card = btn.closest('.card, .card-fav');
     let favs = getFavs();
     const idx = favs.indexOf(id);
     if (idx === -1) {{
       favs.push(id);
-      btn.textContent = '❤️';
-      btn.classList.add('filled');
+      styleCardAsFav(card, btn);
       showToast('❤️ Aggiunto ai preferiti');
     }} else {{
       favs.splice(idx, 1);
-      btn.textContent = '🤍';
-      btn.classList.remove('filled');
+      unstyleCardAsFav(card, btn, id);
       showToast('Rimosso dai preferiti');
     }}
     saveFavs(favs);
@@ -833,23 +860,26 @@ def build(dry_run: bool = False) -> int:
   }}
   function applyFilter() {{
     const onlyFav = document.getElementById('filter-fav').checked;
-    const favs = getFavs();
+    const all = getAllFavIds();
     document.querySelectorAll('.card, .card-fav').forEach(c => {{
       const btn = c.querySelector('.heart-btn');
-      const isFav = btn && favs.includes(btn.dataset.id);
-      const isPersistFav = c.classList.contains('card-fav');
-      c.style.display = (!onlyFav || isFav || isPersistFav) ? '' : 'none';
+      const id = btn ? btn.dataset.id : null;
+      // Un card è "preferito" se: in unione (localStorage o persistent) OPPURE già renderizzata come card-fav (preferito persistente senza heart-btn)
+      const isFav = (id && all.has(id)) || (!btn && c.classList.contains('card-fav'));
+      c.style.display = (!onlyFav || isFav) ? '' : 'none';
     }});
   }}
   function clearFavs() {{
-    if (!confirm('Sicuro di voler svuotare i preferiti (solo questo browser)?')) return;
+    if (!confirm('Svuotare i preferiti locali di questo browser? I preferiti persistenti (su server) restano.')) return;
+    const localIds = getFavs();
     saveFavs([]);
     document.querySelectorAll('.heart-btn.filled').forEach(b => {{
-      b.textContent = '🤍';
-      b.classList.remove('filled');
+      const id = b.dataset.id;
+      const card = b.closest('.card, .card-fav');
+      unstyleCardAsFav(card, b, id);
     }});
     applyFilter();
-    showToast('Preferiti svuotati');
+    showToast('Preferiti locali svuotati');
   }}
   function showToast(msg) {{
     const t = document.getElementById('toast');
@@ -858,13 +888,13 @@ def build(dry_run: bool = False) -> int:
     setTimeout(() => t.classList.remove('show'), 2500);
   }}
 
-  // Init: marca i preferiti già salvati al load
+  // Init: applica stile preferito a tutte le card nell'unione (localStorage + persistent)
   document.addEventListener('DOMContentLoaded', () => {{
-    const favs = getFavs();
+    const all = getAllFavIds();
     document.querySelectorAll('.heart-btn').forEach(btn => {{
-      if (favs.includes(btn.dataset.id)) {{
-        btn.textContent = '❤️';
-        btn.classList.add('filled');
+      if (all.has(btn.dataset.id)) {{
+        const card = btn.closest('.card, .card-fav');
+        styleCardAsFav(card, btn);
       }}
     }});
     updateFavCount();
