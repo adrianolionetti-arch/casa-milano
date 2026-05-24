@@ -24,8 +24,8 @@ Cron 06:00 UTC → GitHub Actions runner → Claude Code agent (questa istanza)
 **Apify plan**: paid (nessun rate limit, nessun cap giornaliero). ~$2-3/mese a 60+60 listing/giorno.
 
 Search URL configurate negli script:
-- Immobiliare: `https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=450000&superficieMinima=80&ordinamento=data_pubblicazione_decrescente`
-- Idealista: `https://www.idealista.it/vendita-case/milano-milano/con-prezzo_450000,dimensione_80/?ordine=publicacion-desc`
+- Immobiliare: `https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=450000&superficieMinima=80&ordinamento=data_pubblicazione_decrescente` (filtri prezzo/mq direttamente nella URL)
+- Idealista: `https://www.idealista.it/vendita-case/milano-milano/` (no filtri URL — l'actor dz_omar non digerisce i path-slug. Filtri prezzo/mq applicati in Step 4.)
 
 **Niente fallback**. Se Apify fallisce → email `[INFRA]` esplicita e ABORT. Mai usare WebSearch né WebFetch sui portali (immobiliare.it diretto, gohome.it, tecnocasa.it, idealista.it, casa.it, wikicasa.it, bakeca.it): sono dietro Cloudflare 403 e i candidati senza body verificabile producono notifiche sbagliate.
 

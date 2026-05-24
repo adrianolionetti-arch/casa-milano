@@ -23,10 +23,10 @@ import time
 import urllib.error
 import urllib.request
 
-SEARCH_URL = (
-    "https://www.idealista.it/vendita-case/milano-milano/"
-    "con-prezzo_450000,dimensione_80/?ordine=publicacion-desc"
-)
+# NB: filtri prezzo/mq fatti in CLAUDE.md Step 4. L'actor dz_omar non digerisce
+# bene le path-slug di idealista (con-prezzo_X,dimensione_Y → HTTP 400
+# "Deeplinks parse failed"). Base URL pulita = max compat.
+SEARCH_URL = "https://www.idealista.it/vendita-case/milano-milano/"
 MAX_LISTINGS = 60
 OUTPUT_PATH = "/tmp/idealista_items.json"
 APIFY_TIMEOUT = 180
