@@ -11,6 +11,7 @@ Uso:
     python3 scripts/build_dashboard.py            # scrive index.html
     python3 scripts/build_dashboard.py --dry-run  # stampa solo il count senza scrivere
 """
+import html as html_lib
 import json
 import re
 import sys
@@ -21,6 +22,8 @@ ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = ROOT / "annunci_visti.json"
 PREFERITI_PATH = ROOT / "preferiti.json"
 OUT_PATH = ROOT / "index.html"
+
+GITHUB_REPO = "adrianolionetti-arch/casa-milano"
 
 URL_REGEX = re.compile(r"^https://www\.immobiliare\.it/annunci/\d+/?$")
 DAYS_WINDOW = 30
@@ -279,7 +282,6 @@ CHATBOT_TEMPLATE = r"""
       card.style.display = '';
     });
     document.getElementById('chat-filter-banner').classList.remove('show');
-    if (typeof applyFilter === 'function') applyFilter();
   };
 
   window.sendChat = async function() {
@@ -458,15 +460,23 @@ def card(a: dict, *, is_preferito: bool = False, in_preferiti_set: set | None = 
         else '<div class="card-photo-placeholder">🏠</div>'
     )
 
-    # Heart button — toggle localStorage. data-id richiesto dal JS.
+    # Heart button — apre issue GitHub prefillata. Workflow process-preferiti la
+    # processa e aggiunge a preferiti.json (visibile a entrambi gli utenti).
     listing_id = a.get("id") or ""
-    if is_preferito:
-        # Card già nella sezione preferiti persistenti (preferiti.json gestiti da Claude)
-        heart_html = '<div class="heart-badge filled" title="Preferito persistente">❤️</div>'
+    if is_preferito or (in_preferiti_set and listing_id in in_preferiti_set):
+        heart_html = '<div class="heart-badge filled" title="Preferito condiviso">❤️</div>'
     else:
+        esc = lambda v: html_lib.escape(str(v) if v is not None else "", quote=True)
         heart_html = (
-            f'<button class="heart-btn" data-id="{listing_id}" '
-            'onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>'
+            f'<button class="heart-btn"'
+            f' data-id="{esc(listing_id)}"'
+            f' data-url="{esc(a.get("url"))}"'
+            f' data-titolo="{esc(a.get("titolo"))}"'
+            f' data-prezzo="{esc(a.get("prezzo"))}"'
+            f' data-mq="{esc(a.get("mq"))}"'
+            f' data-zona="{esc(a.get("zona"))}"'
+            f' onclick="openFavIssue(this)"'
+            f' title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>'
         )
 
     # Score badge
@@ -675,11 +685,7 @@ def build(dry_run: bool = False) -> int:
     <div class="stat"><div class="stat-val">{score_max}</div><div class="stat-lbl">Score max</div></div>
   </div>
   <div class="toolbar">
-    <label class="toggle">
-      <input type="checkbox" id="filter-fav" onchange="applyFilter()">
-      <span>Mostra solo ❤️ preferiti (<span id="fav-count">0</span>)</span>
-    </label>
-    <button class="clear-btn" onclick="clearFavs()" id="clear-btn" style="display:none">Svuota preferiti</button>
+    <span style="font-size:12px;color:#64748b">💡 Clicca 🤍 su un annuncio per salvarlo nei preferiti condivisi</span>
   </div>
   <div class="main">
     {preferiti_section}
@@ -690,78 +696,40 @@ def build(dry_run: bool = False) -> int:
   <div id="toast" class="toast"></div>
 
   <script>
-  const FAVS_KEY = 'casa-milano-favs';
+  const GITHUB_REPO = '{GITHUB_REPO}';
 
-  function getFavs() {{
-    try {{ return JSON.parse(localStorage.getItem(FAVS_KEY) || '[]'); }}
-    catch(e) {{ return []; }}
+  function openFavIssue(btn) {{
+    const d = btn.dataset;
+    const titolo = d.titolo || '(senza titolo)';
+    const prezzo = d.prezzo && d.prezzo !== 'None' ? d.prezzo : '';
+    const mq = d.mq && d.mq !== 'None' ? d.mq : '';
+    const zona = d.zona && d.zona !== 'None' ? d.zona : '';
+    const title = 'preferito: ' + titolo.slice(0, 80);
+    const body = [
+      'URL: ' + (d.url || ''),
+      'Titolo: ' + titolo,
+      'Sito: immobiliare.it',
+      'Prezzo: ' + prezzo,
+      'Mq: ' + mq,
+      'Zona: ' + zona,
+      'Note: (opzionale — scrivi qui perché ti piace)',
+    ].join('\\n');
+    const u = 'https://github.com/' + GITHUB_REPO + '/issues/new'
+      + '?labels=preferito'
+      + '&title=' + encodeURIComponent(title)
+      + '&body=' + encodeURIComponent(body);
+    window.open(u, '_blank', 'noopener');
+    btn.textContent = '⏳';
+    btn.disabled = true;
+    showToast('🔗 Conferma "Submit new issue" su GitHub → preferito visibile a entrambi tra ~30s');
   }}
-  function saveFavs(arr) {{
-    localStorage.setItem(FAVS_KEY, JSON.stringify(arr));
-    updateFavCount();
-  }}
-  function updateFavCount() {{
-    const n = getFavs().length;
-    document.getElementById('fav-count').textContent = n;
-    document.getElementById('clear-btn').style.display = n > 0 ? '' : 'none';
-  }}
-  function toggleFav(btn) {{
-    const id = btn.dataset.id;
-    if (!id) return;
-    let favs = getFavs();
-    const idx = favs.indexOf(id);
-    if (idx === -1) {{
-      favs.push(id);
-      btn.textContent = '❤️';
-      btn.classList.add('filled');
-      showToast('❤️ Aggiunto ai preferiti');
-    }} else {{
-      favs.splice(idx, 1);
-      btn.textContent = '🤍';
-      btn.classList.remove('filled');
-      showToast('Rimosso dai preferiti');
-    }}
-    saveFavs(favs);
-    applyFilter();
-  }}
-  function applyFilter() {{
-    const onlyFav = document.getElementById('filter-fav').checked;
-    const favs = getFavs();
-    document.querySelectorAll('.card, .card-fav').forEach(c => {{
-      const btn = c.querySelector('.heart-btn');
-      const isFav = btn && favs.includes(btn.dataset.id);
-      const isPersistFav = c.classList.contains('card-fav');
-      c.style.display = (!onlyFav || isFav || isPersistFav) ? '' : 'none';
-    }});
-  }}
-  function clearFavs() {{
-    if (!confirm('Sicuro di voler svuotare i preferiti (solo questo browser)?')) return;
-    saveFavs([]);
-    document.querySelectorAll('.heart-btn.filled').forEach(b => {{
-      b.textContent = '🤍';
-      b.classList.remove('filled');
-    }});
-    applyFilter();
-    showToast('Preferiti svuotati');
-  }}
+
   function showToast(msg) {{
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
+    setTimeout(() => t.classList.remove('show'), 4000);
   }}
-
-  // Init: marca i preferiti già salvati al load
-  document.addEventListener('DOMContentLoaded', () => {{
-    const favs = getFavs();
-    document.querySelectorAll('.heart-btn').forEach(btn => {{
-      if (favs.includes(btn.dataset.id)) {{
-        btn.textContent = '❤️';
-        btn.classList.add('filled');
-      }}
-    }});
-    updateFavCount();
-  }});
   </script>
 </body>
 </html>"""

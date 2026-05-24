@@ -141,7 +141,8 @@ Riconoscimento zona: confronta `zona` (lowercased) con le liste di `criteri.md` 
 
 **Annunci nuovi con score ≥ 6 ⇒ candidati notifica.**
 
-Aggiungi a `annunci_visti.json` con:
+Aggiungi a `annunci_visti.json` con **TUTTI** i campi estratti allo Step 3, anche quelli usati solo per scoring/filtri — servono al chatbot della dashboard per rispondere a domande tipo "ce ne sono con terrazzo?" o "quali al 3° piano?":
+
 ```json
 {
   "id": "immobiliare-127700336",
@@ -149,7 +150,14 @@ Aggiungi a `annunci_visti.json` con:
   "titolo": "...",
   "prezzo": 345000,
   "mq": 98,
+  "locali": 3,
+  "bagni": 2,
+  "piano": "3",
+  "ascensore": true,
   "zona": "Santa Giulia",
+  "indirizzo": "Via Esempio 12",
+  "agenzia": "Tecnocasa",
+  "descrizione": "Trilocale luminoso con terrazzo...",
   "punteggio": 7.5,
   "foto_url": "https://pic.im-cdn.it/image/.../xxl-c.jpg",
   "data_vista": "2026-05-14",
@@ -157,6 +165,8 @@ Aggiungi a `annunci_visti.json` con:
   "note": ""
 }
 ```
+
+**Campi obbligatori** (`null`/`""`/`false` ammessi se davvero assenti, MAI omessi): `locali`, `bagni`, `piano`, `ascensore`, `indirizzo`, `agenzia`, `descrizione`. Stessa regola per i record `SCARTATO`/`ESCLUSO` (anche se non compaiono in dashboard).
 
 ### Step 7 — Email digest (OBBLIGATORIA AD OGNI SESSIONE)
 
