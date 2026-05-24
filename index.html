@@ -47,6 +47,11 @@
     .heart-btn:hover { transform: scale(1.2); background: #fce7f3; }
     .heart-btn.filled { transform: scale(1.1); }
     .heart-badge.filled { cursor: default; }
+    .card-actions { display: flex; flex-direction: column; gap: 2px; align-items: center; }
+    .share-btn { background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px; border-radius: 50%; transition: transform .15s; line-height: 1; opacity: .7; }
+    .share-btn:hover { transform: scale(1.2); opacity: 1; background: #dbeafe; }
+    .share-btn:disabled { opacity: .5; cursor: default; }
+    .share-badge { font-size: 16px; opacity: .6; padding: 4px; line-height: 1; }
 
     .title { padding: 0 18px; font-size: 15px; font-weight: 600; color: #1e293b; margin-bottom: 8px; line-height: 1.35; }
     .location { padding: 0 18px 6px; font-size: 13px; color: #475569; }
@@ -83,7 +88,12 @@
     <div class="stat"><div class="stat-val">7.5</div><div class="stat-lbl">Score max</div></div>
   </div>
   <div class="toolbar">
-    <span style="font-size:12px;color:#64748b">💡 Clicca 🤍 su un annuncio per salvarlo nei preferiti condivisi</span>
+    <label class="toggle">
+      <input type="checkbox" id="filter-fav" onchange="applyFilter()">
+      <span>Mostra solo i miei 🤍 (<span id="fav-count">0</span>)</span>
+    </label>
+    <span style="font-size:11px;color:#94a3b8">🤍 personale · 📤 condividi con l'altro utente</span>
+    <button class="clear-btn" onclick="clearFavs()" id="clear-btn" style="display:none">Svuota 🤍</button>
   </div>
   <div class="main">
     <div class="section-title" style="color:#ec4899">❤️ Preferiti — 2 salvati</div>
@@ -127,7 +137,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127407241" data-url="https://www.immobiliare.it/annunci/127407241" data-titolo="Trilocale via Paolo Rotta 10, Niguarda, Milano" data-prezzo="359000" data-mq="108" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-127407241" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-127407241" data-url="https://www.immobiliare.it/annunci/127407241" data-titolo="Trilocale via Paolo Rotta 10, Niguarda, Milano" data-prezzo="359000" data-mq="108" data-zona="Niguarda" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Paolo Rotta 10, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -143,7 +153,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-126027965" data-url="https://www.immobiliare.it/annunci/126027965" data-titolo="Trilocale via Padova 256, Crescenzago, Milano" data-prezzo="298000" data-mq="92" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-126027965" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-126027965" data-url="https://www.immobiliare.it/annunci/126027965" data-titolo="Trilocale via Padova 256, Crescenzago, Milano" data-prezzo="298000" data-mq="92" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Padova 256, Crescenzago, Milano</div>
   <div class="location">📍 <strong>Crescenzago</strong>  ·  📅 2026-05-23</div>
@@ -159,7 +169,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-126533107" data-url="https://www.immobiliare.it/annunci/126533107" data-titolo="Trilocale via Alessandro Litta Modignani, 113, 20161 Milano Italia, Affori, Milano" data-prezzo="289000" data-mq="90" data-zona="Affori" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-126533107" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-126533107" data-url="https://www.immobiliare.it/annunci/126533107" data-titolo="Trilocale via Alessandro Litta Modignani, 113, 20161 Milano Italia, Affori, Milano" data-prezzo="289000" data-mq="90" data-zona="Affori" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Alessandro Litta Modignani, 113, 20161 Milano Italia, Affori, Milano</div>
   <div class="location">📍 <strong>Affori</strong>  ·  📅 2026-05-23</div>
@@ -175,7 +185,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-121171488" data-url="https://www.immobiliare.it/annunci/121171488" data-titolo="Trilocale via Alessandro Litta Modignani 93, Affori, Milano" data-prezzo="265000" data-mq="90" data-zona="Affori" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-121171488" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-121171488" data-url="https://www.immobiliare.it/annunci/121171488" data-titolo="Trilocale via Alessandro Litta Modignani 93, Affori, Milano" data-prezzo="265000" data-mq="90" data-zona="Affori" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Alessandro Litta Modignani 93, Affori, Milano</div>
   <div class="location">📍 <strong>Affori</strong>  ·  📅 2026-05-23</div>
@@ -191,7 +201,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-101122965" data-url="https://www.immobiliare.it/annunci/101122965" data-titolo="Trilocale via Ernesto Teodoro Moneta, 43, Affori, Milano" data-prezzo="260000" data-mq="116" data-zona="Affori" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-101122965" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-101122965" data-url="https://www.immobiliare.it/annunci/101122965" data-titolo="Trilocale via Ernesto Teodoro Moneta, 43, Affori, Milano" data-prezzo="260000" data-mq="116" data-zona="Affori" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Ernesto Teodoro Moneta, 43, Affori, Milano</div>
   <div class="location">📍 <strong>Affori</strong>  ·  📅 2026-05-23</div>
@@ -207,7 +217,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.3/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127844942" data-url="https://www.immobiliare.it/annunci/127844942" data-titolo="Trilocale via Palmanova 213/A, Crescenzago, Milano" data-prezzo="289000" data-mq="90" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-127844942" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-127844942" data-url="https://www.immobiliare.it/annunci/127844942" data-titolo="Trilocale via Palmanova 213/A, Crescenzago, Milano" data-prezzo="289000" data-mq="90" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Palmanova 213/A, Crescenzago, Milano</div>
   <div class="location">📍 <strong>Crescenzago</strong>  ·  📅 2026-05-19</div>
@@ -223,7 +233,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-118468511" data-url="https://www.immobiliare.it/annunci/118468511" data-titolo="Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano" data-prezzo="309000" data-mq="85" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-118468511" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-118468511" data-url="https://www.immobiliare.it/annunci/118468511" data-titolo="Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano" data-prezzo="309000" data-mq="85" data-zona="Niguarda" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -239,7 +249,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128788342" data-url="https://www.immobiliare.it/annunci/128788342" data-titolo="Trilocale via Angelo Rizzoli 1, Crescenzago, Milano" data-prezzo="250000" data-mq="90" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-128788342" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-128788342" data-url="https://www.immobiliare.it/annunci/128788342" data-titolo="Trilocale via Angelo Rizzoli 1, Crescenzago, Milano" data-prezzo="250000" data-mq="90" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Angelo Rizzoli 1, Crescenzago, Milano</div>
   <div class="location">📍 <strong>Crescenzago</strong>  ·  📅 2026-05-23</div>
@@ -255,7 +265,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-129308456" data-url="https://www.immobiliare.it/annunci/129308456" data-titolo="Trilocale via Padova 267, Crescenzago, Milano" data-prezzo="295000" data-mq="90" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-129308456" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-129308456" data-url="https://www.immobiliare.it/annunci/129308456" data-titolo="Trilocale via Padova 267, Crescenzago, Milano" data-prezzo="295000" data-mq="90" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Padova 267, Crescenzago, Milano</div>
   <div class="location">📍 <strong>Crescenzago</strong>  ·  📅 2026-05-23</div>
@@ -271,7 +281,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-123095155" data-url="https://www.immobiliare.it/annunci/123095155" data-titolo="Bilocale via Fiuggi 12/7, Istria, Milano" data-prezzo="285000" data-mq="81" data-zona="Maggiolina/Istria" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-123095155" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-123095155" data-url="https://www.immobiliare.it/annunci/123095155" data-titolo="Bilocale via Fiuggi 12/7, Istria, Milano" data-prezzo="285000" data-mq="81" data-zona="Maggiolina/Istria" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Bilocale via Fiuggi 12/7, Istria, Milano</div>
   <div class="location">📍 <strong>Maggiolina/Istria</strong>  ·  📅 2026-05-18</div>
@@ -287,7 +297,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-129129934" data-url="https://www.immobiliare.it/annunci/129129934" data-titolo="Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano" data-prezzo="369000" data-mq="90" data-zona="Quartiere Adriano" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-129129934" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-129129934" data-url="https://www.immobiliare.it/annunci/129129934" data-titolo="Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano" data-prezzo="369000" data-mq="90" data-zona="Quartiere Adriano" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano</div>
   <div class="location">📍 <strong>Quartiere Adriano</strong>  ·  📅 2026-05-18</div>
@@ -303,7 +313,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-123994951" data-url="https://www.immobiliare.it/annunci/123994951" data-titolo="Attico via Palanzone 16, Niguarda, Milano" data-prezzo="399000" data-mq="106" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-123994951" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-123994951" data-url="https://www.immobiliare.it/annunci/123994951" data-titolo="Attico via Palanzone 16, Niguarda, Milano" data-prezzo="399000" data-mq="106" data-zona="Niguarda" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Attico via Palanzone 16, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -319,7 +329,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-125225759" data-url="https://www.immobiliare.it/annunci/125225759" data-titolo="Trilocale via Dino Buzzati 4, Vialba, Milano" data-prezzo="280000" data-mq="95" data-zona="Vialba" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-125225759" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-125225759" data-url="https://www.immobiliare.it/annunci/125225759" data-titolo="Trilocale via Dino Buzzati 4, Vialba, Milano" data-prezzo="280000" data-mq="95" data-zona="Vialba" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Dino Buzzati 4, Vialba, Milano</div>
   <div class="location">📍 <strong>Vialba</strong>  ·  📅 2026-05-23</div>
@@ -335,7 +345,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-129166094" data-url="https://www.immobiliare.it/annunci/129166094" data-titolo="Trilocale via Monte Rotondo 17, Niguarda, Milano" data-prezzo="360000" data-mq="114" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-129166094" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-129166094" data-url="https://www.immobiliare.it/annunci/129166094" data-titolo="Trilocale via Monte Rotondo 17, Niguarda, Milano" data-prezzo="360000" data-mq="114" data-zona="Niguarda" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Monte Rotondo 17, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -351,7 +361,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127610418" data-url="https://www.immobiliare.it/annunci/127610418" data-titolo="Trilocale via Padova 95, Turro, Milano" data-prezzo="289000" data-mq="80" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-127610418" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-127610418" data-url="https://www.immobiliare.it/annunci/127610418" data-titolo="Trilocale via Padova 95, Turro, Milano" data-prezzo="289000" data-mq="80" data-zona="Turro" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Padova 95, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -367,7 +377,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-129240362" data-url="https://www.immobiliare.it/annunci/129240362" data-titolo="Trilocale via Alessandro Litta Modignani 5, Affori, Milano" data-prezzo="330000" data-mq="101" data-zona="Affori" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-129240362" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-129240362" data-url="https://www.immobiliare.it/annunci/129240362" data-titolo="Trilocale via Alessandro Litta Modignani 5, Affori, Milano" data-prezzo="330000" data-mq="101" data-zona="Affori" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Alessandro Litta Modignani 5, Affori, Milano</div>
   <div class="location">📍 <strong>Affori</strong>  ·  📅 2026-05-23</div>
@@ -383,7 +393,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-125026857" data-url="https://www.immobiliare.it/annunci/125026857" data-titolo="Trilocale viale Monza 202, Precotto, Milano" data-prezzo="375000" data-mq="93" data-zona="Precotto" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-125026857" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-125026857" data-url="https://www.immobiliare.it/annunci/125026857" data-titolo="Trilocale viale Monza 202, Precotto, Milano" data-prezzo="375000" data-mq="93" data-zona="Precotto" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale viale Monza 202, Precotto, Milano</div>
   <div class="location">📍 <strong>Precotto</strong>  ·  📅 2026-05-23</div>
@@ -399,7 +409,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127770774" data-url="https://www.immobiliare.it/annunci/127770774" data-titolo="Trilocale via Privata Paolo Rotta 10, Niguarda, Milano" data-prezzo="219000" data-mq="88" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-127770774" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-127770774" data-url="https://www.immobiliare.it/annunci/127770774" data-titolo="Trilocale via Privata Paolo Rotta 10, Niguarda, Milano" data-prezzo="219000" data-mq="88" data-zona="Niguarda" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Privata Paolo Rotta 10, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -415,7 +425,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-125840815" data-url="https://www.immobiliare.it/annunci/125840815" data-titolo="Trilocale via Francesco Cavezzali 19, Turro, Milano" data-prezzo="275000" data-mq="85" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-125840815" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-125840815" data-url="https://www.immobiliare.it/annunci/125840815" data-titolo="Trilocale via Francesco Cavezzali 19, Turro, Milano" data-prezzo="275000" data-mq="85" data-zona="Turro" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Francesco Cavezzali 19, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -431,7 +441,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-126782373" data-url="https://www.immobiliare.it/annunci/126782373" data-titolo="Trilocale via Monte Rotondo 8, Niguarda, Milano" data-prezzo="299000" data-mq="85" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-126782373" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-126782373" data-url="https://www.immobiliare.it/annunci/126782373" data-titolo="Trilocale via Monte Rotondo 8, Niguarda, Milano" data-prezzo="299000" data-mq="85" data-zona="Niguarda" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Monte Rotondo 8, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -447,7 +457,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128636674" data-url="https://www.immobiliare.it/annunci/128636674" data-titolo="Trilocale via Policarpo Petrocchi 21, Turro, Milano" data-prezzo="378000" data-mq="90" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-128636674" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-128636674" data-url="https://www.immobiliare.it/annunci/128636674" data-titolo="Trilocale via Policarpo Petrocchi 21, Turro, Milano" data-prezzo="378000" data-mq="90" data-zona="Turro" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Policarpo Petrocchi 21, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -463,7 +473,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128854346" data-url="https://www.immobiliare.it/annunci/128854346" data-titolo="Trilocale via Ernesto Breda 37, Bicocca, Milano" data-prezzo="295000" data-mq="80" data-zona="Bicocca" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-128854346" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-128854346" data-url="https://www.immobiliare.it/annunci/128854346" data-titolo="Trilocale via Ernesto Breda 37, Bicocca, Milano" data-prezzo="295000" data-mq="80" data-zona="Bicocca" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Ernesto Breda 37, Bicocca, Milano</div>
   <div class="location">📍 <strong>Bicocca</strong>  ·  📅 2026-05-23</div>
@@ -479,7 +489,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127530126" data-url="https://www.immobiliare.it/annunci/127530126" data-titolo="Trilocale via Trasimeno 48, Quartiere Adriano, Milano" data-prezzo="349000" data-mq="100" data-zona="Quartiere Adriano" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-127530126" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-127530126" data-url="https://www.immobiliare.it/annunci/127530126" data-titolo="Trilocale via Trasimeno 48, Quartiere Adriano, Milano" data-prezzo="349000" data-mq="100" data-zona="Quartiere Adriano" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Trasimeno 48, Quartiere Adriano, Milano</div>
   <div class="location">📍 <strong>Quartiere Adriano</strong>  ·  📅 2026-05-23</div>
@@ -495,7 +505,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128673760" data-url="https://www.immobiliare.it/annunci/128673760" data-titolo="Trilocale via Ugo Mulas 4, Quartiere Adriano, Milano" data-prezzo="349000" data-mq="95" data-zona="Quartiere Adriano" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-128673760" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-128673760" data-url="https://www.immobiliare.it/annunci/128673760" data-titolo="Trilocale via Ugo Mulas 4, Quartiere Adriano, Milano" data-prezzo="349000" data-mq="95" data-zona="Quartiere Adriano" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Ugo Mulas 4, Quartiere Adriano, Milano</div>
   <div class="location">📍 <strong>Quartiere Adriano</strong>  ·  📅 2026-05-23</div>
@@ -511,7 +521,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128871010" data-url="https://www.immobiliare.it/annunci/128871010" data-titolo="Trilocale via Vittorio Bottego 25, Crescenzago, Milano" data-prezzo="398000" data-mq="105" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-128871010" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-128871010" data-url="https://www.immobiliare.it/annunci/128871010" data-titolo="Trilocale via Vittorio Bottego 25, Crescenzago, Milano" data-prezzo="398000" data-mq="105" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Vittorio Bottego 25, Crescenzago, Milano</div>
   <div class="location">📍 <strong>Crescenzago</strong>  ·  📅 2026-05-23</div>
@@ -527,7 +537,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-129260862" data-url="https://www.immobiliare.it/annunci/129260862" data-titolo="Trilocale via Privata Filippo Tommaso Marinetti 3, Turro, Milano" data-prezzo="315000" data-mq="90" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-129260862" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-129260862" data-url="https://www.immobiliare.it/annunci/129260862" data-titolo="Trilocale via Privata Filippo Tommaso Marinetti 3, Turro, Milano" data-prezzo="315000" data-mq="90" data-zona="Turro" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Privata Filippo Tommaso Marinetti 3, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -543,7 +553,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-126919153" data-url="https://www.immobiliare.it/annunci/126919153" data-titolo="Trilocale via Francesco Gonin, Giambellino, Milano" data-prezzo="310000" data-mq="120" data-zona="Giambellino" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-126919153" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-126919153" data-url="https://www.immobiliare.it/annunci/126919153" data-titolo="Trilocale via Francesco Gonin, Giambellino, Milano" data-prezzo="310000" data-mq="120" data-zona="Giambellino" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Francesco Gonin, Giambellino, Milano</div>
   <div class="location">📍 <strong>Giambellino</strong>  ·  📅 2026-05-23</div>
@@ -559,7 +569,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-129049468" data-url="https://www.immobiliare.it/annunci/129049468" data-titolo="Quadrilocale via Mar Nero, Bisceglie, Milano" data-prezzo="305000" data-mq="105" data-zona="Bisceglie" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-129049468" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-129049468" data-url="https://www.immobiliare.it/annunci/129049468" data-titolo="Quadrilocale via Mar Nero, Bisceglie, Milano" data-prezzo="305000" data-mq="105" data-zona="Bisceglie" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Quadrilocale via Mar Nero, Bisceglie, Milano</div>
   <div class="location">📍 <strong>Bisceglie</strong>  ·  📅 2026-05-23</div>
@@ -575,7 +585,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128668536" data-url="https://www.immobiliare.it/annunci/128668536" data-titolo="Trilocale via Terenzio Mamiani 7, Cimiano, Milano" data-prezzo="297000" data-mq="95" data-zona="Cimiano" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-128668536" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-128668536" data-url="https://www.immobiliare.it/annunci/128668536" data-titolo="Trilocale via Terenzio Mamiani 7, Cimiano, Milano" data-prezzo="297000" data-mq="95" data-zona="Cimiano" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Terenzio Mamiani 7, Cimiano, Milano</div>
   <div class="location">📍 <strong>Cimiano</strong>  ·  📅 2026-05-23</div>
@@ -591,7 +601,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-125378759" data-url="https://www.immobiliare.it/annunci/125378759" data-titolo="Trilocale via Padova 336, Crescenzago, Milano" data-prezzo="339000" data-mq="110" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-125378759" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-125378759" data-url="https://www.immobiliare.it/annunci/125378759" data-titolo="Trilocale via Padova 336, Crescenzago, Milano" data-prezzo="339000" data-mq="110" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Padova 336, Crescenzago, Milano</div>
   <div class="location">📍 <strong>Crescenzago</strong>  ·  📅 2026-05-23</div>
@@ -607,7 +617,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127339131" data-url="https://www.immobiliare.it/annunci/127339131" data-titolo="Trilocale via Ignazio Ciaia, Dergano, Milano" data-prezzo="210000" data-mq="101" data-zona="Dergano" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-127339131" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-127339131" data-url="https://www.immobiliare.it/annunci/127339131" data-titolo="Trilocale via Ignazio Ciaia, Dergano, Milano" data-prezzo="210000" data-mq="101" data-zona="Dergano" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Ignazio Ciaia, Dergano, Milano</div>
   <div class="location">📍 <strong>Dergano</strong>  ·  📅 2026-05-23</div>
@@ -623,7 +633,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128920978" data-url="https://www.immobiliare.it/annunci/128920978" data-titolo="Trilocale via Palmanova 91, Cimiano, Milano" data-prezzo="305000" data-mq="95" data-zona="Cimiano" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-128920978" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-128920978" data-url="https://www.immobiliare.it/annunci/128920978" data-titolo="Trilocale via Palmanova 91, Cimiano, Milano" data-prezzo="305000" data-mq="95" data-zona="Cimiano" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Palmanova 91, Cimiano, Milano</div>
   <div class="location">📍 <strong>Cimiano</strong>  ·  📅 2026-05-23</div>
@@ -639,7 +649,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-126187765" data-url="https://www.immobiliare.it/annunci/126187765" data-titolo="Trilocale via ALCEO 4, Precotto, Milano" data-prezzo="335000" data-mq="95" data-zona="Precotto" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-126187765" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-126187765" data-url="https://www.immobiliare.it/annunci/126187765" data-titolo="Trilocale via ALCEO 4, Precotto, Milano" data-prezzo="335000" data-mq="95" data-zona="Precotto" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via ALCEO 4, Precotto, Milano</div>
   <div class="location">📍 <strong>Precotto</strong>  ·  📅 2026-05-23</div>
@@ -655,7 +665,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128988828" data-url="https://www.immobiliare.it/annunci/128988828" data-titolo="Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano" data-prezzo="369000" data-mq="112" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-128988828" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-128988828" data-url="https://www.immobiliare.it/annunci/128988828" data-titolo="Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano" data-prezzo="369000" data-mq="112" data-zona="Niguarda" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -671,7 +681,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128023876" data-url="https://www.immobiliare.it/annunci/128023876" data-titolo="Trilocale via Padova 304, Crescenzago, Milano" data-prezzo="349000" data-mq="104" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-128023876" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-128023876" data-url="https://www.immobiliare.it/annunci/128023876" data-titolo="Trilocale via Padova 304, Crescenzago, Milano" data-prezzo="349000" data-mq="104" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Padova 304, Crescenzago, Milano</div>
   <div class="location">📍 <strong>Crescenzago</strong>  ·  📅 2026-05-23</div>
@@ -687,7 +697,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-109153679" data-url="https://www.immobiliare.it/annunci/109153679" data-titolo="Trilocale via Bernardo Rucellai 20, Precotto, Milano" data-prezzo="429000" data-mq="110" data-zona="Precotto" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-109153679" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-109153679" data-url="https://www.immobiliare.it/annunci/109153679" data-titolo="Trilocale via Bernardo Rucellai 20, Precotto, Milano" data-prezzo="429000" data-mq="110" data-zona="Precotto" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Bernardo Rucellai 20, Precotto, Milano</div>
   <div class="location">📍 <strong>Precotto</strong>  ·  📅 2026-05-23</div>
@@ -703,7 +713,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-124027361" data-url="https://www.immobiliare.it/annunci/124027361" data-titolo="Trilocale via Alessandro Litta Modignani 111, Affori, Milano" data-prezzo="239000" data-mq="88" data-zona="Affori" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-124027361" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-124027361" data-url="https://www.immobiliare.it/annunci/124027361" data-titolo="Trilocale via Alessandro Litta Modignani 111, Affori, Milano" data-prezzo="239000" data-mq="88" data-zona="Affori" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Alessandro Litta Modignani 111, Affori, Milano</div>
   <div class="location">📍 <strong>Affori</strong>  ·  📅 2026-05-23</div>
@@ -719,7 +729,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-118248493" data-url="https://www.immobiliare.it/annunci/118248493" data-titolo="Trilocale via Luigi Ornato 111, Niguarda, Milano" data-prezzo="339000" data-mq="110" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-118248493" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-118248493" data-url="https://www.immobiliare.it/annunci/118248493" data-titolo="Trilocale via Luigi Ornato 111, Niguarda, Milano" data-prezzo="339000" data-mq="110" data-zona="Niguarda" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Luigi Ornato 111, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -735,7 +745,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127404829" data-url="https://www.immobiliare.it/annunci/127404829" data-titolo="Trilocale via Marmolada 10, Niguarda, Milano" data-prezzo="334000" data-mq="109" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-127404829" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-127404829" data-url="https://www.immobiliare.it/annunci/127404829" data-titolo="Trilocale via Marmolada 10, Niguarda, Milano" data-prezzo="334000" data-mq="109" data-zona="Niguarda" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Marmolada 10, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -751,7 +761,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127397637" data-url="https://www.immobiliare.it/annunci/127397637" data-titolo="Trilocale via Francesco Cavezzali 8, Turro, Milano" data-prezzo="390000" data-mq="99" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-127397637" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-127397637" data-url="https://www.immobiliare.it/annunci/127397637" data-titolo="Trilocale via Francesco Cavezzali 8, Turro, Milano" data-prezzo="390000" data-mq="99" data-zona="Turro" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Francesco Cavezzali 8, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -767,7 +777,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-118998885" data-url="https://www.immobiliare.it/annunci/118998885" data-titolo="Trilocale via Carlo Cicogna Mozzoni, Affori, Milano" data-prezzo="315000" data-mq="90" data-zona="Affori" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-118998885" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-118998885" data-url="https://www.immobiliare.it/annunci/118998885" data-titolo="Trilocale via Carlo Cicogna Mozzoni, Affori, Milano" data-prezzo="315000" data-mq="90" data-zona="Affori" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Carlo Cicogna Mozzoni, Affori, Milano</div>
   <div class="location">📍 <strong>Affori</strong>  ·  📅 2026-05-23</div>
@@ -783,7 +793,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127438812" data-url="https://www.immobiliare.it/annunci/127438812" data-titolo="Trilocale via Pisino 12, Gorla, Milano" data-prezzo="370000" data-mq="100" data-zona="Gorla" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-127438812" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-127438812" data-url="https://www.immobiliare.it/annunci/127438812" data-titolo="Trilocale via Pisino 12, Gorla, Milano" data-prezzo="370000" data-mq="100" data-zona="Gorla" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Pisino 12, Gorla, Milano</div>
   <div class="location">📍 <strong>Gorla</strong>  ·  📅 2026-05-23</div>
@@ -799,7 +809,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128463344" data-url="https://www.immobiliare.it/annunci/128463344" data-titolo="Trilocale via Francesco Cavezzali 8, Turro, Milano" data-prezzo="390000" data-mq="99" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-128463344" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-128463344" data-url="https://www.immobiliare.it/annunci/128463344" data-titolo="Trilocale via Francesco Cavezzali 8, Turro, Milano" data-prezzo="390000" data-mq="99" data-zona="Turro" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Francesco Cavezzali 8, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -815,7 +825,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128521698" data-url="https://www.immobiliare.it/annunci/128521698" data-titolo="Trilocale via Pericle 5, Precotto, Milano" data-prezzo="349000" data-mq="95" data-zona="Precotto" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-128521698" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-128521698" data-url="https://www.immobiliare.it/annunci/128521698" data-titolo="Trilocale via Pericle 5, Precotto, Milano" data-prezzo="349000" data-mq="95" data-zona="Precotto" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Trilocale via Pericle 5, Precotto, Milano</div>
   <div class="location">📍 <strong>Precotto</strong>  ·  📅 2026-05-23</div>
@@ -831,7 +841,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-125788051" data-url="https://www.immobiliare.it/annunci/125788051" data-titolo="Quadrilocale via Tofane 33, Turro, Milano" data-prezzo="399000" data-mq="94" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-125788051" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-125788051" data-url="https://www.immobiliare.it/annunci/125788051" data-titolo="Quadrilocale via Tofane 33, Turro, Milano" data-prezzo="399000" data-mq="94" data-zona="Turro" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Quadrilocale via Tofane 33, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -847,7 +857,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-124629609" data-url="https://www.immobiliare.it/annunci/124629609" data-titolo="Bilocale via Matteo Maria Boiardo 12, Turro, Milano" data-prezzo="329000" data-mq="90" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
+    <div class="card-actions"><button class="heart-btn" data-id="immobiliare-124629609" onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button><button class="share-btn" data-id="immobiliare-124629609" data-url="https://www.immobiliare.it/annunci/124629609" data-titolo="Bilocale via Matteo Maria Boiardo 12, Turro, Milano" data-prezzo="329000" data-mq="90" data-zona="Turro" onclick="openFavIssue(this)" title="Condividi con l'altro utente (apre issue GitHub)">📤</button></div>
   </div>
   <div class="title">Bilocale via Matteo Maria Boiardo 12, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -861,7 +871,65 @@
   <div id="toast" class="toast"></div>
 
   <script>
+  const FAVS_KEY = 'casa-milano-favs';
   const GITHUB_REPO = 'adrianolionetti-arch/casa-milano';
+
+  function getFavs() {
+    try { return JSON.parse(localStorage.getItem(FAVS_KEY) || '[]'); }
+    catch(e) { return []; }
+  }
+  function saveFavs(arr) {
+    localStorage.setItem(FAVS_KEY, JSON.stringify(arr));
+    updateFavCount();
+  }
+  function updateFavCount() {
+    const n = getFavs().length;
+    const el = document.getElementById('fav-count');
+    if (el) el.textContent = n;
+    const clr = document.getElementById('clear-btn');
+    if (clr) clr.style.display = n > 0 ? '' : 'none';
+  }
+  function toggleFav(btn) {
+    const id = btn.dataset.id;
+    if (!id) return;
+    let favs = getFavs();
+    const idx = favs.indexOf(id);
+    if (idx === -1) {
+      favs.push(id);
+      btn.textContent = '❤️';
+      btn.classList.add('filled');
+      showToast('❤️ Aggiunto ai tuoi preferiti personali (solo questo browser)');
+    } else {
+      favs.splice(idx, 1);
+      btn.textContent = '🤍';
+      btn.classList.remove('filled');
+      showToast('Rimosso dai preferiti personali');
+    }
+    saveFavs(favs);
+    applyFilter();
+  }
+  function applyFilter() {
+    const cb = document.getElementById('filter-fav');
+    const onlyFav = cb && cb.checked;
+    const favs = getFavs();
+    document.querySelectorAll('.card, .card-fav').forEach(c => {
+      if (c.dataset.chatHidden === '1') { c.style.display = 'none'; return; }
+      const btn = c.querySelector('.heart-btn');
+      const isFav = btn && favs.includes(btn.dataset.id);
+      const isPersistFav = c.classList.contains('card-fav');
+      c.style.display = (!onlyFav || isFav || isPersistFav) ? '' : 'none';
+    });
+  }
+  function clearFavs() {
+    if (!confirm('Svuotare i tuoi 🤍 personali (solo questo browser)?')) return;
+    saveFavs([]);
+    document.querySelectorAll('.heart-btn.filled').forEach(b => {
+      b.textContent = '🤍';
+      b.classList.remove('filled');
+    });
+    applyFilter();
+    showToast('Preferiti personali svuotati');
+  }
 
   function openFavIssue(btn) {
     const d = btn.dataset;
@@ -886,15 +954,27 @@
     window.open(u, '_blank', 'noopener');
     btn.textContent = '⏳';
     btn.disabled = true;
-    showToast('🔗 Conferma "Submit new issue" su GitHub → preferito visibile a entrambi tra ~30s');
+    showToast('🔗 Conferma "Submit new issue" su GitHub → visibile a entrambi tra ~30s');
   }
 
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 4000);
+    setTimeout(() => t.classList.remove('show'), 3500);
   }
+
+  // Init: marca i preferiti già salvati al load
+  document.addEventListener('DOMContentLoaded', () => {
+    const favs = getFavs();
+    document.querySelectorAll('.heart-btn').forEach(btn => {
+      if (favs.includes(btn.dataset.id)) {
+        btn.textContent = '❤️';
+        btn.classList.add('filled');
+      }
+    });
+    updateFavCount();
+  });
   </script>
 
 <style>
@@ -1103,9 +1183,11 @@
     document.querySelectorAll('.card').forEach(card => {
       const btn = card.querySelector('.heart-btn');
       const id = btn ? btn.dataset.id : null;
-      if (id && idSet.has(id)) { card.dataset.chatHidden = ''; delete card.dataset.chatHidden; card.style.display = ''; shown++; }
-      else { card.dataset.chatHidden = '1'; card.style.display = 'none'; }
+      if (id && idSet.has(id)) { delete card.dataset.chatHidden; shown++; }
+      else { card.dataset.chatHidden = '1'; }
     });
+    // Lascia che applyFilter (fav) componga con chatHidden
+    if (typeof applyFilter === 'function') applyFilter();
     document.getElementById('chat-filter-text').textContent = '🔍 Chatbot ha filtrato ' + shown + ' di ' + LISTINGS.length + ' annunci';
     banner.classList.add('show');
     window.scrollTo({ top: banner.offsetTop - 20, behavior: 'smooth' });
@@ -1117,6 +1199,7 @@
       card.style.display = '';
     });
     document.getElementById('chat-filter-banner').classList.remove('show');
+    if (typeof applyFilter === 'function') applyFilter();
   };
 
   window.sendChat = async function() {

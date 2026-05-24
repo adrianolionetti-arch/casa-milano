@@ -268,9 +268,11 @@ CHATBOT_TEMPLATE = r"""
     document.querySelectorAll('.card').forEach(card => {
       const btn = card.querySelector('.heart-btn');
       const id = btn ? btn.dataset.id : null;
-      if (id && idSet.has(id)) { card.dataset.chatHidden = ''; delete card.dataset.chatHidden; card.style.display = ''; shown++; }
-      else { card.dataset.chatHidden = '1'; card.style.display = 'none'; }
+      if (id && idSet.has(id)) { delete card.dataset.chatHidden; shown++; }
+      else { card.dataset.chatHidden = '1'; }
     });
+    // Lascia che applyFilter (fav) componga con chatHidden
+    if (typeof applyFilter === 'function') applyFilter();
     document.getElementById('chat-filter-text').textContent = '🔍 Chatbot ha filtrato ' + shown + ' di ' + LISTINGS.length + ' annunci';
     banner.classList.add('show');
     window.scrollTo({ top: banner.offsetTop - 20, behavior: 'smooth' });
@@ -282,6 +284,7 @@ CHATBOT_TEMPLATE = r"""
       card.style.display = '';
     });
     document.getElementById('chat-filter-banner').classList.remove('show');
+    if (typeof applyFilter === 'function') applyFilter();
   };
 
   window.sendChat = async function() {
@@ -460,15 +463,20 @@ def card(a: dict, *, is_preferito: bool = False, in_preferiti_set: set | None = 
         else '<div class="card-photo-placeholder">🏠</div>'
     )
 
-    # Heart button — apre issue GitHub prefillata. Workflow process-preferiti la
-    # processa e aggiunge a preferiti.json (visibile a entrambi gli utenti).
+    # Due bottoni:
+    #  - 🤍 personale (localStorage, per-browser) — toggleFav + filtro
+    #  - 📤 condividi (apre issue GitHub) — visibile anche all'altro utente
     listing_id = a.get("id") or ""
-    if is_preferito or (in_preferiti_set and listing_id in in_preferiti_set):
+    if is_preferito:
+        # Card già nella sezione preferiti persistenti (preferiti.json)
         heart_html = '<div class="heart-badge filled" title="Preferito condiviso">❤️</div>'
     else:
         esc = lambda v: html_lib.escape(str(v) if v is not None else "", quote=True)
-        heart_html = (
-            f'<button class="heart-btn"'
+        in_shared = bool(in_preferiti_set and listing_id in in_preferiti_set)
+        share_btn = (
+            '<div class="share-badge" title="Già nei preferiti condivisi">✅</div>'
+            if in_shared else
+            f'<button class="share-btn"'
             f' data-id="{esc(listing_id)}"'
             f' data-url="{esc(a.get("url"))}"'
             f' data-titolo="{esc(a.get("titolo"))}"'
@@ -476,7 +484,14 @@ def card(a: dict, *, is_preferito: bool = False, in_preferiti_set: set | None = 
             f' data-mq="{esc(a.get("mq"))}"'
             f' data-zona="{esc(a.get("zona"))}"'
             f' onclick="openFavIssue(this)"'
-            f' title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>'
+            f' title="Condividi con l\'altro utente (apre issue GitHub)">📤</button>'
+        )
+        heart_html = (
+            f'<div class="card-actions">'
+            f'<button class="heart-btn" data-id="{esc(listing_id)}" '
+            f'onclick="toggleFav(this)" title="Aggiungi al tuo elenco personale (solo questo browser)">🤍</button>'
+            f'{share_btn}'
+            f'</div>'
         )
 
     # Score badge
@@ -649,6 +664,11 @@ def build(dry_run: bool = False) -> int:
     .heart-btn:hover {{ transform: scale(1.2); background: #fce7f3; }}
     .heart-btn.filled {{ transform: scale(1.1); }}
     .heart-badge.filled {{ cursor: default; }}
+    .card-actions {{ display: flex; flex-direction: column; gap: 2px; align-items: center; }}
+    .share-btn {{ background: none; border: none; font-size: 18px; cursor: pointer; padding: 4px; border-radius: 50%; transition: transform .15s; line-height: 1; opacity: .7; }}
+    .share-btn:hover {{ transform: scale(1.2); opacity: 1; background: #dbeafe; }}
+    .share-btn:disabled {{ opacity: .5; cursor: default; }}
+    .share-badge {{ font-size: 16px; opacity: .6; padding: 4px; line-height: 1; }}
 
     .title {{ padding: 0 18px; font-size: 15px; font-weight: 600; color: #1e293b; margin-bottom: 8px; line-height: 1.35; }}
     .location {{ padding: 0 18px 6px; font-size: 13px; color: #475569; }}
@@ -685,7 +705,12 @@ def build(dry_run: bool = False) -> int:
     <div class="stat"><div class="stat-val">{score_max}</div><div class="stat-lbl">Score max</div></div>
   </div>
   <div class="toolbar">
-    <span style="font-size:12px;color:#64748b">💡 Clicca 🤍 su un annuncio per salvarlo nei preferiti condivisi</span>
+    <label class="toggle">
+      <input type="checkbox" id="filter-fav" onchange="applyFilter()">
+      <span>Mostra solo i miei 🤍 (<span id="fav-count">0</span>)</span>
+    </label>
+    <span style="font-size:11px;color:#94a3b8">🤍 personale · 📤 condividi con l'altro utente</span>
+    <button class="clear-btn" onclick="clearFavs()" id="clear-btn" style="display:none">Svuota 🤍</button>
   </div>
   <div class="main">
     {preferiti_section}
@@ -696,7 +721,65 @@ def build(dry_run: bool = False) -> int:
   <div id="toast" class="toast"></div>
 
   <script>
+  const FAVS_KEY = 'casa-milano-favs';
   const GITHUB_REPO = '{GITHUB_REPO}';
+
+  function getFavs() {{
+    try {{ return JSON.parse(localStorage.getItem(FAVS_KEY) || '[]'); }}
+    catch(e) {{ return []; }}
+  }}
+  function saveFavs(arr) {{
+    localStorage.setItem(FAVS_KEY, JSON.stringify(arr));
+    updateFavCount();
+  }}
+  function updateFavCount() {{
+    const n = getFavs().length;
+    const el = document.getElementById('fav-count');
+    if (el) el.textContent = n;
+    const clr = document.getElementById('clear-btn');
+    if (clr) clr.style.display = n > 0 ? '' : 'none';
+  }}
+  function toggleFav(btn) {{
+    const id = btn.dataset.id;
+    if (!id) return;
+    let favs = getFavs();
+    const idx = favs.indexOf(id);
+    if (idx === -1) {{
+      favs.push(id);
+      btn.textContent = '❤️';
+      btn.classList.add('filled');
+      showToast('❤️ Aggiunto ai tuoi preferiti personali (solo questo browser)');
+    }} else {{
+      favs.splice(idx, 1);
+      btn.textContent = '🤍';
+      btn.classList.remove('filled');
+      showToast('Rimosso dai preferiti personali');
+    }}
+    saveFavs(favs);
+    applyFilter();
+  }}
+  function applyFilter() {{
+    const cb = document.getElementById('filter-fav');
+    const onlyFav = cb && cb.checked;
+    const favs = getFavs();
+    document.querySelectorAll('.card, .card-fav').forEach(c => {{
+      if (c.dataset.chatHidden === '1') {{ c.style.display = 'none'; return; }}
+      const btn = c.querySelector('.heart-btn');
+      const isFav = btn && favs.includes(btn.dataset.id);
+      const isPersistFav = c.classList.contains('card-fav');
+      c.style.display = (!onlyFav || isFav || isPersistFav) ? '' : 'none';
+    }});
+  }}
+  function clearFavs() {{
+    if (!confirm('Svuotare i tuoi 🤍 personali (solo questo browser)?')) return;
+    saveFavs([]);
+    document.querySelectorAll('.heart-btn.filled').forEach(b => {{
+      b.textContent = '🤍';
+      b.classList.remove('filled');
+    }});
+    applyFilter();
+    showToast('Preferiti personali svuotati');
+  }}
 
   function openFavIssue(btn) {{
     const d = btn.dataset;
@@ -721,15 +804,27 @@ def build(dry_run: bool = False) -> int:
     window.open(u, '_blank', 'noopener');
     btn.textContent = '⏳';
     btn.disabled = true;
-    showToast('🔗 Conferma "Submit new issue" su GitHub → preferito visibile a entrambi tra ~30s');
+    showToast('🔗 Conferma "Submit new issue" su GitHub → visibile a entrambi tra ~30s');
   }}
 
   function showToast(msg) {{
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 4000);
+    setTimeout(() => t.classList.remove('show'), 3500);
   }}
+
+  // Init: marca i preferiti già salvati al load
+  document.addEventListener('DOMContentLoaded', () => {{
+    const favs = getFavs();
+    document.querySelectorAll('.heart-btn').forEach(btn => {{
+      if (favs.includes(btn.dataset.id)) {{
+        btn.textContent = '❤️';
+        btn.classList.add('filled');
+      }}
+    }});
+    updateFavCount();
+  }});
   </script>
 </body>
 </html>"""
