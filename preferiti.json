@@ -41,11 +41,13 @@
       "prezzo": 359000,
       "mq": 108,
       "zona": "Niguarda",
-      "indirizzo": null,
-      "foto_url": null,
+      "indirizzo": "Via Paolo Rotta",
+      "foto_url": "https://pwm.im-cdn.it/image/1890808672/xxl.jpg",
       "agenzia": "immobiliare.it",
       "data_aggiunto": "2026-05-25",
-      "note_personali": "(opzionale — scrivi qui perché ti piace)"
+      "note_personali": "(opzionale — scrivi qui perché ti piace)",
+      "lat": 45.5164,
+      "lon": 9.1895
     }
   ]
 }
