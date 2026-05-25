@@ -30,7 +30,9 @@
       "foto_url": "https://pwm.im-cdn.it/image/1816989629/xxl.jpg",
       "agenzia": "immobiliare.it",
       "data_aggiunto": "2026-05-21",
-      "note_personali": ""
+      "note_personali": "",
+      "lat": 45.516,
+      "lon": 9.21089
     }
   ]
 }
