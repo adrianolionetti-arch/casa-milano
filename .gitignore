@@ -7,3 +7,10 @@ annunci_visti.backup-*.json
 
 # Local state from Claude Code harness (scheduler locks, etc.)
 .claude/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Documenti personali (valutazioni, decisioni, ecc. — restano locali)
+documents/
