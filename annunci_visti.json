@@ -2,16 +2,16 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-24T00:00:00",
-    "ultimo_aggiornamento": "2026-05-24",
-    "totale_annunci": 2076,
-    "last_updated": "2026-05-24",
+    "ultima_sessione": "2026-05-25T00:00:00",
+    "ultimo_aggiornamento": "2026-05-25",
+    "totale_annunci": 2079,
+    "last_updated": "2026-05-25",
     "reset": {
       "date": "2026-05-18",
       "rationale": "Pulizia chirurgica post-budget update (360k -> 450k) e fix double-call Apify. Rimossi tutti SCARTATO/ESCLUSO storici + entry post 2026-05-15 (durante INFRA fail).",
       "removed_count": 138
     },
-    "total": 2076
+    "total": 2079
   },
   "annunci": [
     {
@@ -27061,6 +27061,48 @@
       "data_vista": "2026-05-24",
       "notificato": true,
       "note": "ESCLUSO — superficie 150mq fuori range"
+    },
+    {
+      "id": "immobiliare-129086734",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/129086734",
+      "titolo": "Bilocale viale Enrico Martini 13, Corvetto, Milano",
+      "prezzo": 410000,
+      "mq": 80,
+      "zona": "Corvetto",
+      "punteggio": 0,
+      "foto_url": "https://pic.im-cdn.it/image/1931184320/xxl-c.jpg",
+      "data_vista": "2026-05-25",
+      "notificato": true,
+      "note": "ESCLUSO — zona esclusa: corvetto"
+    },
+    {
+      "id": "idealista-35808761",
+      "source": "idealista",
+      "url": "https://www.idealista.it/immobile/35808761/",
+      "titolo": "4 room flat in Via Goffredo Mameli, 8, Indipendenza - Regina Giovanna, Milano",
+      "prezzo": 1450000,
+      "mq": 195,
+      "zona": "Garibaldi - Porta Venezia",
+      "punteggio": 0,
+      "foto_url": "https://img4.idealista.it/s/v1/yLv6QcFavuQ-ndqtd3fIzjn3dwgl4inLwTIyMiVSd6Ml4khBqGDIaJvI4s5m5JvBdwged9o-d6POdz4l9wsG9z6Aesj1m6jL?Expires=1779789231&Signature=MEUCIChMLDeXauhMFM6jw765mCZCRNEmAnZFJI~LHEj8xbAaAiEA9eVnByvPDYRpCrGi8kdhAqYmD2JwMNeIhirs3uQy-fM_&Key-Pair-Id=K2JVXDTZM876F3",
+      "data_vista": "2026-05-25",
+      "notificato": true,
+      "note": "ESCLUSO — superficie 195mq (>120)"
+    },
+    {
+      "id": "idealista-35632174",
+      "source": "idealista",
+      "url": "https://www.idealista.it/immobile/35632174/",
+      "titolo": "Flat / apartment in Via Ippolito Nievo Nn, Portello - Tre Torri, Milano",
+      "prezzo": 1450000,
+      "mq": 165,
+      "zona": "Fiera - De Angeli",
+      "punteggio": 0,
+      "foto_url": "https://img4.idealista.it/s/v1/yLv6QcFavuQ-ndqtd3fIzjn3dwgl4inLwTIyMiVSd6Ml4khBqGDIaJvI4s5m5JvBdyWjd5v3d3r3dwuACz4IPgajgMj1m6jL?Expires=1779789231&Signature=MEUCIE6Fijuy-N2VTdSOB-V~sBCXoorq1LbqTqyIVYfYz7I3AiEAhblYuEinOmg3jAAZQHxD3x7Bfew~F05ImwklpxPWVMs_&Key-Pair-Id=K2JVXDTZM876F3",
+      "data_vista": "2026-05-25",
+      "notificato": true,
+      "note": "ESCLUSO — superficie 165mq (>120)"
     }
   ]
 }
