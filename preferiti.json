@@ -48,6 +48,19 @@
       "note_personali": "(opzionale — scrivi qui perché ti piace)",
       "lat": 45.5164,
       "lon": 9.1895
+    },
+    {
+      "id": "immobiliare-126027965",
+      "url": "https://www.immobiliare.it/annunci/126027965",
+      "titolo": "Trilocale via Padova 256, Crescenzago, Milano",
+      "prezzo": 298000,
+      "mq": 92,
+      "zona": "Crescenzago",
+      "indirizzo": null,
+      "foto_url": null,
+      "agenzia": "immobiliare.it",
+      "data_aggiunto": "2026-05-25",
+      "note_personali": "(opzionale — scrivi qui perché ti piace)"
     }
   ]
 }
