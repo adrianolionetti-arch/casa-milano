@@ -56,7 +56,9 @@ def extract_fields(item: dict) -> dict:
     surface_raw = props.get("surface")
     mq = None
     if surface_raw:
-        digits = "".join(c for c in str(surface_raw) if c.isdigit())
+        # NB: c.isdigit() accetta anche superscripts unicode (es. "²" in "m²") -> bug.
+        # Filtra solo ASCII 0-9.
+        digits = "".join(c for c in str(surface_raw) if c in "0123456789")
         if digits:
             mq = int(digits)
 
