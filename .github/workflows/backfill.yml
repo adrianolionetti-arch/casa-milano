@@ -1,0 +1,41 @@
+name: Backfill DB (one-shot)
+
+# Arricchisce annunci_visti.json con campi mancanti (piano, bagni, descrizione, ecc.)
+# via Apify single-listing actor. Da lanciare manualmente dalla tab Actions.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  backfill:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Run backfill
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+        run: python3 scripts/backfill_db.py
+
+      - name: Rebuild dashboard
+        run: python3 scripts/build_dashboard.py
+
+      - name: Commit & push
+        run: |
+          git config user.email 'agent@casa-milano.local'
+          git config user.name 'Casa Milano Agent'
+          if git diff --quiet; then
+            echo "Nessuna modifica da committare"
+            exit 0
+          fi
+          git add annunci_visti.json index.html
+          git commit -m "Backfill DB: campi piano/bagni/descrizione/agenzia arricchiti"
+          git push origin main

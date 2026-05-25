@@ -45,7 +45,7 @@
 
     .heart-btn, .heart-badge { background: none; border: none; font-size: 26px; cursor: pointer; padding: 4px; border-radius: 50%; transition: transform .15s; line-height: 1; }
     .heart-btn:hover { transform: scale(1.2); background: #fce7f3; }
-    .heart-btn.filled { transform: scale(1.1); }
+    .heart-btn:disabled { opacity: .5; cursor: default; }
     .heart-badge.filled { cursor: default; }
 
     .title { padding: 0 18px; font-size: 15px; font-weight: 600; color: #1e293b; margin-bottom: 8px; line-height: 1.35; }
@@ -73,52 +73,48 @@
 <body>
   <div class="header">
     <h1>🏠 Casa Milano — Dashboard</h1>
-    <p>Aggiornato: 25/05/2026 · Annunci attivi su Immobiliare.it · score ≥ 6.0 · ultimi 30 giorni</p>
+    <p>Aggiornato: 24/05/2026 · Annunci attivi su Immobiliare.it · score ≥ 6.0 · ultimi 30 giorni</p>
   </div>
   <div class="stats">
     <div class="stat"><div class="stat-val">46</div><div class="stat-lbl">In dashboard</div></div>
-    <div class="stat"><div class="stat-val" id="kpi-fav-count">2</div><div class="stat-lbl">❤️ Preferiti</div></div>
-    <div class="stat"><div class="stat-val">2079</div><div class="stat-lbl">Processati 30gg</div></div>
+    <div class="stat"><div class="stat-val">2</div><div class="stat-lbl">❤️ Preferiti</div></div>
+    <div class="stat"><div class="stat-val">2016</div><div class="stat-lbl">Processati 30gg</div></div>
     <div class="stat"><div class="stat-val">0</div><div class="stat-lbl">Nuovi oggi</div></div>
     <div class="stat"><div class="stat-val">7.5</div><div class="stat-lbl">Score max</div></div>
   </div>
   <div class="toolbar">
-    <label class="toggle">
-      <input type="checkbox" id="filter-fav" onchange="applyFilter()">
-      <span>Mostra solo ❤️ preferiti (<span id="fav-count">0</span>)</span>
-    </label>
-    <button class="clear-btn" onclick="clearFavs()" id="clear-btn" style="display:none">Svuota preferiti</button>
+    <span style="font-size:12px;color:#64748b">💡 Clicca 🤍 per salvare nei preferiti condivisi (visibili a entrambi)</span>
   </div>
   <div class="main">
     <div class="section-title" style="color:#ec4899">❤️ Preferiti — 2 salvati</div>
 <div class="card-fav">
-  <img src="https://pwm.im-cdn.it/image/1816989629/xxl.jpg" loading="lazy" class="card-photo" alt="Trilocale piazza dei Daini 4, Bicocca, Milano | 3 locali | 115 m²">
+  <div class="card-photo-placeholder">🏠</div>
   <div class="card-top">
     <div class="price">€485.000</div>
     <div class="badges">
       <div class="score-badge manual">❤️ Preferito</div>
     </div>
-    <div class="heart-badge filled" title="Preferito persistente">❤️</div>
+    <div class="heart-badge filled" title="Preferito condiviso">❤️</div>
   </div>
   <div class="title">Trilocale piazza dei Daini 4, Bicocca, Milano | 3 locali | 115 m²</div>
-  <div class="location">📍 <strong>Bicocca</strong>  ·  📅 2026-05-21</div>
-  <div class="details">📏 115mq</div>
+  <div class="location">📍 <strong>—</strong>  ·  📅 2026-05-21</div>
+  <div class="details"></div>
   <div class="agency">🏪 immobiliare.it</div>
   
   <a class="cta" href="https://www.immobiliare.it/annunci/124615727/?entryPoint=related#foto15" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
 <div class="card-fav">
-  <img src="https://pwm.im-cdn.it/image/1853217941/xxl.jpg" loading="lazy" class="card-photo" alt="Quadrilocale Milano (Tempocasa rif. 6415246)">
+  <div class="card-photo-placeholder">🏠</div>
   <div class="card-top">
-    <div class="price">€425.000</div>
+    <div class="price">—</div>
     <div class="badges">
       <div class="score-badge manual">❤️ Preferito</div>
     </div>
-    <div class="heart-badge filled" title="Preferito persistente">❤️</div>
+    <div class="heart-badge filled" title="Preferito condiviso">❤️</div>
   </div>
   <div class="title">Quadrilocale Milano (Tempocasa rif. 6415246)</div>
-  <div class="location">📍 <strong>Prato Centenaro</strong>  ·  📅 2026-05-20</div>
-  <div class="details">📏 109mq</div>
+  <div class="location">📍 <strong>—</strong>  ·  📅 2026-05-20</div>
+  <div class="details"></div>
   <div class="agency">🏪 Tempocasa</div>
   <div class="note-pers">📝 Cross-post Tempocasa (rif. 6415246). Dati completi da recuperare appena Apify rate limit si sblocca.</div>
   <a class="cta" href="https://www.immobiliare.it/annunci/126127111/" target="_blank">Vedi su Immobiliare.it →</a>
@@ -131,7 +127,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127407241" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-127407241" data-url="https://www.immobiliare.it/annunci/127407241" data-titolo="Trilocale via Paolo Rotta 10, Niguarda, Milano" data-prezzo="359000" data-mq="108" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Paolo Rotta 10, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -147,7 +143,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-126027965" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-126027965" data-url="https://www.immobiliare.it/annunci/126027965" data-titolo="Trilocale via Padova 256, Crescenzago, Milano" data-prezzo="298000" data-mq="92" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Padova 256, Crescenzago, Milano</div>
   <div class="location">📍 <strong>Crescenzago</strong>  ·  📅 2026-05-23</div>
@@ -163,7 +159,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-126533107" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-126533107" data-url="https://www.immobiliare.it/annunci/126533107" data-titolo="Trilocale via Alessandro Litta Modignani, 113, 20161 Milano Italia, Affori, Milano" data-prezzo="289000" data-mq="90" data-zona="Affori" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Alessandro Litta Modignani, 113, 20161 Milano Italia, Affori, Milano</div>
   <div class="location">📍 <strong>Affori</strong>  ·  📅 2026-05-23</div>
@@ -179,7 +175,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-121171488" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-121171488" data-url="https://www.immobiliare.it/annunci/121171488" data-titolo="Trilocale via Alessandro Litta Modignani 93, Affori, Milano" data-prezzo="265000" data-mq="90" data-zona="Affori" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Alessandro Litta Modignani 93, Affori, Milano</div>
   <div class="location">📍 <strong>Affori</strong>  ·  📅 2026-05-23</div>
@@ -195,7 +191,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-101122965" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-101122965" data-url="https://www.immobiliare.it/annunci/101122965" data-titolo="Trilocale via Ernesto Teodoro Moneta, 43, Affori, Milano" data-prezzo="260000" data-mq="116" data-zona="Affori" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Ernesto Teodoro Moneta, 43, Affori, Milano</div>
   <div class="location">📍 <strong>Affori</strong>  ·  📅 2026-05-23</div>
@@ -211,7 +207,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.3/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127844942" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-127844942" data-url="https://www.immobiliare.it/annunci/127844942" data-titolo="Trilocale via Palmanova 213/A, Crescenzago, Milano" data-prezzo="289000" data-mq="90" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Palmanova 213/A, Crescenzago, Milano</div>
   <div class="location">📍 <strong>Crescenzago</strong>  ·  📅 2026-05-19</div>
@@ -227,7 +223,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-118468511" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-118468511" data-url="https://www.immobiliare.it/annunci/118468511" data-titolo="Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano" data-prezzo="309000" data-mq="85" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -243,7 +239,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128788342" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-128788342" data-url="https://www.immobiliare.it/annunci/128788342" data-titolo="Trilocale via Angelo Rizzoli 1, Crescenzago, Milano" data-prezzo="250000" data-mq="90" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Angelo Rizzoli 1, Crescenzago, Milano</div>
   <div class="location">📍 <strong>Crescenzago</strong>  ·  📅 2026-05-23</div>
@@ -259,7 +255,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 7.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-129308456" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-129308456" data-url="https://www.immobiliare.it/annunci/129308456" data-titolo="Trilocale via Padova 267, Crescenzago, Milano" data-prezzo="295000" data-mq="90" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Padova 267, Crescenzago, Milano</div>
   <div class="location">📍 <strong>Crescenzago</strong>  ·  📅 2026-05-23</div>
@@ -275,7 +271,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-123095155" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-123095155" data-url="https://www.immobiliare.it/annunci/123095155" data-titolo="Bilocale via Fiuggi 12/7, Istria, Milano" data-prezzo="285000" data-mq="81" data-zona="Maggiolina/Istria" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Bilocale via Fiuggi 12/7, Istria, Milano</div>
   <div class="location">📍 <strong>Maggiolina/Istria</strong>  ·  📅 2026-05-18</div>
@@ -291,7 +287,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-129129934" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-129129934" data-url="https://www.immobiliare.it/annunci/129129934" data-titolo="Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano" data-prezzo="369000" data-mq="90" data-zona="Quartiere Adriano" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano</div>
   <div class="location">📍 <strong>Quartiere Adriano</strong>  ·  📅 2026-05-18</div>
@@ -307,7 +303,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-123994951" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-123994951" data-url="https://www.immobiliare.it/annunci/123994951" data-titolo="Attico via Palanzone 16, Niguarda, Milano" data-prezzo="399000" data-mq="106" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Attico via Palanzone 16, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -323,7 +319,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-125225759" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-125225759" data-url="https://www.immobiliare.it/annunci/125225759" data-titolo="Trilocale via Dino Buzzati 4, Vialba, Milano" data-prezzo="280000" data-mq="95" data-zona="Vialba" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Dino Buzzati 4, Vialba, Milano</div>
   <div class="location">📍 <strong>Vialba</strong>  ·  📅 2026-05-23</div>
@@ -339,7 +335,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-129166094" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-129166094" data-url="https://www.immobiliare.it/annunci/129166094" data-titolo="Trilocale via Monte Rotondo 17, Niguarda, Milano" data-prezzo="360000" data-mq="114" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Monte Rotondo 17, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -355,7 +351,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127610418" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-127610418" data-url="https://www.immobiliare.it/annunci/127610418" data-titolo="Trilocale via Padova 95, Turro, Milano" data-prezzo="289000" data-mq="80" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Padova 95, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -371,7 +367,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-129240362" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-129240362" data-url="https://www.immobiliare.it/annunci/129240362" data-titolo="Trilocale via Alessandro Litta Modignani 5, Affori, Milano" data-prezzo="330000" data-mq="101" data-zona="Affori" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Alessandro Litta Modignani 5, Affori, Milano</div>
   <div class="location">📍 <strong>Affori</strong>  ·  📅 2026-05-23</div>
@@ -387,7 +383,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-125026857" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-125026857" data-url="https://www.immobiliare.it/annunci/125026857" data-titolo="Trilocale viale Monza 202, Precotto, Milano" data-prezzo="375000" data-mq="93" data-zona="Precotto" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale viale Monza 202, Precotto, Milano</div>
   <div class="location">📍 <strong>Precotto</strong>  ·  📅 2026-05-23</div>
@@ -403,7 +399,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127770774" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-127770774" data-url="https://www.immobiliare.it/annunci/127770774" data-titolo="Trilocale via Privata Paolo Rotta 10, Niguarda, Milano" data-prezzo="219000" data-mq="88" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Privata Paolo Rotta 10, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -419,7 +415,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.5/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-125840815" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-125840815" data-url="https://www.immobiliare.it/annunci/125840815" data-titolo="Trilocale via Francesco Cavezzali 19, Turro, Milano" data-prezzo="275000" data-mq="85" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Francesco Cavezzali 19, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -435,7 +431,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-126782373" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-126782373" data-url="https://www.immobiliare.it/annunci/126782373" data-titolo="Trilocale via Monte Rotondo 8, Niguarda, Milano" data-prezzo="299000" data-mq="85" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Monte Rotondo 8, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -451,7 +447,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128636674" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-128636674" data-url="https://www.immobiliare.it/annunci/128636674" data-titolo="Trilocale via Policarpo Petrocchi 21, Turro, Milano" data-prezzo="378000" data-mq="90" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Policarpo Petrocchi 21, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -467,7 +463,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128854346" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-128854346" data-url="https://www.immobiliare.it/annunci/128854346" data-titolo="Trilocale via Ernesto Breda 37, Bicocca, Milano" data-prezzo="295000" data-mq="80" data-zona="Bicocca" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Ernesto Breda 37, Bicocca, Milano</div>
   <div class="location">📍 <strong>Bicocca</strong>  ·  📅 2026-05-23</div>
@@ -483,7 +479,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127530126" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-127530126" data-url="https://www.immobiliare.it/annunci/127530126" data-titolo="Trilocale via Trasimeno 48, Quartiere Adriano, Milano" data-prezzo="349000" data-mq="100" data-zona="Quartiere Adriano" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Trasimeno 48, Quartiere Adriano, Milano</div>
   <div class="location">📍 <strong>Quartiere Adriano</strong>  ·  📅 2026-05-23</div>
@@ -499,7 +495,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128673760" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-128673760" data-url="https://www.immobiliare.it/annunci/128673760" data-titolo="Trilocale via Ugo Mulas 4, Quartiere Adriano, Milano" data-prezzo="349000" data-mq="95" data-zona="Quartiere Adriano" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Ugo Mulas 4, Quartiere Adriano, Milano</div>
   <div class="location">📍 <strong>Quartiere Adriano</strong>  ·  📅 2026-05-23</div>
@@ -515,7 +511,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128871010" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-128871010" data-url="https://www.immobiliare.it/annunci/128871010" data-titolo="Trilocale via Vittorio Bottego 25, Crescenzago, Milano" data-prezzo="398000" data-mq="105" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Vittorio Bottego 25, Crescenzago, Milano</div>
   <div class="location">📍 <strong>Crescenzago</strong>  ·  📅 2026-05-23</div>
@@ -531,7 +527,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-129260862" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-129260862" data-url="https://www.immobiliare.it/annunci/129260862" data-titolo="Trilocale via Privata Filippo Tommaso Marinetti 3, Turro, Milano" data-prezzo="315000" data-mq="90" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Privata Filippo Tommaso Marinetti 3, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -547,7 +543,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-126919153" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-126919153" data-url="https://www.immobiliare.it/annunci/126919153" data-titolo="Trilocale via Francesco Gonin, Giambellino, Milano" data-prezzo="310000" data-mq="120" data-zona="Giambellino" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Francesco Gonin, Giambellino, Milano</div>
   <div class="location">📍 <strong>Giambellino</strong>  ·  📅 2026-05-23</div>
@@ -563,7 +559,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-129049468" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-129049468" data-url="https://www.immobiliare.it/annunci/129049468" data-titolo="Quadrilocale via Mar Nero, Bisceglie, Milano" data-prezzo="305000" data-mq="105" data-zona="Bisceglie" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Quadrilocale via Mar Nero, Bisceglie, Milano</div>
   <div class="location">📍 <strong>Bisceglie</strong>  ·  📅 2026-05-23</div>
@@ -579,7 +575,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128668536" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-128668536" data-url="https://www.immobiliare.it/annunci/128668536" data-titolo="Trilocale via Terenzio Mamiani 7, Cimiano, Milano" data-prezzo="297000" data-mq="95" data-zona="Cimiano" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Terenzio Mamiani 7, Cimiano, Milano</div>
   <div class="location">📍 <strong>Cimiano</strong>  ·  📅 2026-05-23</div>
@@ -595,7 +591,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-125378759" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-125378759" data-url="https://www.immobiliare.it/annunci/125378759" data-titolo="Trilocale via Padova 336, Crescenzago, Milano" data-prezzo="339000" data-mq="110" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Padova 336, Crescenzago, Milano</div>
   <div class="location">📍 <strong>Crescenzago</strong>  ·  📅 2026-05-23</div>
@@ -611,7 +607,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127339131" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-127339131" data-url="https://www.immobiliare.it/annunci/127339131" data-titolo="Trilocale via Ignazio Ciaia, Dergano, Milano" data-prezzo="210000" data-mq="101" data-zona="Dergano" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Ignazio Ciaia, Dergano, Milano</div>
   <div class="location">📍 <strong>Dergano</strong>  ·  📅 2026-05-23</div>
@@ -627,7 +623,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128920978" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-128920978" data-url="https://www.immobiliare.it/annunci/128920978" data-titolo="Trilocale via Palmanova 91, Cimiano, Milano" data-prezzo="305000" data-mq="95" data-zona="Cimiano" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Palmanova 91, Cimiano, Milano</div>
   <div class="location">📍 <strong>Cimiano</strong>  ·  📅 2026-05-23</div>
@@ -643,7 +639,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-126187765" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-126187765" data-url="https://www.immobiliare.it/annunci/126187765" data-titolo="Trilocale via ALCEO 4, Precotto, Milano" data-prezzo="335000" data-mq="95" data-zona="Precotto" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via ALCEO 4, Precotto, Milano</div>
   <div class="location">📍 <strong>Precotto</strong>  ·  📅 2026-05-23</div>
@@ -659,7 +655,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128988828" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-128988828" data-url="https://www.immobiliare.it/annunci/128988828" data-titolo="Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano" data-prezzo="369000" data-mq="112" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -675,7 +671,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128023876" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-128023876" data-url="https://www.immobiliare.it/annunci/128023876" data-titolo="Trilocale via Padova 304, Crescenzago, Milano" data-prezzo="349000" data-mq="104" data-zona="Crescenzago" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Padova 304, Crescenzago, Milano</div>
   <div class="location">📍 <strong>Crescenzago</strong>  ·  📅 2026-05-23</div>
@@ -691,7 +687,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-109153679" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-109153679" data-url="https://www.immobiliare.it/annunci/109153679" data-titolo="Trilocale via Bernardo Rucellai 20, Precotto, Milano" data-prezzo="429000" data-mq="110" data-zona="Precotto" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Bernardo Rucellai 20, Precotto, Milano</div>
   <div class="location">📍 <strong>Precotto</strong>  ·  📅 2026-05-23</div>
@@ -707,7 +703,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-124027361" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-124027361" data-url="https://www.immobiliare.it/annunci/124027361" data-titolo="Trilocale via Alessandro Litta Modignani 111, Affori, Milano" data-prezzo="239000" data-mq="88" data-zona="Affori" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Alessandro Litta Modignani 111, Affori, Milano</div>
   <div class="location">📍 <strong>Affori</strong>  ·  📅 2026-05-23</div>
@@ -723,7 +719,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-118248493" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-118248493" data-url="https://www.immobiliare.it/annunci/118248493" data-titolo="Trilocale via Luigi Ornato 111, Niguarda, Milano" data-prezzo="339000" data-mq="110" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Luigi Ornato 111, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -739,7 +735,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127404829" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-127404829" data-url="https://www.immobiliare.it/annunci/127404829" data-titolo="Trilocale via Marmolada 10, Niguarda, Milano" data-prezzo="334000" data-mq="109" data-zona="Niguarda" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Marmolada 10, Niguarda, Milano</div>
   <div class="location">📍 <strong>Niguarda</strong>  ·  📅 2026-05-23</div>
@@ -755,7 +751,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127397637" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-127397637" data-url="https://www.immobiliare.it/annunci/127397637" data-titolo="Trilocale via Francesco Cavezzali 8, Turro, Milano" data-prezzo="390000" data-mq="99" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Francesco Cavezzali 8, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -771,7 +767,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-118998885" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-118998885" data-url="https://www.immobiliare.it/annunci/118998885" data-titolo="Trilocale via Carlo Cicogna Mozzoni, Affori, Milano" data-prezzo="315000" data-mq="90" data-zona="Affori" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Carlo Cicogna Mozzoni, Affori, Milano</div>
   <div class="location">📍 <strong>Affori</strong>  ·  📅 2026-05-23</div>
@@ -787,7 +783,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-127438812" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-127438812" data-url="https://www.immobiliare.it/annunci/127438812" data-titolo="Trilocale via Pisino 12, Gorla, Milano" data-prezzo="370000" data-mq="100" data-zona="Gorla" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Pisino 12, Gorla, Milano</div>
   <div class="location">📍 <strong>Gorla</strong>  ·  📅 2026-05-23</div>
@@ -803,7 +799,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128463344" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-128463344" data-url="https://www.immobiliare.it/annunci/128463344" data-titolo="Trilocale via Francesco Cavezzali 8, Turro, Milano" data-prezzo="390000" data-mq="99" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Francesco Cavezzali 8, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -819,7 +815,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-128521698" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-128521698" data-url="https://www.immobiliare.it/annunci/128521698" data-titolo="Trilocale via Pericle 5, Precotto, Milano" data-prezzo="349000" data-mq="95" data-zona="Precotto" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Trilocale via Pericle 5, Precotto, Milano</div>
   <div class="location">📍 <strong>Precotto</strong>  ·  📅 2026-05-23</div>
@@ -835,7 +831,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-125788051" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-125788051" data-url="https://www.immobiliare.it/annunci/125788051" data-titolo="Quadrilocale via Tofane 33, Turro, Milano" data-prezzo="399000" data-mq="94" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Quadrilocale via Tofane 33, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -851,7 +847,7 @@
     <div class="badges">
       <div class="score-badge">⭐ 6.0/10</div><div class="notif-badge">📩 Notificato</div>
     </div>
-    <button class="heart-btn" data-id="immobiliare-124629609" onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>
+    <button class="heart-btn" data-id="immobiliare-124629609" data-url="https://www.immobiliare.it/annunci/124629609" data-titolo="Bilocale via Matteo Maria Boiardo 12, Turro, Milano" data-prezzo="329000" data-mq="90" data-zona="Turro" onclick="openFavIssue(this)" title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>
   </div>
   <div class="title">Bilocale via Matteo Maria Boiardo 12, Turro, Milano</div>
   <div class="location">📍 <strong>Turro</strong>  ·  📅 2026-05-23</div>
@@ -865,104 +861,40 @@
   <div id="toast" class="toast"></div>
 
   <script>
-  const FAVS_KEY = 'casa-milano-favs';
-  // ID dei preferiti persistenti (preferiti.json sul server)
-  const PERSISTENT_FAV_IDS = new Set(["immobiliare-124615727", "immobiliare-126127111"]);
+  const GITHUB_REPO = 'adrianolionetti-arch/casa-milano';
 
-  function getFavs() {
-    try { return JSON.parse(localStorage.getItem(FAVS_KEY) || '[]'); }
-    catch(e) { return []; }
+  function openFavIssue(btn) {
+    const d = btn.dataset;
+    const titolo = d.titolo || '(senza titolo)';
+    const prezzo = d.prezzo && d.prezzo !== 'None' ? d.prezzo : '';
+    const mq = d.mq && d.mq !== 'None' ? d.mq : '';
+    const zona = d.zona && d.zona !== 'None' ? d.zona : '';
+    const title = 'preferito: ' + titolo.slice(0, 80);
+    const body = [
+      'URL: ' + (d.url || ''),
+      'Titolo: ' + titolo,
+      'Sito: immobiliare.it',
+      'Prezzo: ' + prezzo,
+      'Mq: ' + mq,
+      'Zona: ' + zona,
+      'Note: (opzionale — scrivi qui perché ti piace)',
+    ].join('\n');
+    const u = 'https://github.com/' + GITHUB_REPO + '/issues/new'
+      + '?labels=preferito'
+      + '&title=' + encodeURIComponent(title)
+      + '&body=' + encodeURIComponent(body);
+    window.open(u, '_blank', 'noopener');
+    btn.textContent = '⏳';
+    btn.disabled = true;
+    showToast('🔗 Conferma "Submit new issue" su GitHub → preferito visibile a entrambi tra ~30s');
   }
-  function getAllFavIds() {
-    // Unione: persistenti (preferiti.json) + locali (localStorage)
-    return new Set([...PERSISTENT_FAV_IDS, ...getFavs()]);
-  }
-  function saveFavs(arr) {
-    localStorage.setItem(FAVS_KEY, JSON.stringify(arr));
-    updateFavCount();
-  }
-  function updateFavCount() {
-    const n = getAllFavIds().size;
-    document.getElementById('fav-count').textContent = n;
-    const kpiEl = document.getElementById('kpi-fav-count');
-    if (kpiEl) kpiEl.textContent = n;
-    // "Svuota" pulisce solo localStorage, quindi mostralo solo se ci sono local favs
-    document.getElementById('clear-btn').style.display = getFavs().length > 0 ? '' : 'none';
-  }
-  function styleCardAsFav(card, btn) {
-    if (card) card.classList.add('card-fav');
-    if (btn) {
-      btn.textContent = '❤️';
-      btn.classList.add('filled');
-    }
-  }
-  function unstyleCardAsFav(card, btn, id) {
-    // Rimuovi solo se NON è un preferito persistente (quelli restano sempre rosa)
-    if (card && id && !PERSISTENT_FAV_IDS.has(id)) card.classList.remove('card-fav');
-    if (btn) {
-      btn.textContent = '🤍';
-      btn.classList.remove('filled');
-    }
-  }
-  function toggleFav(btn) {
-    const id = btn.dataset.id;
-    if (!id) return;
-    const card = btn.closest('.card, .card-fav');
-    let favs = getFavs();
-    const idx = favs.indexOf(id);
-    if (idx === -1) {
-      favs.push(id);
-      styleCardAsFav(card, btn);
-      showToast('❤️ Aggiunto ai preferiti');
-    } else {
-      favs.splice(idx, 1);
-      unstyleCardAsFav(card, btn, id);
-      showToast('Rimosso dai preferiti');
-    }
-    saveFavs(favs);
-    applyFilter();
-  }
-  function applyFilter() {
-    const onlyFav = document.getElementById('filter-fav').checked;
-    const all = getAllFavIds();
-    document.querySelectorAll('.card, .card-fav').forEach(c => {
-      const btn = c.querySelector('.heart-btn');
-      const id = btn ? btn.dataset.id : null;
-      // Un card è "preferito" se: in unione (localStorage o persistent) OPPURE già renderizzata come card-fav (preferito persistente senza heart-btn)
-      const isFav = (id && all.has(id)) || (!btn && c.classList.contains('card-fav'));
-      c.style.display = (!onlyFav || isFav) ? '' : 'none';
-    });
-  }
-  function clearFavs() {
-    if (!confirm('Svuotare i preferiti locali di questo browser? I preferiti persistenti (su server) restano.')) return;
-    const localIds = getFavs();
-    saveFavs([]);
-    document.querySelectorAll('.heart-btn.filled').forEach(b => {
-      const id = b.dataset.id;
-      const card = b.closest('.card, .card-fav');
-      unstyleCardAsFav(card, b, id);
-    });
-    applyFilter();
-    showToast('Preferiti locali svuotati');
-  }
+
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
+    setTimeout(() => t.classList.remove('show'), 4000);
   }
-
-  // Init: applica stile preferito a tutte le card nell'unione (localStorage + persistent)
-  document.addEventListener('DOMContentLoaded', () => {
-    const all = getAllFavIds();
-    document.querySelectorAll('.heart-btn').forEach(btn => {
-      if (all.has(btn.dataset.id)) {
-        const card = btn.closest('.card, .card-fav');
-        styleCardAsFav(card, btn);
-      }
-    });
-    updateFavCount();
-  });
   </script>
 
 <style>
@@ -1092,144 +1024,31 @@
     document.getElementById('chat-input').focus();
   }
 
-  // ===== Crypto helpers (AES-GCM 256 + PBKDF2-SHA256, Web Crypto API) =====
-  const ENC_CONFIG_URL = 'chatbot-key.enc.json';
-  const PBKDF2_ITERATIONS = 200000;
-
-  function b64enc(buf) {
-    const bytes = new Uint8Array(buf);
-    let s = '';
-    for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
-    return btoa(s);
-  }
-  function b64dec(s) {
-    const bin = atob(s);
-    const bytes = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-    return bytes;
-  }
-  async function deriveKey(password, salt) {
-    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
-    return crypto.subtle.deriveKey(
-      { name: 'PBKDF2', salt, iterations: PBKDF2_ITERATIONS, hash: 'SHA-256' },
-      km, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
-    );
-  }
-  async function encryptKey(apiKey, password) {
-    const salt = crypto.getRandomValues(new Uint8Array(16));
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const key = await deriveKey(password, salt);
-    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(apiKey));
-    return {
-      version: 1, kdf: 'PBKDF2-SHA256', iterations: PBKDF2_ITERATIONS,
-      salt: b64enc(salt), iv: b64enc(iv), ciphertext: b64enc(ct)
-    };
-  }
-  async function decryptKey(config, password) {
-    const key = await deriveKey(password, b64dec(config.salt));
-    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64dec(config.iv) }, key, b64dec(config.ciphertext));
-    return new TextDecoder().decode(pt);
-  }
-  async function fetchEncConfig() {
-    try {
-      const resp = await fetch(ENC_CONFIG_URL, { cache: 'no-store' });
-      if (!resp.ok) return null;
-      return await resp.json();
-    } catch (e) { return null; }
-  }
-
-  // ===== Setup UI (password-mode default, admin-mode via ?admin=1) =====
-  window.showSetup = async function() {
+  window.showSetup = function() {
     document.getElementById('chat-input-row').style.display = 'none';
     const body = document.getElementById('chat-body');
     body.className = 'chat-setup';
-    body.innerHTML = '<p style="text-align:center;color:#64748b">Caricamento...</p>';
-
-    const isAdmin = new URLSearchParams(location.search).get('admin') === '1';
-    const config = await fetchEncConfig();
-    const hasKey = !!getApiKey();
-
-    if (hasKey && !isAdmin) {
-      // Già sbloccato: pannello impostazioni
-      body.innerHTML =
-        '<h4>⚙ Impostazioni chatbot</h4>' +
-        '<p>Chatbot sbloccato. La API key è in localStorage di questo browser.</p>' +
-        '<p style="font-size:12px;color:#64748b">Modello: <strong>claude-haiku-4-5</strong>. Costo: ~0.005€ per domanda con cache attiva. Vedi consumo su <a href="https://console.anthropic.com/settings/usage" target="_blank">console Anthropic</a>.</p>' +
-        '<button class="save-btn" style="background:#dc2626;margin-top:12px" onclick="clearApiKey()">Disconnetti (rimuovi key locale)</button>' +
-        '<p style="text-align:center;margin-top:16px"><a href="#" onclick="renderChat();return false;" style="color:#0071e3;font-size:13px">← Torna alla chat</a></p>';
-      return;
-    }
-
-    if (config && !isAdmin) {
-      // Modalità utente: solo password
-      body.innerHTML =
-        '<h4>🔒 Password</h4>' +
-        '<p>Inserisci la password condivisa per sbloccare il chatbot. La key viene decriptata localmente e salvata nel tuo browser — non serve riempiarla a ogni sessione.</p>' +
-        '<input type="password" id="pwd-input" placeholder="password">' +
-        '<button class="save-btn" onclick="unlockWithPassword()">Sblocca</button>' +
-        '<p style="text-align:center;margin-top:16px;font-size:11px;color:#94a3b8">' +
-        'Password persa? Apri la pagina con <code>?admin=1</code> per rigenerare la config.</p>';
-      const input = document.getElementById('pwd-input');
-      input.focus();
-      input.addEventListener('keydown', e => { if (e.key === 'Enter') unlockWithPassword(); });
-    } else {
-      // Modalità admin: setup iniziale o rigenerazione
-      body.innerHTML =
-        '<h4>⚙ Setup iniziale (admin)</h4>' +
-        '<p>Inserisci l\'API key Anthropic (<a href="https://console.anthropic.com/settings/keys" target="_blank">console</a>) e scegli una password condivisa.</p>' +
-        '<p>Verrà generato un file <code>chatbot-key.enc.json</code> da committare nella root del repo. Dopo il deploy, ogni device userà solo la password per sbloccare.</p>' +
-        '<input type="password" id="api-key-input" placeholder="sk-ant-...">' +
-        '<input type="password" id="admin-pwd1" placeholder="password (min 8 caratteri)">' +
-        '<input type="password" id="admin-pwd2" placeholder="ripeti password">' +
-        '<button class="save-btn" onclick="generateConfig()">🔐 Genera + Scarica</button>' +
-        (config ? '<p style="margin-top:12px;font-size:12px;color:#0071e3;text-align:center">⚠ Config esistente. Generando uno nuovo invaliderai la password precedente.</p>' : '');
-      document.getElementById('api-key-input').focus();
-    }
+    const existing = getApiKey();
+    body.innerHTML =
+      '<h4>🔑 API Key Anthropic</h4>' +
+      '<p>Per usare il chatbot serve una API key Anthropic. Salvata <strong>solo nel tuo browser</strong> (localStorage), mai inviata altrove. La key viene usata direttamente per chiamare api.anthropic.com.</p>' +
+      '<p>Crea una key gratuita su <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>. Il chatbot usa Haiku 4.5 (~0.005€ per domanda con cache attiva).</p>' +
+      '<input type="password" id="api-key-input" placeholder="sk-ant-..." value="' + (existing ? existing.slice(0, 8) + '...' + existing.slice(-4) : '') + '">' +
+      '<button class="save-btn" onclick="saveApiKey()">Salva e inizia</button>' +
+      (existing ? '<p style="text-align:center;margin-top:14px"><a href="#" onclick="clearApiKey(); return false;" style="color:#dc2626;font-size:12px">Rimuovi key salvata</a></p>' : '');
+    document.getElementById('api-key-input').focus();
   };
 
-  window.unlockWithPassword = async function() {
-    const pwd = document.getElementById('pwd-input').value;
-    if (!pwd) return;
-    const btn = document.querySelector('.chat-setup .save-btn');
-    btn.disabled = true; btn.textContent = 'Sblocco...';
-    try {
-      const config = await fetchEncConfig();
-      if (!config) { alert('Config encrypted non trovato sul server'); return; }
-      const apiKey = await decryptKey(config, pwd);
-      if (!apiKey.startsWith('sk-ant-')) throw new Error('decrypt produced invalid key');
-      setApiKey(apiKey);
-      renderChat();
-    } catch (e) {
-      btn.disabled = false; btn.textContent = 'Sblocca';
-      alert('Password sbagliata');
-    }
-  };
-
-  window.generateConfig = async function() {
-    const apiKey = document.getElementById('api-key-input').value.trim();
-    const pwd1 = document.getElementById('admin-pwd1').value;
-    const pwd2 = document.getElementById('admin-pwd2').value;
-    if (!apiKey.startsWith('sk-ant-')) { alert('API key deve iniziare con sk-ant-'); return; }
-    if (pwd1.length < 8) { alert('Password almeno 8 caratteri'); return; }
-    if (pwd1 !== pwd2) { alert('Le due password non coincidono'); return; }
-
-    const config = await encryptKey(apiKey, pwd1);
-    const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'chatbot-key.enc.json'; a.click();
-    URL.revokeObjectURL(url);
-    alert(
-      'File scaricato. Prossimi passi:\n\n' +
-      '1. Sposta chatbot-key.enc.json nella root del repo casa-milano\n' +
-      '2. git add chatbot-key.enc.json && git commit && git push\n' +
-      '3. Aspetta ~2 min per il deploy Pages\n' +
-      '4. Rinfresca la pagina (senza ?admin=1) — da ora basta la password.'
-    );
+  window.saveApiKey = function() {
+    const val = document.getElementById('api-key-input').value.trim();
+    if (!val || val.includes('...')) { alert('Inserisci una API key valida (sk-ant-...)'); return; }
+    if (!val.startsWith('sk-ant-')) { alert('La key dovrebbe iniziare con "sk-ant-"'); return; }
+    setApiKey(val);
+    renderChat();
   };
 
   window.clearApiKey = function() {
-    if (!confirm('Rimuovere la API key locale? Dovrai re-inserire la password.')) return;
+    if (!confirm('Rimuovere la API key dal browser?')) return;
     localStorage.removeItem(KEY_API);
     showSetup();
   };
@@ -1284,8 +1103,8 @@
     document.querySelectorAll('.card').forEach(card => {
       const btn = card.querySelector('.heart-btn');
       const id = btn ? btn.dataset.id : null;
-      if (id && idSet.has(id)) { card.dataset.chatHidden = ''; delete card.dataset.chatHidden; card.style.display = ''; shown++; }
-      else { card.dataset.chatHidden = '1'; card.style.display = 'none'; }
+      if (id && idSet.has(id)) { card.style.display = ''; shown++; }
+      else { card.style.display = 'none'; }
     });
     document.getElementById('chat-filter-text').textContent = '🔍 Chatbot ha filtrato ' + shown + ' di ' + LISTINGS.length + ' annunci';
     banner.classList.add('show');
@@ -1298,7 +1117,6 @@
       card.style.display = '';
     });
     document.getElementById('chat-filter-banner').classList.remove('show');
-    if (typeof applyFilter === 'function') applyFilter();
   };
 
   window.sendChat = async function() {
@@ -1327,6 +1145,24 @@
           { type: 'text', text: SYSTEM_PROMPT },
           { type: 'text', text: 'DATI ANNUNCI:\n' + LISTINGS_JSON_STR, cache_control: { type: 'ephemeral' } }
         ],
+        output_config: {
+          format: {
+            type: 'json_schema',
+            schema: {
+              type: 'object',
+              properties: {
+                message: { type: 'string', description: 'Risposta testuale in italiano, max 4 frasi' },
+                filter_ids: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'ID degli annunci da mostrare. Vuoto = mostra tutti.'
+                }
+              },
+              required: ['message', 'filter_ids'],
+              additionalProperties: false
+            }
+          }
+        },
         messages: apiMessages
       };
 
@@ -1357,21 +1193,9 @@
       const textBlock = (data.content || []).find(b => b.type === 'text');
       if (!textBlock) { appendError('Risposta vuota dal modello.'); conversation.pop(); return; }
 
-      // Estrae JSON anche se il modello lo wrappa in ```json ... ``` o aggiunge testo
-      function extractJson(s) {
-        const fence = s.match(/```(?:json)?\s*([\s\S]*?)```/);
-        if (fence) return fence[1].trim();
-        const first = s.indexOf('{');
-        const last = s.lastIndexOf('}');
-        if (first !== -1 && last > first) return s.slice(first, last + 1);
-        return s.trim();
-      }
       let parsed;
-      try { parsed = JSON.parse(extractJson(textBlock.text)); }
-      catch (e) {
-        // Fallback: trattalo come messaggio plain, niente filter
-        parsed = { message: textBlock.text.trim(), filter_ids: [] };
-      }
+      try { parsed = JSON.parse(textBlock.text); }
+      catch (e) { appendError('Risposta non parseable: ' + textBlock.text.slice(0, 200)); conversation.pop(); return; }
 
       const message = parsed.message || '(nessun messaggio)';
       const filterIds = Array.isArray(parsed.filter_ids) ? parsed.filter_ids : [];

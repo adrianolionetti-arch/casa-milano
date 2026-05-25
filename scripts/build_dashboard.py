@@ -11,6 +11,7 @@ Uso:
     python3 scripts/build_dashboard.py            # scrive index.html
     python3 scripts/build_dashboard.py --dry-run  # stampa solo il count senza scrivere
 """
+import html as html_lib
 import json
 import re
 import sys
@@ -21,6 +22,8 @@ ROOT = Path(__file__).resolve().parent.parent
 DB_PATH = ROOT / "annunci_visti.json"
 PREFERITI_PATH = ROOT / "preferiti.json"
 OUT_PATH = ROOT / "index.html"
+
+GITHUB_REPO = "adrianolionetti-arch/casa-milano"
 
 URL_REGEX = re.compile(r"^https://www\.immobiliare\.it/annunci/\d+/?$")
 DAYS_WINDOW = 30
@@ -186,144 +189,31 @@ CHATBOT_TEMPLATE = r"""
     document.getElementById('chat-input').focus();
   }
 
-  // ===== Crypto helpers (AES-GCM 256 + PBKDF2-SHA256, Web Crypto API) =====
-  const ENC_CONFIG_URL = 'chatbot-key.enc.json';
-  const PBKDF2_ITERATIONS = 200000;
-
-  function b64enc(buf) {
-    const bytes = new Uint8Array(buf);
-    let s = '';
-    for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
-    return btoa(s);
-  }
-  function b64dec(s) {
-    const bin = atob(s);
-    const bytes = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-    return bytes;
-  }
-  async function deriveKey(password, salt) {
-    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
-    return crypto.subtle.deriveKey(
-      { name: 'PBKDF2', salt, iterations: PBKDF2_ITERATIONS, hash: 'SHA-256' },
-      km, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
-    );
-  }
-  async function encryptKey(apiKey, password) {
-    const salt = crypto.getRandomValues(new Uint8Array(16));
-    const iv = crypto.getRandomValues(new Uint8Array(12));
-    const key = await deriveKey(password, salt);
-    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(apiKey));
-    return {
-      version: 1, kdf: 'PBKDF2-SHA256', iterations: PBKDF2_ITERATIONS,
-      salt: b64enc(salt), iv: b64enc(iv), ciphertext: b64enc(ct)
-    };
-  }
-  async function decryptKey(config, password) {
-    const key = await deriveKey(password, b64dec(config.salt));
-    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64dec(config.iv) }, key, b64dec(config.ciphertext));
-    return new TextDecoder().decode(pt);
-  }
-  async function fetchEncConfig() {
-    try {
-      const resp = await fetch(ENC_CONFIG_URL, { cache: 'no-store' });
-      if (!resp.ok) return null;
-      return await resp.json();
-    } catch (e) { return null; }
-  }
-
-  // ===== Setup UI (password-mode default, admin-mode via ?admin=1) =====
-  window.showSetup = async function() {
+  window.showSetup = function() {
     document.getElementById('chat-input-row').style.display = 'none';
     const body = document.getElementById('chat-body');
     body.className = 'chat-setup';
-    body.innerHTML = '<p style="text-align:center;color:#64748b">Caricamento...</p>';
-
-    const isAdmin = new URLSearchParams(location.search).get('admin') === '1';
-    const config = await fetchEncConfig();
-    const hasKey = !!getApiKey();
-
-    if (hasKey && !isAdmin) {
-      // Già sbloccato: pannello impostazioni
-      body.innerHTML =
-        '<h4>⚙ Impostazioni chatbot</h4>' +
-        '<p>Chatbot sbloccato. La API key è in localStorage di questo browser.</p>' +
-        '<p style="font-size:12px;color:#64748b">Modello: <strong>claude-haiku-4-5</strong>. Costo: ~0.005€ per domanda con cache attiva. Vedi consumo su <a href="https://console.anthropic.com/settings/usage" target="_blank">console Anthropic</a>.</p>' +
-        '<button class="save-btn" style="background:#dc2626;margin-top:12px" onclick="clearApiKey()">Disconnetti (rimuovi key locale)</button>' +
-        '<p style="text-align:center;margin-top:16px"><a href="#" onclick="renderChat();return false;" style="color:#0071e3;font-size:13px">← Torna alla chat</a></p>';
-      return;
-    }
-
-    if (config && !isAdmin) {
-      // Modalità utente: solo password
-      body.innerHTML =
-        '<h4>🔒 Password</h4>' +
-        '<p>Inserisci la password condivisa per sbloccare il chatbot. La key viene decriptata localmente e salvata nel tuo browser — non serve riempiarla a ogni sessione.</p>' +
-        '<input type="password" id="pwd-input" placeholder="password">' +
-        '<button class="save-btn" onclick="unlockWithPassword()">Sblocca</button>' +
-        '<p style="text-align:center;margin-top:16px;font-size:11px;color:#94a3b8">' +
-        'Password persa? Apri la pagina con <code>?admin=1</code> per rigenerare la config.</p>';
-      const input = document.getElementById('pwd-input');
-      input.focus();
-      input.addEventListener('keydown', e => { if (e.key === 'Enter') unlockWithPassword(); });
-    } else {
-      // Modalità admin: setup iniziale o rigenerazione
-      body.innerHTML =
-        '<h4>⚙ Setup iniziale (admin)</h4>' +
-        '<p>Inserisci l\'API key Anthropic (<a href="https://console.anthropic.com/settings/keys" target="_blank">console</a>) e scegli una password condivisa.</p>' +
-        '<p>Verrà generato un file <code>chatbot-key.enc.json</code> da committare nella root del repo. Dopo il deploy, ogni device userà solo la password per sbloccare.</p>' +
-        '<input type="password" id="api-key-input" placeholder="sk-ant-...">' +
-        '<input type="password" id="admin-pwd1" placeholder="password (min 8 caratteri)">' +
-        '<input type="password" id="admin-pwd2" placeholder="ripeti password">' +
-        '<button class="save-btn" onclick="generateConfig()">🔐 Genera + Scarica</button>' +
-        (config ? '<p style="margin-top:12px;font-size:12px;color:#0071e3;text-align:center">⚠ Config esistente. Generando uno nuovo invaliderai la password precedente.</p>' : '');
-      document.getElementById('api-key-input').focus();
-    }
+    const existing = getApiKey();
+    body.innerHTML =
+      '<h4>🔑 API Key Anthropic</h4>' +
+      '<p>Per usare il chatbot serve una API key Anthropic. Salvata <strong>solo nel tuo browser</strong> (localStorage), mai inviata altrove. La key viene usata direttamente per chiamare api.anthropic.com.</p>' +
+      '<p>Crea una key gratuita su <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>. Il chatbot usa Haiku 4.5 (~0.005€ per domanda con cache attiva).</p>' +
+      '<input type="password" id="api-key-input" placeholder="sk-ant-..." value="' + (existing ? existing.slice(0, 8) + '...' + existing.slice(-4) : '') + '">' +
+      '<button class="save-btn" onclick="saveApiKey()">Salva e inizia</button>' +
+      (existing ? '<p style="text-align:center;margin-top:14px"><a href="#" onclick="clearApiKey(); return false;" style="color:#dc2626;font-size:12px">Rimuovi key salvata</a></p>' : '');
+    document.getElementById('api-key-input').focus();
   };
 
-  window.unlockWithPassword = async function() {
-    const pwd = document.getElementById('pwd-input').value;
-    if (!pwd) return;
-    const btn = document.querySelector('.chat-setup .save-btn');
-    btn.disabled = true; btn.textContent = 'Sblocco...';
-    try {
-      const config = await fetchEncConfig();
-      if (!config) { alert('Config encrypted non trovato sul server'); return; }
-      const apiKey = await decryptKey(config, pwd);
-      if (!apiKey.startsWith('sk-ant-')) throw new Error('decrypt produced invalid key');
-      setApiKey(apiKey);
-      renderChat();
-    } catch (e) {
-      btn.disabled = false; btn.textContent = 'Sblocca';
-      alert('Password sbagliata');
-    }
-  };
-
-  window.generateConfig = async function() {
-    const apiKey = document.getElementById('api-key-input').value.trim();
-    const pwd1 = document.getElementById('admin-pwd1').value;
-    const pwd2 = document.getElementById('admin-pwd2').value;
-    if (!apiKey.startsWith('sk-ant-')) { alert('API key deve iniziare con sk-ant-'); return; }
-    if (pwd1.length < 8) { alert('Password almeno 8 caratteri'); return; }
-    if (pwd1 !== pwd2) { alert('Le due password non coincidono'); return; }
-
-    const config = await encryptKey(apiKey, pwd1);
-    const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = 'chatbot-key.enc.json'; a.click();
-    URL.revokeObjectURL(url);
-    alert(
-      'File scaricato. Prossimi passi:\n\n' +
-      '1. Sposta chatbot-key.enc.json nella root del repo casa-milano\n' +
-      '2. git add chatbot-key.enc.json && git commit && git push\n' +
-      '3. Aspetta ~2 min per il deploy Pages\n' +
-      '4. Rinfresca la pagina (senza ?admin=1) — da ora basta la password.'
-    );
+  window.saveApiKey = function() {
+    const val = document.getElementById('api-key-input').value.trim();
+    if (!val || val.includes('...')) { alert('Inserisci una API key valida (sk-ant-...)'); return; }
+    if (!val.startsWith('sk-ant-')) { alert('La key dovrebbe iniziare con "sk-ant-"'); return; }
+    setApiKey(val);
+    renderChat();
   };
 
   window.clearApiKey = function() {
-    if (!confirm('Rimuovere la API key locale? Dovrai re-inserire la password.')) return;
+    if (!confirm('Rimuovere la API key dal browser?')) return;
     localStorage.removeItem(KEY_API);
     showSetup();
   };
@@ -378,8 +268,8 @@ CHATBOT_TEMPLATE = r"""
     document.querySelectorAll('.card').forEach(card => {
       const btn = card.querySelector('.heart-btn');
       const id = btn ? btn.dataset.id : null;
-      if (id && idSet.has(id)) { card.dataset.chatHidden = ''; delete card.dataset.chatHidden; card.style.display = ''; shown++; }
-      else { card.dataset.chatHidden = '1'; card.style.display = 'none'; }
+      if (id && idSet.has(id)) { card.style.display = ''; shown++; }
+      else { card.style.display = 'none'; }
     });
     document.getElementById('chat-filter-text').textContent = '🔍 Chatbot ha filtrato ' + shown + ' di ' + LISTINGS.length + ' annunci';
     banner.classList.add('show');
@@ -392,7 +282,6 @@ CHATBOT_TEMPLATE = r"""
       card.style.display = '';
     });
     document.getElementById('chat-filter-banner').classList.remove('show');
-    if (typeof applyFilter === 'function') applyFilter();
   };
 
   window.sendChat = async function() {
@@ -421,6 +310,24 @@ CHATBOT_TEMPLATE = r"""
           { type: 'text', text: SYSTEM_PROMPT },
           { type: 'text', text: 'DATI ANNUNCI:\n' + LISTINGS_JSON_STR, cache_control: { type: 'ephemeral' } }
         ],
+        output_config: {
+          format: {
+            type: 'json_schema',
+            schema: {
+              type: 'object',
+              properties: {
+                message: { type: 'string', description: 'Risposta testuale in italiano, max 4 frasi' },
+                filter_ids: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'ID degli annunci da mostrare. Vuoto = mostra tutti.'
+                }
+              },
+              required: ['message', 'filter_ids'],
+              additionalProperties: false
+            }
+          }
+        },
         messages: apiMessages
       };
 
@@ -451,21 +358,9 @@ CHATBOT_TEMPLATE = r"""
       const textBlock = (data.content || []).find(b => b.type === 'text');
       if (!textBlock) { appendError('Risposta vuota dal modello.'); conversation.pop(); return; }
 
-      // Estrae JSON anche se il modello lo wrappa in ```json ... ``` o aggiunge testo
-      function extractJson(s) {
-        const fence = s.match(/```(?:json)?\s*([\s\S]*?)```/);
-        if (fence) return fence[1].trim();
-        const first = s.indexOf('{');
-        const last = s.lastIndexOf('}');
-        if (first !== -1 && last > first) return s.slice(first, last + 1);
-        return s.trim();
-      }
       let parsed;
-      try { parsed = JSON.parse(extractJson(textBlock.text)); }
-      catch (e) {
-        // Fallback: trattalo come messaggio plain, niente filter
-        parsed = { message: textBlock.text.trim(), filter_ids: [] };
-      }
+      try { parsed = JSON.parse(textBlock.text); }
+      catch (e) { appendError('Risposta non parseable: ' + textBlock.text.slice(0, 200)); conversation.pop(); return; }
 
       const message = parsed.message || '(nessun messaggio)';
       const filterIds = Array.isArray(parsed.filter_ids) ? parsed.filter_ids : [];
@@ -565,15 +460,25 @@ def card(a: dict, *, is_preferito: bool = False, in_preferiti_set: set | None = 
         else '<div class="card-photo-placeholder">🏠</div>'
     )
 
-    # Heart button — toggle localStorage. data-id richiesto dal JS.
+    # Cuore = preferito condiviso. Apre issue GitHub prefillata; il workflow
+    # process-preferiti.yml la trasforma in preferiti.json (visibile a entrambi).
+    # Se l'annuncio è già in preferiti.json, mostra ❤️ pieno (no-op).
     listing_id = a.get("id") or ""
-    if is_preferito:
-        # Card già nella sezione preferiti persistenti (preferiti.json gestiti da Claude)
-        heart_html = '<div class="heart-badge filled" title="Preferito persistente">❤️</div>'
+    in_shared = bool(in_preferiti_set and listing_id in in_preferiti_set)
+    if is_preferito or in_shared:
+        heart_html = '<div class="heart-badge filled" title="Preferito condiviso">❤️</div>'
     else:
+        esc = lambda v: html_lib.escape(str(v) if v is not None else "", quote=True)
         heart_html = (
-            f'<button class="heart-btn" data-id="{listing_id}" '
-            'onclick="toggleFav(this)" title="Aggiungi/rimuovi dai preferiti">🤍</button>'
+            f'<button class="heart-btn"'
+            f' data-id="{esc(listing_id)}"'
+            f' data-url="{esc(a.get("url"))}"'
+            f' data-titolo="{esc(a.get("titolo"))}"'
+            f' data-prezzo="{esc(a.get("prezzo"))}"'
+            f' data-mq="{esc(a.get("mq"))}"'
+            f' data-zona="{esc(a.get("zona"))}"'
+            f' onclick="openFavIssue(this)"'
+            f' title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>'
         )
 
     # Score badge
@@ -691,10 +596,6 @@ def build(dry_run: bool = False) -> int:
             f'{preferiti_cards}'
         )
 
-    # JS-side: lista degli id che sono preferiti persistenti (da preferiti.json).
-    # Viene unita con localStorage per ottenere il set completo dei preferiti.
-    persistent_fav_ids_json = json.dumps([p.get("id") for p in preferiti_sorted if p.get("id")])
-
     cards = "\n".join(card(a, in_preferiti_set=preferiti_ids) for a in dash)
     empty = (
         '<div class="empty">Nessun annuncio attivo. La prossima sessione Apify popolerà la lista.</div>'
@@ -748,7 +649,7 @@ def build(dry_run: bool = False) -> int:
 
     .heart-btn, .heart-badge {{ background: none; border: none; font-size: 26px; cursor: pointer; padding: 4px; border-radius: 50%; transition: transform .15s; line-height: 1; }}
     .heart-btn:hover {{ transform: scale(1.2); background: #fce7f3; }}
-    .heart-btn.filled {{ transform: scale(1.1); }}
+    .heart-btn:disabled {{ opacity: .5; cursor: default; }}
     .heart-badge.filled {{ cursor: default; }}
 
     .title {{ padding: 0 18px; font-size: 15px; font-weight: 600; color: #1e293b; margin-bottom: 8px; line-height: 1.35; }}
@@ -780,17 +681,13 @@ def build(dry_run: bool = False) -> int:
   </div>
   <div class="stats">
     <div class="stat"><div class="stat-val">{len(dash)}</div><div class="stat-lbl">In dashboard</div></div>
-    <div class="stat"><div class="stat-val" id="kpi-fav-count">{len(preferiti_sorted)}</div><div class="stat-lbl">❤️ Preferiti</div></div>
+    <div class="stat"><div class="stat-val">{len(preferiti_sorted)}</div><div class="stat-lbl">❤️ Preferiti</div></div>
     <div class="stat"><div class="stat-val">{total_30d}</div><div class="stat-lbl">Processati 30gg</div></div>
     <div class="stat"><div class="stat-val">{nuovi_oggi}</div><div class="stat-lbl">Nuovi oggi</div></div>
     <div class="stat"><div class="stat-val">{score_max}</div><div class="stat-lbl">Score max</div></div>
   </div>
   <div class="toolbar">
-    <label class="toggle">
-      <input type="checkbox" id="filter-fav" onchange="applyFilter()">
-      <span>Mostra solo ❤️ preferiti (<span id="fav-count">0</span>)</span>
-    </label>
-    <button class="clear-btn" onclick="clearFavs()" id="clear-btn" style="display:none">Svuota preferiti</button>
+    <span style="font-size:12px;color:#64748b">💡 Clicca 🤍 per salvare nei preferiti condivisi (visibili a entrambi)</span>
   </div>
   <div class="main">
     {preferiti_section}
@@ -801,104 +698,40 @@ def build(dry_run: bool = False) -> int:
   <div id="toast" class="toast"></div>
 
   <script>
-  const FAVS_KEY = 'casa-milano-favs';
-  // ID dei preferiti persistenti (preferiti.json sul server)
-  const PERSISTENT_FAV_IDS = new Set({persistent_fav_ids_json});
+  const GITHUB_REPO = '{GITHUB_REPO}';
 
-  function getFavs() {{
-    try {{ return JSON.parse(localStorage.getItem(FAVS_KEY) || '[]'); }}
-    catch(e) {{ return []; }}
+  function openFavIssue(btn) {{
+    const d = btn.dataset;
+    const titolo = d.titolo || '(senza titolo)';
+    const prezzo = d.prezzo && d.prezzo !== 'None' ? d.prezzo : '';
+    const mq = d.mq && d.mq !== 'None' ? d.mq : '';
+    const zona = d.zona && d.zona !== 'None' ? d.zona : '';
+    const title = 'preferito: ' + titolo.slice(0, 80);
+    const body = [
+      'URL: ' + (d.url || ''),
+      'Titolo: ' + titolo,
+      'Sito: immobiliare.it',
+      'Prezzo: ' + prezzo,
+      'Mq: ' + mq,
+      'Zona: ' + zona,
+      'Note: (opzionale — scrivi qui perché ti piace)',
+    ].join('\\n');
+    const u = 'https://github.com/' + GITHUB_REPO + '/issues/new'
+      + '?labels=preferito'
+      + '&title=' + encodeURIComponent(title)
+      + '&body=' + encodeURIComponent(body);
+    window.open(u, '_blank', 'noopener');
+    btn.textContent = '⏳';
+    btn.disabled = true;
+    showToast('🔗 Conferma "Submit new issue" su GitHub → preferito visibile a entrambi tra ~30s');
   }}
-  function getAllFavIds() {{
-    // Unione: persistenti (preferiti.json) + locali (localStorage)
-    return new Set([...PERSISTENT_FAV_IDS, ...getFavs()]);
-  }}
-  function saveFavs(arr) {{
-    localStorage.setItem(FAVS_KEY, JSON.stringify(arr));
-    updateFavCount();
-  }}
-  function updateFavCount() {{
-    const n = getAllFavIds().size;
-    document.getElementById('fav-count').textContent = n;
-    const kpiEl = document.getElementById('kpi-fav-count');
-    if (kpiEl) kpiEl.textContent = n;
-    // "Svuota" pulisce solo localStorage, quindi mostralo solo se ci sono local favs
-    document.getElementById('clear-btn').style.display = getFavs().length > 0 ? '' : 'none';
-  }}
-  function styleCardAsFav(card, btn) {{
-    if (card) card.classList.add('card-fav');
-    if (btn) {{
-      btn.textContent = '❤️';
-      btn.classList.add('filled');
-    }}
-  }}
-  function unstyleCardAsFav(card, btn, id) {{
-    // Rimuovi solo se NON è un preferito persistente (quelli restano sempre rosa)
-    if (card && id && !PERSISTENT_FAV_IDS.has(id)) card.classList.remove('card-fav');
-    if (btn) {{
-      btn.textContent = '🤍';
-      btn.classList.remove('filled');
-    }}
-  }}
-  function toggleFav(btn) {{
-    const id = btn.dataset.id;
-    if (!id) return;
-    const card = btn.closest('.card, .card-fav');
-    let favs = getFavs();
-    const idx = favs.indexOf(id);
-    if (idx === -1) {{
-      favs.push(id);
-      styleCardAsFav(card, btn);
-      showToast('❤️ Aggiunto ai preferiti');
-    }} else {{
-      favs.splice(idx, 1);
-      unstyleCardAsFav(card, btn, id);
-      showToast('Rimosso dai preferiti');
-    }}
-    saveFavs(favs);
-    applyFilter();
-  }}
-  function applyFilter() {{
-    const onlyFav = document.getElementById('filter-fav').checked;
-    const all = getAllFavIds();
-    document.querySelectorAll('.card, .card-fav').forEach(c => {{
-      const btn = c.querySelector('.heart-btn');
-      const id = btn ? btn.dataset.id : null;
-      // Un card è "preferito" se: in unione (localStorage o persistent) OPPURE già renderizzata come card-fav (preferito persistente senza heart-btn)
-      const isFav = (id && all.has(id)) || (!btn && c.classList.contains('card-fav'));
-      c.style.display = (!onlyFav || isFav) ? '' : 'none';
-    }});
-  }}
-  function clearFavs() {{
-    if (!confirm('Svuotare i preferiti locali di questo browser? I preferiti persistenti (su server) restano.')) return;
-    const localIds = getFavs();
-    saveFavs([]);
-    document.querySelectorAll('.heart-btn.filled').forEach(b => {{
-      const id = b.dataset.id;
-      const card = b.closest('.card, .card-fav');
-      unstyleCardAsFav(card, b, id);
-    }});
-    applyFilter();
-    showToast('Preferiti locali svuotati');
-  }}
+
   function showToast(msg) {{
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2500);
+    setTimeout(() => t.classList.remove('show'), 4000);
   }}
-
-  // Init: applica stile preferito a tutte le card nell'unione (localStorage + persistent)
-  document.addEventListener('DOMContentLoaded', () => {{
-    const all = getAllFavIds();
-    document.querySelectorAll('.heart-btn').forEach(btn => {{
-      if (all.has(btn.dataset.id)) {{
-        const card = btn.closest('.card, .card-fav');
-        styleCardAsFav(card, btn);
-      }}
-    }});
-    updateFavCount();
-  }});
   </script>
 </body>
 </html>"""
