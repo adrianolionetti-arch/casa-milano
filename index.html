@@ -73,12 +73,12 @@
 <body>
   <div class="header">
     <h1>🏠 Casa Milano — Dashboard</h1>
-    <p>Aggiornato: 24/05/2026 · Annunci attivi su Immobiliare.it · score ≥ 6.0 · ultimi 30 giorni</p>
+    <p>Aggiornato: 25/05/2026 · Annunci attivi su Immobiliare.it · score ≥ 6.0 · ultimi 30 giorni</p>
   </div>
   <div class="stats">
     <div class="stat"><div class="stat-val">46</div><div class="stat-lbl">In dashboard</div></div>
     <div class="stat"><div class="stat-val">2</div><div class="stat-lbl">❤️ Preferiti</div></div>
-    <div class="stat"><div class="stat-val">2016</div><div class="stat-lbl">Processati 30gg</div></div>
+    <div class="stat"><div class="stat-val">2079</div><div class="stat-lbl">Processati 30gg</div></div>
     <div class="stat"><div class="stat-val">0</div><div class="stat-lbl">Nuovi oggi</div></div>
     <div class="stat"><div class="stat-val">7.5</div><div class="stat-lbl">Score max</div></div>
   </div>
@@ -88,7 +88,7 @@
   <div class="main">
     <div class="section-title" style="color:#ec4899">❤️ Preferiti — 2 salvati</div>
 <div class="card-fav">
-  <div class="card-photo-placeholder">🏠</div>
+  <img src="https://pwm.im-cdn.it/image/1816989629/xxl.jpg" loading="lazy" class="card-photo" alt="Trilocale piazza dei Daini 4, Bicocca, Milano | 3 locali | 115 m²">
   <div class="card-top">
     <div class="price">€485.000</div>
     <div class="badges">
@@ -97,24 +97,24 @@
     <div class="heart-badge filled" title="Preferito condiviso">❤️</div>
   </div>
   <div class="title">Trilocale piazza dei Daini 4, Bicocca, Milano | 3 locali | 115 m²</div>
-  <div class="location">📍 <strong>—</strong>  ·  📅 2026-05-21</div>
-  <div class="details"></div>
+  <div class="location">📍 <strong>Bicocca</strong>  ·  📅 2026-05-21</div>
+  <div class="details">📏 115mq</div>
   <div class="agency">🏪 immobiliare.it</div>
   
   <a class="cta" href="https://www.immobiliare.it/annunci/124615727/?entryPoint=related#foto15" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
 <div class="card-fav">
-  <div class="card-photo-placeholder">🏠</div>
+  <img src="https://pwm.im-cdn.it/image/1853217941/xxl.jpg" loading="lazy" class="card-photo" alt="Quadrilocale Milano (Tempocasa rif. 6415246)">
   <div class="card-top">
-    <div class="price">—</div>
+    <div class="price">€425.000</div>
     <div class="badges">
       <div class="score-badge manual">❤️ Preferito</div>
     </div>
     <div class="heart-badge filled" title="Preferito condiviso">❤️</div>
   </div>
   <div class="title">Quadrilocale Milano (Tempocasa rif. 6415246)</div>
-  <div class="location">📍 <strong>—</strong>  ·  📅 2026-05-20</div>
-  <div class="details"></div>
+  <div class="location">📍 <strong>Prato Centenaro</strong>  ·  📅 2026-05-20</div>
+  <div class="details">📏 109mq</div>
   <div class="agency">🏪 Tempocasa</div>
   <div class="note-pers">📝 Cross-post Tempocasa (rif. 6415246). Dati completi da recuperare appena Apify rate limit si sblocca.</div>
   <a class="cta" href="https://www.immobiliare.it/annunci/126127111/" target="_blank">Vedi su Immobiliare.it →</a>
@@ -863,8 +863,7 @@
   <script>
   const GITHUB_REPO = 'adrianolionetti-arch/casa-milano';
 
-  function openFavIssue(btn) {
-    const d = btn.dataset;
+  function buildIssuePayload(d) {
     const titolo = d.titolo || '(senza titolo)';
     const prezzo = d.prezzo && d.prezzo !== 'None' ? d.prezzo : '';
     const mq = d.mq && d.mq !== 'None' ? d.mq : '';
@@ -879,14 +878,62 @@
       'Zona: ' + zona,
       'Note: (opzionale — scrivi qui perché ti piace)',
     ].join('\n');
+    return { title, body };
+  }
+
+  async function openFavIssue(btn) {
+    // Cerca PAT in localStorage (popolato dopo unlock chatbot via password)
+    const pat = localStorage.getItem('casa-milano-github-pat') || '';
+    const d = btn.dataset;
+    const payload = buildIssuePayload(d);
+
+    if (pat) {
+      // PAT mode: 1-click, POST diretto, nessuna tab GitHub aperta
+      btn.textContent = '⏳';
+      btn.disabled = true;
+      try {
+        const resp = await fetch('https://api.github.com/repos/' + GITHUB_REPO + '/issues', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + pat,
+            'Accept': 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ title: payload.title, body: payload.body, labels: ['preferito'] })
+        });
+        if (!resp.ok) {
+          let err = 'HTTP ' + resp.status;
+          try { const j = await resp.json(); if (j.message) err += ' — ' + j.message; } catch(e) {}
+          throw new Error(err);
+        }
+        btn.textContent = '❤️';
+        const card = btn.closest('.card');
+        if (card) card.classList.add('card-fav');
+        showToast('❤️ Preferito condiviso — visibile sulla dashboard tra ~30s');
+      } catch (e) {
+        btn.textContent = '🤍';
+        btn.disabled = false;
+        showToast('Errore PAT: ' + (e.message || e) + '. Apertura tab GitHub fallback...');
+        openFavIssueViaUrl(payload);
+      }
+    } else {
+      // Fallback (nessun PAT in localStorage): vecchio flusso open-tab.
+      // Per attivare il 1-click: apri chatbot → ⚙ → Disconnetti → re-inserisci password
+      // (il config su server deve essere v2 con github_pat criptato dentro).
+      btn.textContent = '⏳';
+      btn.disabled = true;
+      openFavIssueViaUrl(payload);
+      showToast('🔗 Conferma "Submit new issue" su GitHub → preferito visibile tra ~30s');
+    }
+  }
+
+  function openFavIssueViaUrl(payload) {
     const u = 'https://github.com/' + GITHUB_REPO + '/issues/new'
       + '?labels=preferito'
-      + '&title=' + encodeURIComponent(title)
-      + '&body=' + encodeURIComponent(body);
+      + '&title=' + encodeURIComponent(payload.title)
+      + '&body=' + encodeURIComponent(payload.body);
     window.open(u, '_blank', 'noopener');
-    btn.textContent = '⏳';
-    btn.disabled = true;
-    showToast('🔗 Conferma "Submit new issue" su GitHub → preferito visibile a entrambi tra ~30s');
   }
 
   function showToast(msg) {
@@ -980,18 +1027,77 @@
   const LISTINGS_JSON_STR = JSON.stringify(LISTINGS);
 
   const KEY_API = 'casa-milano-anthropic-key';
+  const KEY_PAT = 'casa-milano-github-pat';
   const KEY_CHAT = 'casa-milano-chat-history';
   const MAX_HISTORY = 16;
+  const ENC_CONFIG_URL = 'chatbot-key.enc.json';
+  const PBKDF2_ITERATIONS = 200000;
 
   let conversation = [];
 
   function getApiKey() { return localStorage.getItem(KEY_API) || ''; }
   function setApiKey(k) { localStorage.setItem(KEY_API, k); }
+  function getGithubPat() { return localStorage.getItem(KEY_PAT) || ''; }
+  function setGithubPat(p) { if (p) localStorage.setItem(KEY_PAT, p); }
   function loadHistory() {
     try { return JSON.parse(localStorage.getItem(KEY_CHAT) || '[]'); }
     catch (e) { return []; }
   }
   function saveHistory() { localStorage.setItem(KEY_CHAT, JSON.stringify(conversation.slice(-MAX_HISTORY))); }
+
+  // ===== Crypto helpers (AES-GCM 256 + PBKDF2-SHA256) =====
+  function b64enc(buf) {
+    const bytes = new Uint8Array(buf);
+    let s = '';
+    for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return btoa(s);
+  }
+  function b64dec(s) {
+    const bin = atob(s);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return bytes;
+  }
+  async function deriveKey(password, salt) {
+    const km = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt, iterations: PBKDF2_ITERATIONS, hash: 'SHA-256' },
+      km, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
+    );
+  }
+  async function encryptSecrets(apiKey, githubPat, password) {
+    // v2 envelope: {api_key, github_pat} encrypted as JSON
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const key = await deriveKey(password, salt);
+    const payload = JSON.stringify({ api_key: apiKey, github_pat: githubPat || null });
+    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(payload));
+    return {
+      version: 2, kdf: 'PBKDF2-SHA256', iterations: PBKDF2_ITERATIONS,
+      salt: b64enc(salt), iv: b64enc(iv), ciphertext: b64enc(ct)
+    };
+  }
+  async function decryptSecrets(config, password) {
+    const key = await deriveKey(password, b64dec(config.salt));
+    const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64dec(config.iv) }, key, b64dec(config.ciphertext));
+    const decoded = new TextDecoder().decode(pt);
+    // v1 legacy: plain sk-ant key. v2: {api_key, github_pat} JSON
+    if (decoded.startsWith('sk-ant-')) {
+      return { api_key: decoded, github_pat: null };
+    }
+    const parsed = JSON.parse(decoded);
+    if (!parsed.api_key || !parsed.api_key.startsWith('sk-ant-')) {
+      throw new Error('invalid api_key in payload');
+    }
+    return { api_key: parsed.api_key, github_pat: parsed.github_pat || null };
+  }
+  async function fetchEncConfig() {
+    try {
+      const resp = await fetch(ENC_CONFIG_URL, { cache: 'no-store' });
+      if (!resp.ok) return null;
+      return await resp.json();
+    } catch (e) { return null; }
+  }
 
   window.toggleChat = function() {
     const panel = document.getElementById('chat-panel');
@@ -1024,32 +1130,114 @@
     document.getElementById('chat-input').focus();
   }
 
-  window.showSetup = function() {
+  window.showSetup = async function() {
     document.getElementById('chat-input-row').style.display = 'none';
     const body = document.getElementById('chat-body');
     body.className = 'chat-setup';
-    const existing = getApiKey();
-    body.innerHTML =
-      '<h4>🔑 API Key Anthropic</h4>' +
-      '<p>Per usare il chatbot serve una API key Anthropic. Salvata <strong>solo nel tuo browser</strong> (localStorage), mai inviata altrove. La key viene usata direttamente per chiamare api.anthropic.com.</p>' +
-      '<p>Crea una key gratuita su <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>. Il chatbot usa Haiku 4.5 (~0.005€ per domanda con cache attiva).</p>' +
-      '<input type="password" id="api-key-input" placeholder="sk-ant-..." value="' + (existing ? existing.slice(0, 8) + '...' + existing.slice(-4) : '') + '">' +
-      '<button class="save-btn" onclick="saveApiKey()">Salva e inizia</button>' +
-      (existing ? '<p style="text-align:center;margin-top:14px"><a href="#" onclick="clearApiKey(); return false;" style="color:#dc2626;font-size:12px">Rimuovi key salvata</a></p>' : '');
-    document.getElementById('api-key-input').focus();
+    body.innerHTML = '<p style="text-align:center;color:#64748b">Caricamento...</p>';
+
+    const isAdmin = new URLSearchParams(location.search).get('admin') === '1';
+    const config = await fetchEncConfig();
+    const hasKey = !!getApiKey();
+
+    if (hasKey && !isAdmin) {
+      // Settings view (utente già sbloccato)
+      const hasPat = !!getGithubPat();
+      const patBadge = hasPat
+        ? '<p style="font-size:12px;color:#16a34a">✓ Preferiti condivisi attivi (cuore POST diretto via PAT)</p>'
+        : '<p style="font-size:12px;color:#dc2626">⚠ PAT GitHub assente: i cuori aprono GitHub in nuova tab (fallback). Apri con ?admin=1 e rigenera il config includendo un PAT per il flusso 1-click.</p>';
+      body.innerHTML =
+        '<h4>⚙ Impostazioni chatbot</h4>' +
+        '<p>Chatbot sbloccato. Modello <strong>claude-haiku-4-5</strong>, ~0.005€/domanda con cache.</p>' +
+        patBadge +
+        '<button class="save-btn" style="background:#dc2626;margin-top:12px" onclick="clearApiKey()">Disconnetti (rimuovi secret locali)</button>' +
+        '<p style="text-align:center;margin-top:16px"><a href="#" onclick="renderChat();return false;" style="color:#0071e3;font-size:13px">← Torna alla chat</a></p>';
+      return;
+    }
+
+    if (config && !isAdmin) {
+      // User mode: solo password
+      body.innerHTML =
+        '<h4>🔒 Password</h4>' +
+        '<p>Inserisci la password condivisa per sbloccare chatbot + preferiti.</p>' +
+        '<input type="password" id="pwd-input" placeholder="password">' +
+        '<button class="save-btn" onclick="unlockWithPassword()">Sblocca</button>' +
+        '<p style="text-align:center;margin-top:16px;font-size:11px;color:#94a3b8">' +
+        'Password persa? Apri con <code>?admin=1</code> per rigenerare.</p>';
+      const input = document.getElementById('pwd-input');
+      input.focus();
+      input.addEventListener('keydown', e => { if (e.key === 'Enter') unlockWithPassword(); });
+    } else {
+      // Admin mode: api_key + github_pat + password
+      body.innerHTML =
+        '<h4>⚙ Setup iniziale (admin)</h4>' +
+        '<p><strong>1. API Key Anthropic</strong> (<a href="https://console.anthropic.com/settings/keys" target="_blank">console</a>) — per il chatbot.</p>' +
+        '<input type="password" id="api-key-input" placeholder="sk-ant-...">' +
+        '<p><strong>2. GitHub PAT fine-grained</strong> (opzionale ma fortemente consigliato) — <a href="https://github.com/settings/personal-access-tokens/new" target="_blank">crea qui</a>, repo: casa-milano, permesso: Issues r/w. Permette ad Alessia di salvare preferiti senza login GitHub.</p>' +
+        '<input type="password" id="pat-input" placeholder="github_pat_... (opzionale)">' +
+        '<p><strong>3. Password condivisa</strong>:</p>' +
+        '<input type="password" id="admin-pwd1" placeholder="password (min 8 caratteri)">' +
+        '<input type="password" id="admin-pwd2" placeholder="ripeti password">' +
+        '<button class="save-btn" onclick="generateConfig()">🔐 Genera + Scarica</button>' +
+        (config ? '<p style="margin-top:12px;font-size:12px;color:#0071e3;text-align:center">⚠ Config esistente. Generando uno nuovo invalidi la password precedente.</p>' : '');
+      document.getElementById('api-key-input').focus();
+    }
   };
 
-  window.saveApiKey = function() {
-    const val = document.getElementById('api-key-input').value.trim();
-    if (!val || val.includes('...')) { alert('Inserisci una API key valida (sk-ant-...)'); return; }
-    if (!val.startsWith('sk-ant-')) { alert('La key dovrebbe iniziare con "sk-ant-"'); return; }
-    setApiKey(val);
-    renderChat();
+  window.unlockWithPassword = async function() {
+    const pwd = document.getElementById('pwd-input').value;
+    if (!pwd) return;
+    const btn = document.querySelector('.chat-setup .save-btn');
+    btn.disabled = true; btn.textContent = 'Sblocco...';
+    try {
+      const config = await fetchEncConfig();
+      if (!config) {
+        alert('Config encrypted non trovato sul server');
+        btn.disabled = false; btn.textContent = 'Sblocca';
+        return;
+      }
+      const secrets = await decryptSecrets(config, pwd);
+      setApiKey(secrets.api_key);
+      setGithubPat(secrets.github_pat);
+      renderChat();
+    } catch (e) {
+      btn.disabled = false; btn.textContent = 'Sblocca';
+      alert('Password sbagliata');
+    }
+  };
+
+  window.generateConfig = async function() {
+    const apiKey = document.getElementById('api-key-input').value.trim();
+    const pat = document.getElementById('pat-input').value.trim();
+    const pwd1 = document.getElementById('admin-pwd1').value;
+    const pwd2 = document.getElementById('admin-pwd2').value;
+    if (!apiKey.startsWith('sk-ant-')) { alert('API key deve iniziare con sk-ant-'); return; }
+    if (pat && !pat.startsWith('github_pat_') && !pat.startsWith('ghp_')) {
+      alert('GitHub PAT deve iniziare con github_pat_ (fine-grained) o ghp_ (classic). Lascia vuoto se non lo vuoi.');
+      return;
+    }
+    if (pwd1.length < 8) { alert('Password almeno 8 caratteri'); return; }
+    if (pwd1 !== pwd2) { alert('Le password non coincidono'); return; }
+
+    const config = await encryptSecrets(apiKey, pat || null, pwd1);
+    const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'chatbot-key.enc.json'; a.click();
+    URL.revokeObjectURL(url);
+    alert(
+      'File scaricato. Prossimi passi:\n\n' +
+      '1. Sostituisci chatbot-key.enc.json nella root del repo casa-milano\n' +
+      '2. git add chatbot-key.enc.json && git commit && git push\n' +
+      '3. Aspetta ~2 min deploy Pages\n' +
+      '4. Apri senza ?admin=1 — basta la password.'
+    );
   };
 
   window.clearApiKey = function() {
-    if (!confirm('Rimuovere la API key dal browser?')) return;
+    if (!confirm('Rimuovere i secret locali (Anthropic key + GitHub PAT)? Dovrai re-inserire la password.')) return;
     localStorage.removeItem(KEY_API);
+    localStorage.removeItem(KEY_PAT);
     showSetup();
   };
 
