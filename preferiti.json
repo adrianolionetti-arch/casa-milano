@@ -56,11 +56,13 @@
       "prezzo": 298000,
       "mq": 92,
       "zona": "Crescenzago",
-      "indirizzo": null,
-      "foto_url": null,
+      "indirizzo": "Via Padova 256",
+      "foto_url": "https://pwm.im-cdn.it/image/1851187265/xxl.jpg",
       "agenzia": "immobiliare.it",
       "data_aggiunto": "2026-05-25",
-      "note_personali": "(opzionale — scrivi qui perché ti piace)"
+      "note_personali": "(opzionale — scrivi qui perché ti piace)",
+      "lat": 45.5060997,
+      "lon": 9.24380016
     }
   ]
 }
