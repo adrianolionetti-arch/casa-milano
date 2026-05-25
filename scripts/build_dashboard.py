@@ -32,7 +32,9 @@ MIN_SCORE = 6.0
 CHATBOT_MODEL = "claude-haiku-4-5"
 CHATBOT_SYSTEM_PROMPT = """Sei "Casa Milano Assistant", un assistente che aiuta Adriano Lionetti e Alessia Curtopelle a esplorare la dashboard di annunci immobiliari a Milano.
 
-Hai accesso al dataset completo degli annunci attualmente in dashboard (vedi "DATI ANNUNCI" più sotto). Gli annunci sono già pre-filtrati: score ≥ 6, ultimi 30 giorni, su Immobiliare.it.
+Hai accesso al dataset completo della dashboard (vedi "DATI ANNUNCI" più sotto):
+- Gli annunci con `is_preferito: false` sono pre-filtrati dall'agente automatico: score ≥ 6, ultimi 30 giorni, su Immobiliare.it.
+- Gli annunci con `is_preferito: true` sono stati salvati manualmente da Adriano o Alessia (preferiti condivisi). Possono avere campi parziali (es. niente punteggio). Quando l'utente chiede "i miei preferiti", "quanti preferiti", "mostrami i preferiti", riferisciti SOLO a questi.
 
 Criteri dell'utente (per contesto):
 - Budget: max €450k, ideale €230-310k
@@ -58,7 +60,7 @@ Esempi:
 - "ce ne sono con terrazzo?" → cerca "terrazzo"/"terrazza" nelle descrizioni, filter_ids con quelli che matchano
 
 Schema dataset (un oggetto per annuncio):
-- id (string), titolo, prezzo (int EUR), mq (int), locali, bagni, piano, zona, indirizzo, agenzia, punteggio (float 0-10), url, ascensore (bool), descrizione (estratto max 400 char)
+- id (string), is_preferito (bool — true = preferito manuale salvato da Adriano/Alessia), titolo, prezzo (int EUR), mq (int), locali, bagni, piano, zona, indirizzo, agenzia, punteggio (float 0-10, null per preferiti), url, ascensore (bool), descrizione (estratto max 400 char), note_personali (solo preferiti)
 """
 
 CHATBOT_TEMPLATE = r"""
@@ -499,9 +501,21 @@ CHATBOT_TEMPLATE = r"""
       const textBlock = (data.content || []).find(b => b.type === 'text');
       if (!textBlock) { appendError('Risposta vuota dal modello.'); conversation.pop(); return; }
 
+      // Estrae JSON anche se wrappato in markdown fences o preceduto da testo
+      function extractJson(s) {
+        const fence = s.match(/```(?:json)?\s*([\s\S]*?)```/);
+        if (fence) return fence[1].trim();
+        const first = s.indexOf('{');
+        const last = s.lastIndexOf('}');
+        if (first !== -1 && last > first) return s.slice(first, last + 1);
+        return s.trim();
+      }
       let parsed;
-      try { parsed = JSON.parse(textBlock.text); }
-      catch (e) { appendError('Risposta non parseable: ' + textBlock.text.slice(0, 200)); conversation.pop(); return; }
+      try { parsed = JSON.parse(extractJson(textBlock.text)); }
+      catch (e) {
+        // Fallback graceful: testo raw come messaggio, niente filtro
+        parsed = { message: textBlock.text.trim(), filter_ids: [] };
+      }
 
       const message = parsed.message || '(nessun messaggio)';
       const filterIds = Array.isArray(parsed.filter_ids) ? parsed.filter_ids : [];
@@ -537,12 +551,18 @@ CHATBOT_TEMPLATE = r"""
 """
 
 
-def build_chatbot_block(dash_items: list[dict]) -> str:
-    """Restituisce il blocco HTML+CSS+JS del chatbot, con dati e prompt iniettati."""
+def build_chatbot_block(dash_items: list[dict], preferiti_items: list[dict] | None = None) -> str:
+    """Restituisce il blocco HTML+CSS+JS del chatbot, con dati e prompt iniettati.
+
+    dash_items: annunci in dashboard (score>=6)
+    preferiti_items: annunci salvati manualmente (preferiti.json). Marcati con is_preferito=True
+    """
+    preferiti_items = preferiti_items or []
     data = []
     for a in dash_items:
         data.append({
             "id": a.get("id"),
+            "is_preferito": False,
             "titolo": a.get("titolo"),
             "prezzo": a.get("prezzo"),
             "mq": a.get("mq"),
@@ -556,6 +576,25 @@ def build_chatbot_block(dash_items: list[dict]) -> str:
             "url": a.get("url"),
             "ascensore": a.get("ascensore"),
             "descrizione": (a.get("descrizione") or "")[:400],
+        })
+    for a in preferiti_items:
+        data.append({
+            "id": a.get("id"),
+            "is_preferito": True,
+            "titolo": a.get("titolo"),
+            "prezzo": a.get("prezzo"),
+            "mq": a.get("mq"),
+            "locali": a.get("locali"),
+            "bagni": a.get("bagni"),
+            "piano": a.get("piano"),
+            "zona": a.get("zona"),
+            "indirizzo": a.get("indirizzo"),
+            "agenzia": a.get("agenzia"),
+            "punteggio": None,
+            "url": a.get("url"),
+            "ascensore": a.get("ascensore"),
+            "descrizione": (a.get("descrizione") or "")[:400],
+            "note_personali": a.get("note_personali") or "",
         })
     listings_json = json.dumps(data, ensure_ascii=False, separators=(',', ':'))
     # Difensivo: in caso una descrizione contenesse </script>
@@ -828,7 +867,11 @@ def build(dry_run: bool = False) -> int:
     <div class="stat"><div class="stat-val">{score_max}</div><div class="stat-lbl">Score max</div></div>
   </div>
   <div class="toolbar">
-    <span style="font-size:12px;color:#64748b">💡 Clicca 🤍 per salvare nei preferiti condivisi (visibili a entrambi)</span>
+    <label class="toggle">
+      <input type="checkbox" id="filter-fav" onchange="applyFavFilter()">
+      <span>Mostra solo ❤️ preferiti ({len(preferiti_sorted)})</span>
+    </label>
+    <span style="font-size:12px;color:#64748b">💡 Clicca 🤍 per salvare nei preferiti condivisi</span>
   </div>
   <div class="main">
     {preferiti_section}
@@ -896,13 +939,14 @@ def build(dry_run: bool = False) -> int:
         openFavIssueViaUrl(payload);
       }}
     }} else {{
-      // Fallback (nessun PAT in localStorage): vecchio flusso open-tab.
-      // Per attivare il 1-click: apri chatbot → ⚙ → Disconnetti → re-inserisci password
-      // (il config su server deve essere v2 con github_pat criptato dentro).
-      btn.textContent = '⏳';
-      btn.disabled = true;
-      openFavIssueViaUrl(payload);
-      showToast('🔗 Conferma "Submit new issue" su GitHub → preferito visibile tra ~30s');
+      // Nessun PAT in localStorage: il browser non ha (ancora) sbloccato il chatbot con la
+      // password del config v2. Invece del fallback open-tab GitHub (che chiede login),
+      // apri il pannello chatbot e mostra un toast chiaro.
+      showToast('🔓 Apri il chatbot 💬 (in basso a destra) e inserisci la password per attivare il salvataggio 1-click');
+      const panel = document.getElementById('chat-panel');
+      if (panel && !panel.classList.contains('open') && typeof toggleChat === 'function') {{
+        toggleChat();
+      }}
     }}
   }}
 
@@ -920,11 +964,26 @@ def build(dry_run: bool = False) -> int:
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 4000);
   }}
+
+  // Filtro "Mostra solo preferiti": nasconde le card di "Annunci attivi" (.card) che
+  // non sono in preferiti.json. Le card-fav della sezione persistente restano sempre.
+  window.applyFavFilter = function() {{
+    const onlyFav = document.getElementById('filter-fav').checked;
+    document.querySelectorAll('.card').forEach(c => {{
+      c.style.display = onlyFav ? 'none' : '';
+    }});
+    // Optional: hide also the "Annunci attivi" section title
+    document.querySelectorAll('.section-title').forEach(t => {{
+      if (t.textContent.includes('Annunci attivi')) {{
+        t.style.display = onlyFav ? 'none' : '';
+      }}
+    }});
+  }};
   </script>
 </body>
 </html>"""
 
-    chatbot_block = build_chatbot_block(dash)
+    chatbot_block = build_chatbot_block(dash, preferiti_sorted)
     html = html.replace('</body>', chatbot_block + '\n</body>')
 
     if dry_run:
