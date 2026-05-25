@@ -8,6 +8,15 @@ permissions:
   contents: write
   issues: write
 
+# Per-issue concurrency: se 'opened' e 'labeled' fanno partire 2 run per la
+# stessa issue (es. URL ?labels=preferito → label applicata al create),
+# il secondo cancella il primo e ne resta uno solo.
+# Per issue diverse i gruppi differiscono → girano in parallelo (poi la
+# race sul push è gestita dal retry-with-rebase nello step Commit & push).
+concurrency:
+  group: preferito-issue-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
 jobs:
   process:
     if: |
@@ -41,7 +50,7 @@ jobs:
       - name: Rebuild dashboard
         run: python3 scripts/build_dashboard.py
 
-      - name: Commit & push
+      - name: Commit & push (con retry-rebase)
         run: |
           git config user.email 'agent@casa-milano.local'
           git config user.name 'Casa Milano Agent'
@@ -51,7 +60,29 @@ jobs:
           fi
           git add preferiti.json index.html
           git commit -m "Aggiungi preferito da issue #${{ github.event.issue.number }}"
-          git push origin main
+          # Retry-with-rebase per gestire race con workflow paralleli che
+          # modificano lo stesso main (es. cron, altri preferiti, backfill).
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push riuscito al tentativo $i"
+              exit 0
+            fi
+            echo "Push tentativo $i fallito → pull --rebase e riprovo..."
+            git pull --rebase origin main || {
+              echo "Rebase fallito — abort";
+              exit 1;
+            }
+            # Re-genera index.html dopo il rebase (l'altro workflow potrebbe
+            # avere modificato preferiti.json → ricostruisci la dashboard)
+            python3 scripts/build_dashboard.py >/dev/null 2>&1 || true
+            if ! git diff --quiet; then
+              git add index.html preferiti.json
+              git commit --amend --no-edit
+            fi
+            sleep 2
+          done
+          echo "Push fallito dopo 5 tentativi"
+          exit 1
 
       - name: Comment + close issue
         uses: actions/github-script@v7
