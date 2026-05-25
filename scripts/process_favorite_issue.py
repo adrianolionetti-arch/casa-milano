@@ -203,8 +203,10 @@ def main(issue_body_path: str) -> int:
         "note_personali": fields.get("note") or "",
     }
 
-    # Se è un URL Immobiliare e mancano dati, prova Apify
-    if "immobiliare.it" in url and (not entry["prezzo"] or not entry["mq"]):
+    # Se è un URL Immobiliare, prova sempre l'enrichment Apify: il bookmarklet/heart
+    # click puo' fornire prezzo+mq ma mai lat/lon (necessarie per la mappa). Costo
+    # ~$0.001 per listing, trascurabile.
+    if "immobiliare.it" in url:
         print(f"Tentativo enrichment Apify per {url}...", file=sys.stderr)
         enriched = enrich_via_apify(url)
         for k, v in enriched.items():
