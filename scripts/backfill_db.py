@@ -25,7 +25,7 @@ APIFY_ACTOR = "azzouzana~immobiliare-it-listing-page-scraper-by-items-urls"
 DAYS_WINDOW = 30
 MIN_SCORE = 6.0
 BATCH_SIZE = 10  # quante URL per chiamata Apify
-ENRICH_FIELDS = ("locali", "bagni", "piano", "ascensore", "indirizzo", "agenzia", "descrizione")
+ENRICH_FIELDS = ("locali", "bagni", "piano", "ascensore", "indirizzo", "agenzia", "descrizione", "lat", "lon")
 
 
 def parse_date(s):
@@ -69,6 +69,8 @@ def extract_fields(item: dict) -> dict:
         "indirizzo": location.get("address"),
         "agenzia": agency.get("displayName"),
         "descrizione": props.get("description"),
+        "lat": location.get("latitude"),
+        "lon": location.get("longitude"),
     }
 
 

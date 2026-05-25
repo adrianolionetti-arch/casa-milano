@@ -128,6 +128,8 @@ Lavora su entrambi gli array (`/tmp/apify_items.json` immobiliare + `/tmp/ideali
 | `descrizione` | `item.properties[0].description` |
 | `agenzia` | `item.advertiser.agency.displayName` |
 | `foto_url` | `item.properties[0].multimedia.photos[0].urls.large` (URL CDN, NO download locale) |
+| `lat` | `item.properties[0].location.latitude` (float, decimal degrees) |
+| `lon` | `item.properties[0].location.longitude` (float, decimal degrees) |
 
 #### 3b. Idealista (`/tmp/idealista_items.json`)
 
@@ -212,7 +214,7 @@ Aggiungi a `annunci_visti.json` con **TUTTI** i campi estratti allo Step 3, anch
 }
 ```
 
-**Campi obbligatori** (`null`/`""`/`false` ammessi se davvero assenti, MAI omessi): `locali`, `bagni`, `piano`, `ascensore`, `indirizzo`, `agenzia`, `descrizione`. Stessa regola per i record `SCARTATO`/`ESCLUSO` (anche se non compaiono in dashboard).
+**Campi obbligatori** (`null`/`""`/`false` ammessi se davvero assenti, MAI omessi): `locali`, `bagni`, `piano`, `ascensore`, `indirizzo`, `agenzia`, `descrizione`, `lat`, `lon`. Stessa regola per i record `SCARTATO`/`ESCLUSO` (anche se non compaiono in dashboard).
 
 Il campo `source` ammette `"immobiliare"` o `"idealista"`. Per gli annunci legacy senza `source` (pre-2026-05-24), considera default `"immobiliare"`.
 

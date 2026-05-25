@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Casa Milano — Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f8fafc; color: #0f172a; line-height: 1.5; }
@@ -23,7 +25,16 @@
     .clear-btn { background: #fff; border: 1px solid #fbcfe8; color: #be185d; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: background .15s; }
     .clear-btn:hover { background: #fdf2f8; }
 
-    .main { padding: 0 20px 40px; max-width: 900px; margin: 0 auto; }
+    .layout { display: grid; grid-template-columns: 1fr 420px; gap: 20px; max-width: 1500px; margin: 0 auto; padding: 0 20px 40px; }
+    .main { min-width: 0; }
+    .map-aside { position: sticky; top: 16px; height: calc(100vh - 32px); display: flex; flex-direction: column; gap: 8px; }
+    #map { flex: 1; border-radius: 12px; box-shadow: 0 1px 4px rgba(15,23,42,.1); background: #e2e8f0; }
+    .map-hint { font-size: 11px; color: #64748b; text-align: center; padding: 4px 8px; }
+    #map-fab { display: none; position: fixed; bottom: 20px; right: 90px; width: 56px; height: 56px; border-radius: 50%; background: #10b981; color: #fff; border: none; box-shadow: 0 4px 14px rgba(16,185,129,.4); font-size: 26px; cursor: pointer; z-index: 999; }
+    /* Marker highlight quando hover sulla card */
+    .leaflet-marker-icon.highlighted { filter: hue-rotate(90deg) brightness(1.2); z-index: 1000 !important; }
+    .card.highlight, .card-fav.highlight { outline: 3px solid #f59e0b; outline-offset: 2px; }
+
     .section-title { font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: .8px; margin: 24px 0 12px; }
     .empty { background:#fff; padding: 32px 24px; border-radius: 10px; text-align: center; color: #64748b; }
 
@@ -64,6 +75,13 @@
     .toast.show { display: block; animation: slideUp .3s ease-out; }
     @keyframes slideUp { from { transform: translate(-50%, 20px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
 
+    @media(max-width:1024px) {
+      .layout { grid-template-columns: 1fr; }
+      .map-aside { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100vh; background: #fff; z-index: 998; padding: 12px; border-radius: 0; }
+      .map-aside.open { display: flex; }
+      #map-fab { display: flex; align-items: center; justify-content: center; }
+      .map-aside.open + #map-fab, .map-aside.open ~ #map-fab { background: #475569; }
+    }
     @media(max-width:600px) {
       .stats { grid-template-columns: repeat(2, 1fr); }
       .price { font-size: 24px; }
@@ -89,9 +107,10 @@
     </label>
     <span style="font-size:12px;color:#64748b">💡 Clicca 🤍 per salvare nei preferiti condivisi</span>
   </div>
-  <div class="main">
-    <div class="section-title" style="color:#ec4899">❤️ Preferiti — 2 salvati</div>
-<div class="card-fav">
+  <div class="layout">
+    <div class="main">
+      <div class="section-title" style="color:#ec4899">❤️ Preferiti — 2 salvati</div>
+<div class="card-fav" data-id="immobiliare-124615727" data-lat="" data-lon="">
   <img src="https://pwm.im-cdn.it/image/1816989629/xxl.jpg" loading="lazy" class="card-photo" alt="Trilocale piazza dei Daini 4, Bicocca, Milano | 3 locali | 115 m²">
   <div class="card-top">
     <div class="price">€485.000</div>
@@ -107,7 +126,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/124615727/?entryPoint=related#foto15" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card-fav">
+<div class="card-fav" data-id="immobiliare-126127111" data-lat="" data-lon="">
   <img src="https://pwm.im-cdn.it/image/1853217941/xxl.jpg" loading="lazy" class="card-photo" alt="Quadrilocale Milano (Tempocasa rif. 6415246)">
   <div class="card-top">
     <div class="price">€425.000</div>
@@ -123,8 +142,8 @@
   <div class="note-pers">📝 Cross-post Tempocasa (rif. 6415246). Dati completi da recuperare appena Apify rate limit si sblocca.</div>
   <a class="cta" href="https://www.immobiliare.it/annunci/126127111/" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-    <div class="section-title">Annunci attivi</div>
-    <div class="card">
+      <div class="section-title">Annunci attivi</div>
+      <div class="card" data-id="immobiliare-127407241" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1890808672/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Paolo Rotta 10, Niguarda, Milano">
   <div class="card-top">
     <div class="price">€359.000</div>
@@ -140,7 +159,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/127407241" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-126027965" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1851187265/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Padova 256, Crescenzago, Milano">
   <div class="card-top">
     <div class="price">€298.000</div>
@@ -156,7 +175,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/126027965" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-126533107" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1864475547/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Alessandro Litta Modignani, 113, 20161 Milano Italia, Affori, Milano">
   <div class="card-top">
     <div class="price">€289.000</div>
@@ -172,7 +191,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/126533107" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-121171488" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1725165648/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Alessandro Litta Modignani 93, Affori, Milano">
   <div class="card-top">
     <div class="price">€265.000</div>
@@ -188,7 +207,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/121171488" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-101122965" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1885303862/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Ernesto Teodoro Moneta, 43, Affori, Milano">
   <div class="card-top">
     <div class="price">€260.000</div>
@@ -204,7 +223,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/101122965" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-127844942" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1894460378/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Palmanova 213/A, Crescenzago, Milano">
   <div class="card-top">
     <div class="price">€289.000</div>
@@ -220,7 +239,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/127844942" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-118468511" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1653695867/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano">
   <div class="card-top">
     <div class="price">€309.000</div>
@@ -236,7 +255,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/118468511" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-128788342" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1917377208/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Angelo Rizzoli 1, Crescenzago, Milano">
   <div class="card-top">
     <div class="price">€250.000</div>
@@ -252,7 +271,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/128788342" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-129308456" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1929961272/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Padova 267, Crescenzago, Milano">
   <div class="card-top">
     <div class="price">€295.000</div>
@@ -268,7 +287,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/129308456" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-123095155" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1780230217/xxl-c.jpg" loading="lazy" class="card-photo" alt="Bilocale via Fiuggi 12/7, Istria, Milano">
   <div class="card-top">
     <div class="price">€285.000</div>
@@ -284,7 +303,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/123095155" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-129129934" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1925599198/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano">
   <div class="card-top">
     <div class="price">€369.000</div>
@@ -300,7 +319,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/129129934" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-123994951" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1845252463/xxl-c.jpg" loading="lazy" class="card-photo" alt="Attico via Palanzone 16, Niguarda, Milano">
   <div class="card-top">
     <div class="price">€399.000</div>
@@ -316,7 +335,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/123994951" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-125225759" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1831946957/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Dino Buzzati 4, Vialba, Milano">
   <div class="card-top">
     <div class="price">€280.000</div>
@@ -332,7 +351,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/125225759" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-129166094" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1926425034/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Monte Rotondo 17, Niguarda, Milano">
   <div class="card-top">
     <div class="price">€360.000</div>
@@ -348,7 +367,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/129166094" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-127610418" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1888404096/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Padova 95, Turro, Milano">
   <div class="card-top">
     <div class="price">€289.000</div>
@@ -364,7 +383,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/127610418" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-129240362" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1928183176/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Alessandro Litta Modignani 5, Affori, Milano">
   <div class="card-top">
     <div class="price">€330.000</div>
@@ -380,7 +399,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/129240362" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-125026857" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1827179491/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale viale Monza 202, Precotto, Milano">
   <div class="card-top">
     <div class="price">€375.000</div>
@@ -396,7 +415,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/125026857" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-127770774" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1898820302/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Privata Paolo Rotta 10, Niguarda, Milano">
   <div class="card-top">
     <div class="price">€219.000</div>
@@ -412,7 +431,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/127770774" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-125840815" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1851146545/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Francesco Cavezzali 19, Turro, Milano">
   <div class="card-top">
     <div class="price">€275.000</div>
@@ -428,7 +447,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/125840815" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-126782373" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1870990355/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Monte Rotondo 8, Niguarda, Milano">
   <div class="card-top">
     <div class="price">€299.000</div>
@@ -444,7 +463,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/126782373" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-128636674" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1913563006/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Policarpo Petrocchi 21, Turro, Milano">
   <div class="card-top">
     <div class="price">€378.000</div>
@@ -460,7 +479,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/128636674" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-128854346" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1918894400/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Ernesto Breda 37, Bicocca, Milano">
   <div class="card-top">
     <div class="price">€295.000</div>
@@ -476,7 +495,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/128854346" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-127530126" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1886642568/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Trasimeno 48, Quartiere Adriano, Milano">
   <div class="card-top">
     <div class="price">€349.000</div>
@@ -492,7 +511,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/127530126" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-128673760" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1914433034/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Ugo Mulas 4, Quartiere Adriano, Milano">
   <div class="card-top">
     <div class="price">€349.000</div>
@@ -508,7 +527,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/128673760" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-128871010" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1920506896/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Vittorio Bottego 25, Crescenzago, Milano">
   <div class="card-top">
     <div class="price">€398.000</div>
@@ -524,7 +543,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/128871010" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-129260862" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1928663244/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Privata Filippo Tommaso Marinetti 3, Turro, Milano">
   <div class="card-top">
     <div class="price">€315.000</div>
@@ -540,7 +559,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/129260862" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-126919153" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1926436108/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Francesco Gonin, Giambellino, Milano">
   <div class="card-top">
     <div class="price">€310.000</div>
@@ -556,7 +575,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/126919153" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-129049468" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1923514136/xxl-c.jpg" loading="lazy" class="card-photo" alt="Quadrilocale via Mar Nero, Bisceglie, Milano">
   <div class="card-top">
     <div class="price">€305.000</div>
@@ -572,7 +591,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/129049468" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-128668536" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1914336318/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Terenzio Mamiani 7, Cimiano, Milano">
   <div class="card-top">
     <div class="price">€297.000</div>
@@ -588,7 +607,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/128668536" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-125378759" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1835807249/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Padova 336, Crescenzago, Milano">
   <div class="card-top">
     <div class="price">€339.000</div>
@@ -604,7 +623,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/125378759" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-127339131" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1882161981/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Ignazio Ciaia, Dergano, Milano">
   <div class="card-top">
     <div class="price">€210.000</div>
@@ -620,7 +639,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/127339131" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-128920978" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1920439850/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Palmanova 91, Cimiano, Milano">
   <div class="card-top">
     <div class="price">€305.000</div>
@@ -636,7 +655,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/128920978" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-126187765" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1854816925/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via ALCEO 4, Precotto, Milano">
   <div class="card-top">
     <div class="price">€335.000</div>
@@ -652,7 +671,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/126187765" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-128988828" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1923185794/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano">
   <div class="card-top">
     <div class="price">€369.000</div>
@@ -668,7 +687,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/128988828" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-128023876" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1898658044/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Padova 304, Crescenzago, Milano">
   <div class="card-top">
     <div class="price">€349.000</div>
@@ -684,7 +703,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/128023876" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-109153679" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1926791836/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Bernardo Rucellai 20, Precotto, Milano">
   <div class="card-top">
     <div class="price">€429.000</div>
@@ -700,7 +719,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/109153679" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-124027361" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1802760091/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Alessandro Litta Modignani 111, Affori, Milano">
   <div class="card-top">
     <div class="price">€239.000</div>
@@ -716,7 +735,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/124027361" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-118248493" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1845250743/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Luigi Ornato 111, Niguarda, Milano">
   <div class="card-top">
     <div class="price">€339.000</div>
@@ -732,7 +751,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/118248493" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-127404829" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1890802564/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Marmolada 10, Niguarda, Milano">
   <div class="card-top">
     <div class="price">€334.000</div>
@@ -748,7 +767,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/127404829" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-127397637" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1883522139/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Francesco Cavezzali 8, Turro, Milano">
   <div class="card-top">
     <div class="price">€390.000</div>
@@ -764,7 +783,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/127397637" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-118998885" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1664582809/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Carlo Cicogna Mozzoni, Affori, Milano">
   <div class="card-top">
     <div class="price">€315.000</div>
@@ -780,7 +799,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/118998885" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-127438812" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1884387470/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Pisino 12, Gorla, Milano">
   <div class="card-top">
     <div class="price">€370.000</div>
@@ -796,7 +815,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/127438812" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-128463344" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1909371278/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Francesco Cavezzali 8, Turro, Milano">
   <div class="card-top">
     <div class="price">€390.000</div>
@@ -812,7 +831,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/128463344" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-128521698" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1910714478/xxl-c.jpg" loading="lazy" class="card-photo" alt="Trilocale via Pericle 5, Precotto, Milano">
   <div class="card-top">
     <div class="price">€349.000</div>
@@ -828,7 +847,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/128521698" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-125788051" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1845453855/xxl-c.jpg" loading="lazy" class="card-photo" alt="Quadrilocale via Tofane 33, Turro, Milano">
   <div class="card-top">
     <div class="price">€399.000</div>
@@ -844,7 +863,7 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/125788051" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
-<div class="card">
+<div class="card" data-id="immobiliare-124629609" data-lat="" data-lon="">
   <img src="https://pic.im-cdn.it/image/1817312073/xxl-c.jpg" loading="lazy" class="card-photo" alt="Bilocale via Matteo Maria Boiardo 12, Turro, Milano">
   <div class="card-top">
     <div class="price">€329.000</div>
@@ -860,7 +879,14 @@
   
   <a class="cta" href="https://www.immobiliare.it/annunci/124629609" target="_blank">Vedi su Immobiliare.it →</a>
 </div>
+    </div>
+    <aside class="map-aside">
+      <div id="map"></div>
+      <div class="map-hint">📍 Click sul marker per saltare alla card. Hover su card → marker evidenziato.</div>
+    </aside>
   </div>
+
+  <button id="map-fab" onclick="toggleMobileMap()" title="Apri mappa">🗺️</button>
 
   <div id="toast" class="toast"></div>
 
@@ -955,13 +981,93 @@
     document.querySelectorAll('.card').forEach(c => {
       c.style.display = onlyFav ? 'none' : '';
     });
-    // Optional: hide also the "Annunci attivi" section title
     document.querySelectorAll('.section-title').forEach(t => {
       if (t.textContent.includes('Annunci attivi')) {
         t.style.display = onlyFav ? 'none' : '';
       }
     });
+    // Aggiorna i marker della mappa
+    if (typeof rebuildMapMarkers === 'function') rebuildMapMarkers();
   };
+
+  // ===== Mappa Leaflet =====
+  // Centro Milano (Duomo) come fallback
+  const MILANO_CENTER = [45.4642, 9.1900];
+  let map = null;
+  let markersById = {};
+
+  function initMap() {
+    if (typeof L === 'undefined') return;
+    const mapEl = document.getElementById('map');
+    if (!mapEl) return;
+    map = L.map('map').setView(MILANO_CENTER, 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap',
+      maxZoom: 19,
+    }).addTo(map);
+    rebuildMapMarkers();
+  }
+
+  function rebuildMapMarkers() {
+    if (!map) return;
+    // Pulisci marker esistenti
+    Object.values(markersById).forEach(m => map.removeLayer(m));
+    markersById = {};
+
+    const bounds = [];
+    document.querySelectorAll('.card, .card-fav').forEach(c => {
+      if (c.style.display === 'none') return;
+      const id = c.dataset.id;
+      const lat = parseFloat(c.dataset.lat);
+      const lon = parseFloat(c.dataset.lon);
+      if (!id || !isFinite(lat) || !isFinite(lon)) return;
+
+      const isFav = c.classList.contains('card-fav');
+      const icon = L.divIcon({
+        className: 'casa-marker',
+        html: '<div style="background:' + (isFav ? '#ec4899' : '#0071e3') + ';color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.3);border:2px solid #fff">' + (isFav ? '❤' : '🏠') + '</div>',
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+      });
+      const titolo = c.querySelector('.title')?.textContent || '';
+      const prezzo = c.querySelector('.price')?.textContent || '';
+      const marker = L.marker([lat, lon], { icon }).addTo(map);
+      marker.bindTooltip('<strong>' + prezzo + '</strong><br>' + titolo, { direction: 'top', offset: [0, -10] });
+      marker.on('click', () => {
+        c.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        c.classList.add('highlight');
+        setTimeout(() => c.classList.remove('highlight'), 2000);
+      });
+      markersById[id] = marker;
+      bounds.push([lat, lon]);
+    });
+
+    if (bounds.length > 0) {
+      map.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
+    } else {
+      map.setView(MILANO_CENTER, 12);
+    }
+
+    // Hover card → highlight marker
+    document.querySelectorAll('.card, .card-fav').forEach(c => {
+      const m = markersById[c.dataset.id];
+      if (!m) return;
+      c.addEventListener('mouseenter', () => {
+        m.getElement()?.classList.add('highlighted');
+      });
+      c.addEventListener('mouseleave', () => {
+        m.getElement()?.classList.remove('highlighted');
+      });
+    });
+  }
+
+  window.toggleMobileMap = function() {
+    document.querySelector('.map-aside')?.classList.toggle('open');
+    // Trigger map resize quando si apre/chiude
+    setTimeout(() => map?.invalidateSize(), 100);
+  };
+
+  document.addEventListener('DOMContentLoaded', initMap);
   </script>
 
 <style>
@@ -1036,7 +1142,7 @@
   <button onclick="clearChatFilter()">Mostra tutti</button>
 </div>
 
-<script id="dashboard-listings" type="application/json">[{"id":"immobiliare-127407241","is_preferito":false,"titolo":"Trilocale via Paolo Rotta 10, Niguarda, Milano","prezzo":359000,"mq":108,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":7.5,"url":"https://www.immobiliare.it/annunci/127407241","ascensore":null,"descrizione":""},{"id":"immobiliare-126027965","is_preferito":false,"titolo":"Trilocale via Padova 256, Crescenzago, Milano","prezzo":298000,"mq":92,"locali":null,"bagni":null,"piano":null,"zona":"Crescenzago","indirizzo":null,"agenzia":null,"punteggio":7.5,"url":"https://www.immobiliare.it/annunci/126027965","ascensore":null,"descrizione":""},{"id":"immobiliare-126533107","is_preferito":false,"titolo":"Trilocale via Alessandro Litta Modignani, 113, 20161 Milano Italia, Affori, Milano","prezzo":289000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Affori","indirizzo":null,"agenzia":null,"punteggio":7.5,"url":"https://www.immobiliare.it/annunci/126533107","ascensore":null,"descrizione":""},{"id":"immobiliare-121171488","is_preferito":false,"titolo":"Trilocale via Alessandro Litta Modignani 93, Affori, Milano","prezzo":265000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Affori","indirizzo":null,"agenzia":null,"punteggio":7.5,"url":"https://www.immobiliare.it/annunci/121171488","ascensore":null,"descrizione":""},{"id":"immobiliare-101122965","is_preferito":false,"titolo":"Trilocale via Ernesto Teodoro Moneta, 43, Affori, Milano","prezzo":260000,"mq":116,"locali":null,"bagni":null,"piano":null,"zona":"Affori","indirizzo":null,"agenzia":null,"punteggio":7.5,"url":"https://www.immobiliare.it/annunci/101122965","ascensore":null,"descrizione":""},{"id":"immobiliare-127844942","is_preferito":false,"titolo":"Trilocale via Palmanova 213/A, Crescenzago, Milano","prezzo":289000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Crescenzago","indirizzo":null,"agenzia":null,"punteggio":7.3,"url":"https://www.immobiliare.it/annunci/127844942","ascensore":null,"descrizione":""},{"id":"immobiliare-118468511","is_preferito":false,"titolo":"Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano","prezzo":309000,"mq":85,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":7.0,"url":"https://www.immobiliare.it/annunci/118468511","ascensore":null,"descrizione":""},{"id":"immobiliare-128788342","is_preferito":false,"titolo":"Trilocale via Angelo Rizzoli 1, Crescenzago, Milano","prezzo":250000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Crescenzago","indirizzo":null,"agenzia":null,"punteggio":7.0,"url":"https://www.immobiliare.it/annunci/128788342","ascensore":null,"descrizione":""},{"id":"immobiliare-129308456","is_preferito":false,"titolo":"Trilocale via Padova 267, Crescenzago, Milano","prezzo":295000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Crescenzago","indirizzo":null,"agenzia":null,"punteggio":7.0,"url":"https://www.immobiliare.it/annunci/129308456","ascensore":null,"descrizione":""},{"id":"immobiliare-123095155","is_preferito":false,"titolo":"Bilocale via Fiuggi 12/7, Istria, Milano","prezzo":285000,"mq":81,"locali":null,"bagni":null,"piano":null,"zona":"Maggiolina/Istria","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/123095155","ascensore":null,"descrizione":""},{"id":"immobiliare-129129934","is_preferito":false,"titolo":"Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano","prezzo":369000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Quartiere Adriano","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/129129934","ascensore":null,"descrizione":""},{"id":"immobiliare-123994951","is_preferito":false,"titolo":"Attico via Palanzone 16, Niguarda, Milano","prezzo":399000,"mq":106,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/123994951","ascensore":null,"descrizione":""},{"id":"immobiliare-125225759","is_preferito":false,"titolo":"Trilocale via Dino Buzzati 4, Vialba, Milano","prezzo":280000,"mq":95,"locali":null,"bagni":null,"piano":null,"zona":"Vialba","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/125225759","ascensore":null,"descrizione":""},{"id":"immobiliare-129166094","is_preferito":false,"titolo":"Trilocale via Monte Rotondo 17, Niguarda, Milano","prezzo":360000,"mq":114,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/129166094","ascensore":null,"descrizione":""},{"id":"immobiliare-127610418","is_preferito":false,"titolo":"Trilocale via Padova 95, Turro, Milano","prezzo":289000,"mq":80,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/127610418","ascensore":null,"descrizione":""},{"id":"immobiliare-129240362","is_preferito":false,"titolo":"Trilocale via Alessandro Litta Modignani 5, Affori, Milano","prezzo":330000,"mq":101,"locali":null,"bagni":null,"piano":null,"zona":"Affori","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/129240362","ascensore":null,"descrizione":""},{"id":"immobiliare-125026857","is_preferito":false,"titolo":"Trilocale viale Monza 202, Precotto, Milano","prezzo":375000,"mq":93,"locali":null,"bagni":null,"piano":null,"zona":"Precotto","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/125026857","ascensore":null,"descrizione":""},{"id":"immobiliare-127770774","is_preferito":false,"titolo":"Trilocale via Privata Paolo Rotta 10, Niguarda, Milano","prezzo":219000,"mq":88,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/127770774","ascensore":null,"descrizione":""},{"id":"immobiliare-125840815","is_preferito":false,"titolo":"Trilocale via Francesco Cavezzali 19, Turro, Milano","prezzo":275000,"mq":85,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/125840815","ascensore":null,"descrizione":""},{"id":"immobiliare-126782373","is_preferito":false,"titolo":"Trilocale via Monte Rotondo 8, Niguarda, Milano","prezzo":299000,"mq":85,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/126782373","ascensore":null,"descrizione":""},{"id":"immobiliare-128636674","is_preferito":false,"titolo":"Trilocale via Policarpo Petrocchi 21, Turro, Milano","prezzo":378000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128636674","ascensore":null,"descrizione":""},{"id":"immobiliare-128854346","is_preferito":false,"titolo":"Trilocale via Ernesto Breda 37, Bicocca, Milano","prezzo":295000,"mq":80,"locali":null,"bagni":null,"piano":null,"zona":"Bicocca","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128854346","ascensore":null,"descrizione":""},{"id":"immobiliare-127530126","is_preferito":false,"titolo":"Trilocale via Trasimeno 48, Quartiere Adriano, Milano","prezzo":349000,"mq":100,"locali":null,"bagni":null,"piano":null,"zona":"Quartiere Adriano","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/127530126","ascensore":null,"descrizione":""},{"id":"immobiliare-128673760","is_preferito":false,"titolo":"Trilocale via Ugo Mulas 4, Quartiere Adriano, Milano","prezzo":349000,"mq":95,"locali":null,"bagni":null,"piano":null,"zona":"Quartiere Adriano","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128673760","ascensore":null,"descrizione":""},{"id":"immobiliare-128871010","is_preferito":false,"titolo":"Trilocale via Vittorio Bottego 25, Crescenzago, Milano","prezzo":398000,"mq":105,"locali":null,"bagni":null,"piano":null,"zona":"Crescenzago","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128871010","ascensore":null,"descrizione":""},{"id":"immobiliare-129260862","is_preferito":false,"titolo":"Trilocale via Privata Filippo Tommaso Marinetti 3, Turro, Milano","prezzo":315000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/129260862","ascensore":null,"descrizione":""},{"id":"immobiliare-126919153","is_preferito":false,"titolo":"Trilocale via Francesco Gonin, Giambellino, Milano","prezzo":310000,"mq":120,"locali":null,"bagni":null,"piano":null,"zona":"Giambellino","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/126919153","ascensore":null,"descrizione":""},{"id":"immobiliare-129049468","is_preferito":false,"titolo":"Quadrilocale via Mar Nero, Bisceglie, Milano","prezzo":305000,"mq":105,"locali":null,"bagni":null,"piano":null,"zona":"Bisceglie","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/129049468","ascensore":null,"descrizione":""},{"id":"immobiliare-128668536","is_preferito":false,"titolo":"Trilocale via Terenzio Mamiani 7, Cimiano, Milano","prezzo":297000,"mq":95,"locali":null,"bagni":null,"piano":null,"zona":"Cimiano","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128668536","ascensore":null,"descrizione":""},{"id":"immobiliare-125378759","is_preferito":false,"titolo":"Trilocale via Padova 336, Crescenzago, Milano","prezzo":339000,"mq":110,"locali":null,"bagni":null,"piano":null,"zona":"Crescenzago","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/125378759","ascensore":null,"descrizione":""},{"id":"immobiliare-127339131","is_preferito":false,"titolo":"Trilocale via Ignazio Ciaia, Dergano, Milano","prezzo":210000,"mq":101,"locali":null,"bagni":null,"piano":null,"zona":"Dergano","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/127339131","ascensore":null,"descrizione":""},{"id":"immobiliare-128920978","is_preferito":false,"titolo":"Trilocale via Palmanova 91, Cimiano, Milano","prezzo":305000,"mq":95,"locali":null,"bagni":null,"piano":null,"zona":"Cimiano","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128920978","ascensore":null,"descrizione":""},{"id":"immobiliare-126187765","is_preferito":false,"titolo":"Trilocale via ALCEO 4, Precotto, Milano","prezzo":335000,"mq":95,"locali":null,"bagni":null,"piano":null,"zona":"Precotto","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/126187765","ascensore":null,"descrizione":""},{"id":"immobiliare-128988828","is_preferito":false,"titolo":"Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano","prezzo":369000,"mq":112,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128988828","ascensore":null,"descrizione":""},{"id":"immobiliare-128023876","is_preferito":false,"titolo":"Trilocale via Padova 304, Crescenzago, Milano","prezzo":349000,"mq":104,"locali":null,"bagni":null,"piano":null,"zona":"Crescenzago","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128023876","ascensore":null,"descrizione":""},{"id":"immobiliare-109153679","is_preferito":false,"titolo":"Trilocale via Bernardo Rucellai 20, Precotto, Milano","prezzo":429000,"mq":110,"locali":null,"bagni":null,"piano":null,"zona":"Precotto","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/109153679","ascensore":null,"descrizione":""},{"id":"immobiliare-124027361","is_preferito":false,"titolo":"Trilocale via Alessandro Litta Modignani 111, Affori, Milano","prezzo":239000,"mq":88,"locali":null,"bagni":null,"piano":null,"zona":"Affori","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/124027361","ascensore":null,"descrizione":""},{"id":"immobiliare-118248493","is_preferito":false,"titolo":"Trilocale via Luigi Ornato 111, Niguarda, Milano","prezzo":339000,"mq":110,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/118248493","ascensore":null,"descrizione":""},{"id":"immobiliare-127404829","is_preferito":false,"titolo":"Trilocale via Marmolada 10, Niguarda, Milano","prezzo":334000,"mq":109,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/127404829","ascensore":null,"descrizione":""},{"id":"immobiliare-127397637","is_preferito":false,"titolo":"Trilocale via Francesco Cavezzali 8, Turro, Milano","prezzo":390000,"mq":99,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/127397637","ascensore":null,"descrizione":""},{"id":"immobiliare-118998885","is_preferito":false,"titolo":"Trilocale via Carlo Cicogna Mozzoni, Affori, Milano","prezzo":315000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Affori","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/118998885","ascensore":null,"descrizione":""},{"id":"immobiliare-127438812","is_preferito":false,"titolo":"Trilocale via Pisino 12, Gorla, Milano","prezzo":370000,"mq":100,"locali":null,"bagni":null,"piano":null,"zona":"Gorla","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/127438812","ascensore":null,"descrizione":""},{"id":"immobiliare-128463344","is_preferito":false,"titolo":"Trilocale via Francesco Cavezzali 8, Turro, Milano","prezzo":390000,"mq":99,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128463344","ascensore":null,"descrizione":""},{"id":"immobiliare-128521698","is_preferito":false,"titolo":"Trilocale via Pericle 5, Precotto, Milano","prezzo":349000,"mq":95,"locali":null,"bagni":null,"piano":null,"zona":"Precotto","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128521698","ascensore":null,"descrizione":""},{"id":"immobiliare-125788051","is_preferito":false,"titolo":"Quadrilocale via Tofane 33, Turro, Milano","prezzo":399000,"mq":94,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/125788051","ascensore":null,"descrizione":""},{"id":"immobiliare-124629609","is_preferito":false,"titolo":"Bilocale via Matteo Maria Boiardo 12, Turro, Milano","prezzo":329000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/124629609","ascensore":null,"descrizione":""},{"id":"immobiliare-124615727","is_preferito":true,"titolo":"Trilocale piazza dei Daini 4, Bicocca, Milano | 3 locali | 115 m²","prezzo":485000,"mq":115,"locali":null,"bagni":null,"piano":null,"zona":"Bicocca","indirizzo":"Piazza dei Daini","agenzia":"immobiliare.it","punteggio":null,"url":"https://www.immobiliare.it/annunci/124615727/?entryPoint=related#foto15","ascensore":null,"descrizione":"","note_personali":""},{"id":"immobiliare-126127111","is_preferito":true,"titolo":"Quadrilocale Milano (Tempocasa rif. 6415246)","prezzo":425000,"mq":109,"locali":null,"bagni":null,"piano":null,"zona":"Prato Centenaro","indirizzo":"Via val maira 11","agenzia":"Tempocasa","punteggio":null,"url":"https://www.immobiliare.it/annunci/126127111/","ascensore":null,"descrizione":"","note_personali":"Cross-post Tempocasa (rif. 6415246). Dati completi da recuperare appena Apify rate limit si sblocca."}]</script>
+<script id="dashboard-listings" type="application/json">[{"id":"immobiliare-127407241","is_preferito":false,"titolo":"Trilocale via Paolo Rotta 10, Niguarda, Milano","prezzo":359000,"mq":108,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":7.5,"url":"https://www.immobiliare.it/annunci/127407241","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-126027965","is_preferito":false,"titolo":"Trilocale via Padova 256, Crescenzago, Milano","prezzo":298000,"mq":92,"locali":null,"bagni":null,"piano":null,"zona":"Crescenzago","indirizzo":null,"agenzia":null,"punteggio":7.5,"url":"https://www.immobiliare.it/annunci/126027965","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-126533107","is_preferito":false,"titolo":"Trilocale via Alessandro Litta Modignani, 113, 20161 Milano Italia, Affori, Milano","prezzo":289000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Affori","indirizzo":null,"agenzia":null,"punteggio":7.5,"url":"https://www.immobiliare.it/annunci/126533107","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-121171488","is_preferito":false,"titolo":"Trilocale via Alessandro Litta Modignani 93, Affori, Milano","prezzo":265000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Affori","indirizzo":null,"agenzia":null,"punteggio":7.5,"url":"https://www.immobiliare.it/annunci/121171488","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-101122965","is_preferito":false,"titolo":"Trilocale via Ernesto Teodoro Moneta, 43, Affori, Milano","prezzo":260000,"mq":116,"locali":null,"bagni":null,"piano":null,"zona":"Affori","indirizzo":null,"agenzia":null,"punteggio":7.5,"url":"https://www.immobiliare.it/annunci/101122965","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-127844942","is_preferito":false,"titolo":"Trilocale via Palmanova 213/A, Crescenzago, Milano","prezzo":289000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Crescenzago","indirizzo":null,"agenzia":null,"punteggio":7.3,"url":"https://www.immobiliare.it/annunci/127844942","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-118468511","is_preferito":false,"titolo":"Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano","prezzo":309000,"mq":85,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":7.0,"url":"https://www.immobiliare.it/annunci/118468511","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-128788342","is_preferito":false,"titolo":"Trilocale via Angelo Rizzoli 1, Crescenzago, Milano","prezzo":250000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Crescenzago","indirizzo":null,"agenzia":null,"punteggio":7.0,"url":"https://www.immobiliare.it/annunci/128788342","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-129308456","is_preferito":false,"titolo":"Trilocale via Padova 267, Crescenzago, Milano","prezzo":295000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Crescenzago","indirizzo":null,"agenzia":null,"punteggio":7.0,"url":"https://www.immobiliare.it/annunci/129308456","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-123095155","is_preferito":false,"titolo":"Bilocale via Fiuggi 12/7, Istria, Milano","prezzo":285000,"mq":81,"locali":null,"bagni":null,"piano":null,"zona":"Maggiolina/Istria","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/123095155","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-129129934","is_preferito":false,"titolo":"Trilocale via Ugo Tognazzi 6, Quartiere Adriano, Milano","prezzo":369000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Quartiere Adriano","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/129129934","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-123994951","is_preferito":false,"titolo":"Attico via Palanzone 16, Niguarda, Milano","prezzo":399000,"mq":106,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/123994951","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-125225759","is_preferito":false,"titolo":"Trilocale via Dino Buzzati 4, Vialba, Milano","prezzo":280000,"mq":95,"locali":null,"bagni":null,"piano":null,"zona":"Vialba","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/125225759","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-129166094","is_preferito":false,"titolo":"Trilocale via Monte Rotondo 17, Niguarda, Milano","prezzo":360000,"mq":114,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/129166094","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-127610418","is_preferito":false,"titolo":"Trilocale via Padova 95, Turro, Milano","prezzo":289000,"mq":80,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/127610418","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-129240362","is_preferito":false,"titolo":"Trilocale via Alessandro Litta Modignani 5, Affori, Milano","prezzo":330000,"mq":101,"locali":null,"bagni":null,"piano":null,"zona":"Affori","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/129240362","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-125026857","is_preferito":false,"titolo":"Trilocale viale Monza 202, Precotto, Milano","prezzo":375000,"mq":93,"locali":null,"bagni":null,"piano":null,"zona":"Precotto","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/125026857","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-127770774","is_preferito":false,"titolo":"Trilocale via Privata Paolo Rotta 10, Niguarda, Milano","prezzo":219000,"mq":88,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/127770774","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-125840815","is_preferito":false,"titolo":"Trilocale via Francesco Cavezzali 19, Turro, Milano","prezzo":275000,"mq":85,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.5,"url":"https://www.immobiliare.it/annunci/125840815","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-126782373","is_preferito":false,"titolo":"Trilocale via Monte Rotondo 8, Niguarda, Milano","prezzo":299000,"mq":85,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/126782373","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-128636674","is_preferito":false,"titolo":"Trilocale via Policarpo Petrocchi 21, Turro, Milano","prezzo":378000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128636674","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-128854346","is_preferito":false,"titolo":"Trilocale via Ernesto Breda 37, Bicocca, Milano","prezzo":295000,"mq":80,"locali":null,"bagni":null,"piano":null,"zona":"Bicocca","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128854346","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-127530126","is_preferito":false,"titolo":"Trilocale via Trasimeno 48, Quartiere Adriano, Milano","prezzo":349000,"mq":100,"locali":null,"bagni":null,"piano":null,"zona":"Quartiere Adriano","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/127530126","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-128673760","is_preferito":false,"titolo":"Trilocale via Ugo Mulas 4, Quartiere Adriano, Milano","prezzo":349000,"mq":95,"locali":null,"bagni":null,"piano":null,"zona":"Quartiere Adriano","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128673760","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-128871010","is_preferito":false,"titolo":"Trilocale via Vittorio Bottego 25, Crescenzago, Milano","prezzo":398000,"mq":105,"locali":null,"bagni":null,"piano":null,"zona":"Crescenzago","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128871010","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-129260862","is_preferito":false,"titolo":"Trilocale via Privata Filippo Tommaso Marinetti 3, Turro, Milano","prezzo":315000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/129260862","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-126919153","is_preferito":false,"titolo":"Trilocale via Francesco Gonin, Giambellino, Milano","prezzo":310000,"mq":120,"locali":null,"bagni":null,"piano":null,"zona":"Giambellino","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/126919153","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-129049468","is_preferito":false,"titolo":"Quadrilocale via Mar Nero, Bisceglie, Milano","prezzo":305000,"mq":105,"locali":null,"bagni":null,"piano":null,"zona":"Bisceglie","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/129049468","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-128668536","is_preferito":false,"titolo":"Trilocale via Terenzio Mamiani 7, Cimiano, Milano","prezzo":297000,"mq":95,"locali":null,"bagni":null,"piano":null,"zona":"Cimiano","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128668536","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-125378759","is_preferito":false,"titolo":"Trilocale via Padova 336, Crescenzago, Milano","prezzo":339000,"mq":110,"locali":null,"bagni":null,"piano":null,"zona":"Crescenzago","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/125378759","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-127339131","is_preferito":false,"titolo":"Trilocale via Ignazio Ciaia, Dergano, Milano","prezzo":210000,"mq":101,"locali":null,"bagni":null,"piano":null,"zona":"Dergano","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/127339131","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-128920978","is_preferito":false,"titolo":"Trilocale via Palmanova 91, Cimiano, Milano","prezzo":305000,"mq":95,"locali":null,"bagni":null,"piano":null,"zona":"Cimiano","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128920978","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-126187765","is_preferito":false,"titolo":"Trilocale via ALCEO 4, Precotto, Milano","prezzo":335000,"mq":95,"locali":null,"bagni":null,"piano":null,"zona":"Precotto","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/126187765","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-128988828","is_preferito":false,"titolo":"Trilocale via Paulucci di Calbioli Fulcieri 32, Niguarda, Milano","prezzo":369000,"mq":112,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128988828","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-128023876","is_preferito":false,"titolo":"Trilocale via Padova 304, Crescenzago, Milano","prezzo":349000,"mq":104,"locali":null,"bagni":null,"piano":null,"zona":"Crescenzago","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128023876","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-109153679","is_preferito":false,"titolo":"Trilocale via Bernardo Rucellai 20, Precotto, Milano","prezzo":429000,"mq":110,"locali":null,"bagni":null,"piano":null,"zona":"Precotto","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/109153679","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-124027361","is_preferito":false,"titolo":"Trilocale via Alessandro Litta Modignani 111, Affori, Milano","prezzo":239000,"mq":88,"locali":null,"bagni":null,"piano":null,"zona":"Affori","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/124027361","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-118248493","is_preferito":false,"titolo":"Trilocale via Luigi Ornato 111, Niguarda, Milano","prezzo":339000,"mq":110,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/118248493","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-127404829","is_preferito":false,"titolo":"Trilocale via Marmolada 10, Niguarda, Milano","prezzo":334000,"mq":109,"locali":null,"bagni":null,"piano":null,"zona":"Niguarda","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/127404829","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-127397637","is_preferito":false,"titolo":"Trilocale via Francesco Cavezzali 8, Turro, Milano","prezzo":390000,"mq":99,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/127397637","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-118998885","is_preferito":false,"titolo":"Trilocale via Carlo Cicogna Mozzoni, Affori, Milano","prezzo":315000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Affori","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/118998885","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-127438812","is_preferito":false,"titolo":"Trilocale via Pisino 12, Gorla, Milano","prezzo":370000,"mq":100,"locali":null,"bagni":null,"piano":null,"zona":"Gorla","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/127438812","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-128463344","is_preferito":false,"titolo":"Trilocale via Francesco Cavezzali 8, Turro, Milano","prezzo":390000,"mq":99,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128463344","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-128521698","is_preferito":false,"titolo":"Trilocale via Pericle 5, Precotto, Milano","prezzo":349000,"mq":95,"locali":null,"bagni":null,"piano":null,"zona":"Precotto","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/128521698","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-125788051","is_preferito":false,"titolo":"Quadrilocale via Tofane 33, Turro, Milano","prezzo":399000,"mq":94,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/125788051","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-124629609","is_preferito":false,"titolo":"Bilocale via Matteo Maria Boiardo 12, Turro, Milano","prezzo":329000,"mq":90,"locali":null,"bagni":null,"piano":null,"zona":"Turro","indirizzo":null,"agenzia":null,"punteggio":6.0,"url":"https://www.immobiliare.it/annunci/124629609","ascensore":null,"descrizione":"","lat":null,"lon":null},{"id":"immobiliare-124615727","is_preferito":true,"titolo":"Trilocale piazza dei Daini 4, Bicocca, Milano | 3 locali | 115 m²","prezzo":485000,"mq":115,"locali":null,"bagni":null,"piano":null,"zona":"Bicocca","indirizzo":"Piazza dei Daini","agenzia":"immobiliare.it","punteggio":null,"url":"https://www.immobiliare.it/annunci/124615727/?entryPoint=related#foto15","ascensore":null,"descrizione":"","lat":null,"lon":null,"note_personali":""},{"id":"immobiliare-126127111","is_preferito":true,"titolo":"Quadrilocale Milano (Tempocasa rif. 6415246)","prezzo":425000,"mq":109,"locali":null,"bagni":null,"piano":null,"zona":"Prato Centenaro","indirizzo":"Via val maira 11","agenzia":"Tempocasa","punteggio":null,"url":"https://www.immobiliare.it/annunci/126127111/","ascensore":null,"descrizione":"","lat":null,"lon":null,"note_personali":"Cross-post Tempocasa (rif. 6415246). Dati completi da recuperare appena Apify rate limit si sblocca."}]</script>
 
 <script>
 (function() {

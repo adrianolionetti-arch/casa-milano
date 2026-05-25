@@ -558,11 +558,10 @@ def build_chatbot_block(dash_items: list[dict], preferiti_items: list[dict] | No
     preferiti_items: annunci salvati manualmente (preferiti.json). Marcati con is_preferito=True
     """
     preferiti_items = preferiti_items or []
-    data = []
-    for a in dash_items:
-        data.append({
+    def serialize(a, is_pref):
+        return {
             "id": a.get("id"),
-            "is_preferito": False,
+            "is_preferito": is_pref,
             "titolo": a.get("titolo"),
             "prezzo": a.get("prezzo"),
             "mq": a.get("mq"),
@@ -572,30 +571,15 @@ def build_chatbot_block(dash_items: list[dict], preferiti_items: list[dict] | No
             "zona": a.get("zona"),
             "indirizzo": a.get("indirizzo"),
             "agenzia": a.get("agenzia"),
-            "punteggio": a.get("punteggio"),
+            "punteggio": None if is_pref else a.get("punteggio"),
             "url": a.get("url"),
             "ascensore": a.get("ascensore"),
             "descrizione": (a.get("descrizione") or "")[:400],
-        })
-    for a in preferiti_items:
-        data.append({
-            "id": a.get("id"),
-            "is_preferito": True,
-            "titolo": a.get("titolo"),
-            "prezzo": a.get("prezzo"),
-            "mq": a.get("mq"),
-            "locali": a.get("locali"),
-            "bagni": a.get("bagni"),
-            "piano": a.get("piano"),
-            "zona": a.get("zona"),
-            "indirizzo": a.get("indirizzo"),
-            "agenzia": a.get("agenzia"),
-            "punteggio": None,
-            "url": a.get("url"),
-            "ascensore": a.get("ascensore"),
-            "descrizione": (a.get("descrizione") or "")[:400],
-            "note_personali": a.get("note_personali") or "",
-        })
+            "lat": a.get("lat"),
+            "lon": a.get("lon"),
+            **({"note_personali": a.get("note_personali") or ""} if is_pref else {}),
+        }
+    data = [serialize(a, False) for a in dash_items] + [serialize(a, True) for a in preferiti_items]
     listings_json = json.dumps(data, ensure_ascii=False, separators=(',', ':'))
     # Difensivo: in caso una descrizione contenesse </script>
     listings_json = listings_json.replace('</', '<\\/')
@@ -711,7 +695,7 @@ def card(a: dict, *, is_preferito: bool = False, in_preferiti_set: set | None = 
     )
 
     card_class = "card-fav" if is_preferito else "card"
-    return f"""<div class="{card_class}">
+    return f"""<div class="{card_class}" data-id="{listing_id}" data-lat="{a.get("lat") or ""}" data-lon="{a.get("lon") or ""}">
   {img_html}
   <div class="card-top">
     {price_html}
@@ -788,6 +772,8 @@ def build(dry_run: bool = False) -> int:
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Casa Milano — Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <style>
     * {{ box-sizing: border-box; margin: 0; padding: 0; }}
     body {{ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f8fafc; color: #0f172a; line-height: 1.5; }}
@@ -807,7 +793,16 @@ def build(dry_run: bool = False) -> int:
     .clear-btn {{ background: #fff; border: 1px solid #fbcfe8; color: #be185d; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: background .15s; }}
     .clear-btn:hover {{ background: #fdf2f8; }}
 
-    .main {{ padding: 0 20px 40px; max-width: 900px; margin: 0 auto; }}
+    .layout {{ display: grid; grid-template-columns: 1fr 420px; gap: 20px; max-width: 1500px; margin: 0 auto; padding: 0 20px 40px; }}
+    .main {{ min-width: 0; }}
+    .map-aside {{ position: sticky; top: 16px; height: calc(100vh - 32px); display: flex; flex-direction: column; gap: 8px; }}
+    #map {{ flex: 1; border-radius: 12px; box-shadow: 0 1px 4px rgba(15,23,42,.1); background: #e2e8f0; }}
+    .map-hint {{ font-size: 11px; color: #64748b; text-align: center; padding: 4px 8px; }}
+    #map-fab {{ display: none; position: fixed; bottom: 20px; right: 90px; width: 56px; height: 56px; border-radius: 50%; background: #10b981; color: #fff; border: none; box-shadow: 0 4px 14px rgba(16,185,129,.4); font-size: 26px; cursor: pointer; z-index: 999; }}
+    /* Marker highlight quando hover sulla card */
+    .leaflet-marker-icon.highlighted {{ filter: hue-rotate(90deg) brightness(1.2); z-index: 1000 !important; }}
+    .card.highlight, .card-fav.highlight {{ outline: 3px solid #f59e0b; outline-offset: 2px; }}
+
     .section-title {{ font-size: 12px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: .8px; margin: 24px 0 12px; }}
     .empty {{ background:#fff; padding: 32px 24px; border-radius: 10px; text-align: center; color: #64748b; }}
 
@@ -848,6 +843,13 @@ def build(dry_run: bool = False) -> int:
     .toast.show {{ display: block; animation: slideUp .3s ease-out; }}
     @keyframes slideUp {{ from {{ transform: translate(-50%, 20px); opacity: 0; }} to {{ transform: translate(-50%, 0); opacity: 1; }} }}
 
+    @media(max-width:1024px) {{
+      .layout {{ grid-template-columns: 1fr; }}
+      .map-aside {{ display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; height: 100vh; background: #fff; z-index: 998; padding: 12px; border-radius: 0; }}
+      .map-aside.open {{ display: flex; }}
+      #map-fab {{ display: flex; align-items: center; justify-content: center; }}
+      .map-aside.open + #map-fab, .map-aside.open ~ #map-fab {{ background: #475569; }}
+    }}
     @media(max-width:600px) {{
       .stats {{ grid-template-columns: repeat(2, 1fr); }}
       .price {{ font-size: 24px; }}
@@ -873,11 +875,19 @@ def build(dry_run: bool = False) -> int:
     </label>
     <span style="font-size:12px;color:#64748b">💡 Clicca 🤍 per salvare nei preferiti condivisi</span>
   </div>
-  <div class="main">
-    {preferiti_section}
-    <div class="section-title">Annunci attivi</div>
-    {content}
+  <div class="layout">
+    <div class="main">
+      {preferiti_section}
+      <div class="section-title">Annunci attivi</div>
+      {content}
+    </div>
+    <aside class="map-aside">
+      <div id="map"></div>
+      <div class="map-hint">📍 Click sul marker per saltare alla card. Hover su card → marker evidenziato.</div>
+    </aside>
   </div>
+
+  <button id="map-fab" onclick="toggleMobileMap()" title="Apri mappa">🗺️</button>
 
   <div id="toast" class="toast"></div>
 
@@ -972,13 +982,93 @@ def build(dry_run: bool = False) -> int:
     document.querySelectorAll('.card').forEach(c => {{
       c.style.display = onlyFav ? 'none' : '';
     }});
-    // Optional: hide also the "Annunci attivi" section title
     document.querySelectorAll('.section-title').forEach(t => {{
       if (t.textContent.includes('Annunci attivi')) {{
         t.style.display = onlyFav ? 'none' : '';
       }}
     }});
+    // Aggiorna i marker della mappa
+    if (typeof rebuildMapMarkers === 'function') rebuildMapMarkers();
   }};
+
+  // ===== Mappa Leaflet =====
+  // Centro Milano (Duomo) come fallback
+  const MILANO_CENTER = [45.4642, 9.1900];
+  let map = null;
+  let markersById = {{}};
+
+  function initMap() {{
+    if (typeof L === 'undefined') return;
+    const mapEl = document.getElementById('map');
+    if (!mapEl) return;
+    map = L.map('map').setView(MILANO_CENTER, 12);
+    L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
+      attribution: '© OpenStreetMap',
+      maxZoom: 19,
+    }}).addTo(map);
+    rebuildMapMarkers();
+  }}
+
+  function rebuildMapMarkers() {{
+    if (!map) return;
+    // Pulisci marker esistenti
+    Object.values(markersById).forEach(m => map.removeLayer(m));
+    markersById = {{}};
+
+    const bounds = [];
+    document.querySelectorAll('.card, .card-fav').forEach(c => {{
+      if (c.style.display === 'none') return;
+      const id = c.dataset.id;
+      const lat = parseFloat(c.dataset.lat);
+      const lon = parseFloat(c.dataset.lon);
+      if (!id || !isFinite(lat) || !isFinite(lon)) return;
+
+      const isFav = c.classList.contains('card-fav');
+      const icon = L.divIcon({{
+        className: 'casa-marker',
+        html: '<div style="background:' + (isFav ? '#ec4899' : '#0071e3') + ';color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.3);border:2px solid #fff">' + (isFav ? '❤' : '🏠') + '</div>',
+        iconSize: [28, 28],
+        iconAnchor: [14, 14],
+      }});
+      const titolo = c.querySelector('.title')?.textContent || '';
+      const prezzo = c.querySelector('.price')?.textContent || '';
+      const marker = L.marker([lat, lon], {{ icon }}).addTo(map);
+      marker.bindTooltip('<strong>' + prezzo + '</strong><br>' + titolo, {{ direction: 'top', offset: [0, -10] }});
+      marker.on('click', () => {{
+        c.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+        c.classList.add('highlight');
+        setTimeout(() => c.classList.remove('highlight'), 2000);
+      }});
+      markersById[id] = marker;
+      bounds.push([lat, lon]);
+    }});
+
+    if (bounds.length > 0) {{
+      map.fitBounds(bounds, {{ padding: [30, 30], maxZoom: 14 }});
+    }} else {{
+      map.setView(MILANO_CENTER, 12);
+    }}
+
+    // Hover card → highlight marker
+    document.querySelectorAll('.card, .card-fav').forEach(c => {{
+      const m = markersById[c.dataset.id];
+      if (!m) return;
+      c.addEventListener('mouseenter', () => {{
+        m.getElement()?.classList.add('highlighted');
+      }});
+      c.addEventListener('mouseleave', () => {{
+        m.getElement()?.classList.remove('highlighted');
+      }});
+    }});
+  }}
+
+  window.toggleMobileMap = function() {{
+    document.querySelector('.map-aside')?.classList.toggle('open');
+    // Trigger map resize quando si apre/chiude
+    setTimeout(() => map?.invalidateSize(), 100);
+  }};
+
+  document.addEventListener('DOMContentLoaded', initMap);
   </script>
 </body>
 </html>"""

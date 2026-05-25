@@ -116,6 +116,8 @@ def enrich_via_apify(url: str) -> dict:
         "indirizzo": loc.get("address"),
         "agenzia": ((item.get("advertiser") or {}).get("agency") or {}).get("displayName"),
         "foto_url": (photos[0].get("urls", {}).get("large") if photos else None),
+        "lat": loc.get("latitude"),
+        "lon": loc.get("longitude"),
     }
 
 
@@ -141,7 +143,7 @@ def main(issue_body_path: str) -> int:
     )
     if existing_idx is not None:
         existing = annunci_list[existing_idx]
-        ENRICH_FIELDS = ("prezzo", "mq", "zona", "foto_url", "indirizzo", "agenzia")
+        ENRICH_FIELDS = ("prezzo", "mq", "zona", "foto_url", "indirizzo", "agenzia", "lat", "lon")
         missing = [k for k in ENRICH_FIELDS if not existing.get(k)]
         existing_url = existing.get("url") or url
         if missing and "immobiliare.it" in existing_url:
