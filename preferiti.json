@@ -33,6 +33,19 @@
       "note_personali": "",
       "lat": 45.516,
       "lon": 9.21089
+    },
+    {
+      "id": "immobiliare-127407241",
+      "url": "https://www.immobiliare.it/annunci/127407241",
+      "titolo": "Trilocale via Paolo Rotta 10, Niguarda, Milano",
+      "prezzo": 359000,
+      "mq": 108,
+      "zona": "Niguarda",
+      "indirizzo": null,
+      "foto_url": null,
+      "agenzia": "immobiliare.it",
+      "data_aggiunto": "2026-05-25",
+      "note_personali": "(opzionale — scrivi qui perché ti piace)"
     }
   ]
 }
