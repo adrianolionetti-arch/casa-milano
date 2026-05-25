@@ -22,7 +22,8 @@ jobs:
     if: |
       contains(github.event.issue.labels.*.name, 'preferito') ||
       startsWith(github.event.issue.title, 'preferito:') ||
-      startsWith(github.event.issue.title, 'Preferito:')
+      startsWith(github.event.issue.title, 'Preferito:') ||
+      startsWith(github.event.issue.title, 'rimuovi preferito:')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -44,6 +45,7 @@ jobs:
       - name: Process issue → preferiti.json
         env:
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
         run: |
           python3 scripts/process_favorite_issue.py /tmp/issue_body.txt
 

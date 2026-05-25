@@ -626,13 +626,21 @@ def card(a: dict, *, is_preferito: bool = False, in_preferiti_set: set | None = 
 
     # Cuore = preferito condiviso. Apre issue GitHub prefillata; il workflow
     # process-preferiti.yml la trasforma in preferiti.json (visibile a entrambi).
-    # Se l'annuncio è già in preferiti.json, mostra ❤️ pieno (no-op).
+    # Stato 🤍 (vuoto): clic → aggiunge ai preferiti
+    # Stato ❤️ (pieno): clic → rimuove dai preferiti (issue 'rimuovi preferito:')
     listing_id = a.get("id") or ""
     in_shared = bool(in_preferiti_set and listing_id in in_preferiti_set)
+    esc = lambda v: html_lib.escape(str(v) if v is not None else "", quote=True)
     if is_preferito or in_shared:
-        heart_html = '<div class="heart-badge filled" title="Preferito condiviso">❤️</div>'
+        heart_html = (
+            f'<button class="heart-btn filled"'
+            f' data-id="{esc(listing_id)}"'
+            f' data-url="{esc(a.get("url"))}"'
+            f' data-titolo="{esc(a.get("titolo"))}"'
+            f' onclick="openRemoveFavIssue(this)"'
+            f' title="Rimuovi dai preferiti">❤️</button>'
+        )
     else:
-        esc = lambda v: html_lib.escape(str(v) if v is not None else "", quote=True)
         heart_html = (
             f'<button class="heart-btn"'
             f' data-id="{esc(listing_id)}"'
@@ -642,7 +650,7 @@ def card(a: dict, *, is_preferito: bool = False, in_preferiti_set: set | None = 
             f' data-mq="{esc(a.get("mq"))}"'
             f' data-zona="{esc(a.get("zona"))}"'
             f' onclick="openFavIssue(this)"'
-            f' title="Salva tra i preferiti condivisi (apre issue GitHub)">🤍</button>'
+            f' title="Salva tra i preferiti condivisi">🤍</button>'
         )
 
     # Score badge
@@ -694,7 +702,9 @@ def card(a: dict, *, is_preferito: bool = False, in_preferiti_set: set | None = 
         else ""
     )
 
-    card_class = "card-fav" if is_preferito else "card"
+    # card-fav (bordo rosa) per qualsiasi preferito: sezione persistente E annunci attivi
+    # già in preferiti.json. Coerente col marker mappa che si basa su questa classe.
+    card_class = "card-fav" if (is_preferito or in_shared) else "card"
     return f"""<div class="{card_class}" data-id="{listing_id}" data-lat="{a.get("lat") or ""}" data-lon="{a.get("lon") or ""}">
   {img_html}
   <div class="card-top">
@@ -966,6 +976,58 @@ def build(dry_run: bool = False) -> int:
       + '&title=' + encodeURIComponent(payload.title)
       + '&body=' + encodeURIComponent(payload.body);
     window.open(u, '_blank', 'noopener');
+  }}
+
+  // ===== Rimuovi preferito (click su ❤️ pieno) =====
+  async function openRemoveFavIssue(btn) {{
+    if (!confirm('Rimuovere questo immobile dai preferiti condivisi?')) return;
+    const pat = localStorage.getItem('casa-milano-github-pat') || '';
+    const d = btn.dataset;
+    const titolo = d.titolo || '(senza titolo)';
+    const title = 'rimuovi preferito: ' + titolo.slice(0, 80);
+    const body = 'URL: ' + (d.url || '') + '\\nID: ' + (d.id || '') + '\\nTitolo: ' + titolo;
+
+    if (pat) {{
+      btn.textContent = '⏳';
+      btn.disabled = true;
+      try {{
+        const resp = await fetch('https://api.github.com/repos/' + GITHUB_REPO + '/issues', {{
+          method: 'POST',
+          headers: {{
+            'Authorization': 'Bearer ' + pat,
+            'Accept': 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28',
+            'Content-Type': 'application/json',
+          }},
+          body: JSON.stringify({{ title, body, labels: ['preferito'] }})
+        }});
+        if (!resp.ok) {{
+          let err = 'HTTP ' + resp.status;
+          try {{ const j = await resp.json(); if (j.message) err += ' — ' + j.message; }} catch(e) {{}}
+          throw new Error(err);
+        }}
+        // Ottimistico: bordo rosa via, cuore vuoto, conserva il click handler add
+        btn.textContent = '🤍';
+        btn.classList.remove('filled');
+        btn.disabled = false;
+        const card = btn.closest('.card-fav, .card');
+        if (card) card.classList.remove('card-fav');
+        // Cambia il handler: ora cliccando ri-aggiunge
+        btn.setAttribute('onclick', 'openFavIssue(this)');
+        btn.title = 'Salva tra i preferiti condivisi';
+        showToast('🗑️ Rimosso dai preferiti — dashboard aggiornata tra ~30s');
+      }} catch (e) {{
+        btn.textContent = '❤️';
+        btn.disabled = false;
+        showToast('Errore rimozione: ' + (e.message || e));
+      }}
+    }} else {{
+      showToast('🔓 Apri il chatbot 💬 e inserisci la password per attivare la rimozione 1-click');
+      const panel = document.getElementById('chat-panel');
+      if (panel && !panel.classList.contains('open') && typeof toggleChat === 'function') {{
+        toggleChat();
+      }}
+    }}
   }}
 
   function showToast(msg) {{

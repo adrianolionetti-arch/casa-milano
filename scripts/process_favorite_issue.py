@@ -131,12 +131,29 @@ def main(issue_body_path: str) -> int:
         print("ERROR: URL field missing in issue body", file=sys.stderr)
         return 1
 
-    listing_id = extract_id_from_url(url) or f"manual-{date.today().strftime('%Y%m%d-%H%M%S')}"
+    # Distingue modalità add vs remove dal titolo della issue (env ISSUE_TITLE)
+    title = os.environ.get("ISSUE_TITLE", "")
+    is_remove = title.lower().startswith("rimuovi preferito:")
+
+    listing_id = extract_id_from_url(url) or fields.get("id") or f"manual-{date.today().strftime('%Y%m%d-%H%M%S')}"
 
     # Carica preferiti esistenti
     with open(PREFERITI_PATH, encoding="utf-8") as f:
         pj = json.load(f)
     annunci_list = pj.setdefault("annunci", [])
+
+    # ===== Modalità REMOVE =====
+    if is_remove:
+        before = len(annunci_list)
+        pj["annunci"] = [a for a in annunci_list if a.get("id") != listing_id]
+        removed = before - len(pj["annunci"])
+        if removed > 0:
+            with open(PREFERITI_PATH, "w", encoding="utf-8") as f:
+                json.dump(pj, f, indent=2, ensure_ascii=False)
+            print(f"OK: rimosso preferito {listing_id} ({removed} entry)")
+        else:
+            print(f"NOOP: {listing_id} non era nei preferiti")
+        return 0
     existing_idx = next(
         (i for i, a in enumerate(annunci_list) if a.get("id") == listing_id),
         None,
