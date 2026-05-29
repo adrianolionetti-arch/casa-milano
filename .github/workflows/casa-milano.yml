@@ -6,8 +6,7 @@ on:
   workflow_dispatch:      # manual run from the Actions tab
 
 permissions:
-  contents: write         # allow agent to push commits
-  id-token: write         # required by claude-code-action for OIDC
+  contents: write
 
 concurrency:
   group: casa-milano
@@ -16,7 +15,7 @@ concurrency:
 jobs:
   search:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,32 +23,63 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
-      - name: Run Casa Milano agent
-        uses: anthropics/claude-code-action@v1
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          prompt: |
-            Esegui una sessione di ricerca Casa Milano seguendo CLAUDE.md alla lettera.
-
-            Sei sul GitHub Actions runner del repo casa-milano: rete piena, Bash + curl
-            funzionano verso api.apify.com, oauth2.googleapis.com, gmail.googleapis.com.
-
-            Le credenziali sono in env vars: APIFY_TOKEN, APIFY_ACTOR_ID, GMAIL_CLIENT_ID,
-            GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN, GMAIL_FROM, DASHBOARD_URL.
-            GITHUB_TOKEN è già configurato per i push.
-
-            Workflow:
-            1) Leggi CLAUDE.md e criteri.md
-            2) Step 2 di CLAUDE.md (curl Apify run-sync) — se HTTP ≠ 200 invia email INFRA e ABORT
-            3) Step 3-9 per i listing ricevuti (filtri, scoring, DB, email, dashboard, report)
-            4) Step 10: commit + push
-          claude_args: --model claude-sonnet-4-6 --max-turns 40 --permission-mode bypassPermissions
+      - name: Fetch Apify
+        id: apify
         env:
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
           APIFY_ACTOR_ID: sPIR3lEdL9H69xrmi
-          IDEALISTA_ACTOR_ID: dz_omar~idealista-scraper-api
+        run: python3 scripts/fetch_apify.py
+
+      - name: INFRA email on Apify failure
+        if: failure() && steps.apify.outcome == 'failure'
+        env:
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+          GMAIL_FROM: ${{ secrets.GMAIL_FROM }}
+        run: |
+          DATE_STR=$(date +%Y-%m-%d)
+          cat > /tmp/infra_body.html <<HTMLEOF
+          <h2>🏠 [INFRA] Casa Milano — fetch_apify.py fallito</h2>
+          <p>Sessione ${DATE_STR} abortita. Vedi <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">log workflow</a>.</p>
+          HTMLEOF
+          python3 scripts/send_email.py "🏠 [INFRA] Casa Milano — Apify failure" /tmp/infra_body.html || true
+
+      - name: Process session (filter + scoring + email digest)
+        env:
           GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
           GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
           GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
           GMAIL_FROM: ${{ secrets.GMAIL_FROM }}
           DASHBOARD_URL: https://adrianolionetti-arch.github.io/casa-milano/
+        run: python3 scripts/process_session.py
+
+      - name: Rebuild dashboard
+        run: python3 scripts/build_dashboard.py
+
+      - name: Commit & push (retry-rebase)
+        run: |
+          git config user.email 'agent@casa-milano.local'
+          git config user.name 'Casa Milano Agent'
+          if git diff --quiet; then
+            echo "Nessuna modifica da committare"
+            exit 0
+          fi
+          git add annunci_visti.json index.html report/
+          git commit -m "Sessione $(date +%Y-%m-%d) — Python deterministico"
+          for i in 1 2 3 4 5; do
+            if git push origin main; then
+              echo "Push riuscito al tentativo $i"
+              exit 0
+            fi
+            echo "Push tentativo $i fallito → pull --rebase e riprovo..."
+            git pull --rebase origin main || { echo "Rebase fallito"; exit 1; }
+            python3 scripts/build_dashboard.py >/dev/null 2>&1 || true
+            if ! git diff --quiet; then
+              git add -A
+              git commit --amend --no-edit
+            fi
+            sleep 2
+          done
+          echo "Push fallito dopo 5 tentativi"
+          exit 1
