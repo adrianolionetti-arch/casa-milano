@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-28T09:53:48",
-    "ultimo_aggiornamento": "2026-05-28T09:53:48",
-    "totale_annunci": 2088,
+    "ultima_sessione": "2026-05-29T10:30:23.935070",
+    "ultimo_aggiornamento": "2026-05-29",
+    "totale_annunci": 2095,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
