@@ -5,7 +5,7 @@
     "ultima_sessione": "2026-05-28T09:53:48",
     "ultimo_aggiornamento": "2026-05-28T09:53:48",
     "totale_annunci": 2088,
-    "last_updated": "2026-05-27",
+    "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
       "rationale": "Pulizia chirurgica post-budget update (360k -> 450k) e fix double-call Apify. Rimossi tutti SCARTATO/ESCLUSO storici + entry post 2026-05-15 (durante INFRA fail).",
@@ -27851,6 +27851,29 @@
       "data_vista": "2026-05-28",
       "notificato": true,
       "note": "ESCLUSO — no ascensore"
+    },
+    {
+      "id": "immobiliare-129490846",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/129490846",
+      "titolo": "Trilocale via Ernesto Rogers 6, Vigentino - Fatima, Milano",
+      "prezzo": 450000,
+      "mq": 110,
+      "locali": 3,
+      "bagni": 2,
+      "piano": "5",
+      "ascensore": true,
+      "zona": "Vigentino - Fatima",
+      "indirizzo": "Via Ernesto Rogers",
+      "descrizione": "In via Rogers 6, proponiamo in vendita uno splendido appartamento di 110 mq, situato al quinto piano di un elegante contesto condominiale degli anni ’90 dal carattere industriale contemporaneo, capace di conferire agli ambienti uno stile unico e ricercato.\n\nL’immobile, recentemente ristrutturato, si distingue per l’eccezionale luminosità e per il piacevole affaccio aperto, che permette alla luce naturale di valorizzare ogni spazio della casa. Gli ambienti sono stati studiati con attenzione per garantire comfort e funzionalità, offrendo una distribuzione interna armoniosa e moderna. La soluzion",
+      "agenzia": "Frimm Academy Milano",
+      "foto_url": "https://pic.im-cdn.it/image/1934466864/xxl-c.jpg",
+      "lat": 45.426,
+      "lon": 9.2097,
+      "punteggio": 3.5,
+      "notificato": false,
+      "data_vista": "2026-05-29",
+      "note": "prezzo 380-450k +1; zona 4 +0.5; mq ≥90 +1; 2+ bagni +0.5; piano 5 +0.5"
     }
   ]
 }
