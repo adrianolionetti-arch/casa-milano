@@ -353,9 +353,18 @@ def write_report(stats: dict, today_str: str) -> None:
         f"| Scartati REGOLA #0 | {stats['n_scartati']} |",
         f"| Esclusi per criteri | {stats['n_esclusi']} |",
         f"| Sotto soglia (score < 6) | {stats['n_sotto_soglia']} |",
+        f"| Errori processamento (skip) | {stats.get('n_errori', 0)} |",
         f"| **Notificati (score ≥ 6)** | **{stats['n_notified']}** |",
         "",
     ]
+    if stats.get("errori_list"):
+        lines.append(f"## Errori processamento ({len(stats['errori_list'])})")
+        lines.append("")
+        for e in stats["errori_list"][:20]:
+            lines.append(f"- `{e['id']}` — {e['error_type']}: {e['error_msg']}")
+        if len(stats["errori_list"]) > 20:
+            lines.append(f"- ... + altri {len(stats['errori_list']) - 20}")
+        lines.append("")
     if stats["notified_list"]:
         lines.append("## Notificati")
         lines.append("")
@@ -429,50 +438,60 @@ def main() -> int:
     notified: list[dict] = []
     esclusi_list: list[dict] = []
     scartati_list: list[dict] = []
+    errori_list: list[dict] = []  # item che esplodono — skippati ma loggati
     n_duplicate = n_invalid = n_sotto_soglia = 0
 
     for item in items:
         if not isinstance(item, dict):
             continue
+        item_id = item.get("id", "?")
+        # Wrap completo del per-item processing: se un singolo annuncio
+        # esplode (payload Apify malformato, campo str/int inatteso, ecc.)
+        # logga e prosegue invece di abortire tutto il batch.
         try:
             L = extract(item)
+            status, reason = apply_filters(L, db_ids)
+
+            if status == "DUPLICATE":
+                n_duplicate += 1
+                continue
+            if status == "INVALID":
+                n_invalid += 1
+                continue
+
+            if status.startswith("SCARTATO"):
+                note = f"SCARTATO {status[9:].replace('_', ' ').lower()} — {reason}"
+                entry = {**L, "punteggio": None, "data_vista": today_str, "notificato": True, "note": note}
+                new_entries.append(entry)
+                scartati_list.append(entry)
+                continue
+
+            if status == "ESCLUSO":
+                entry = {**L, "punteggio": 0, "data_vista": today_str, "notificato": True, "note": f"ESCLUSO — {reason}"}
+                new_entries.append(entry)
+                esclusi_list.append(entry)
+                continue
+
+            # OK → scoring
+            s = score(L)
+            if s < MIN_SCORE_NOTIFY:
+                entry = {**L, "punteggio": s, "data_vista": today_str, "notificato": False, "note": f"Score {s} — sotto soglia {MIN_SCORE_NOTIFY}"}
+                new_entries.append(entry)
+                n_sotto_soglia += 1
+                continue
+
+            entry = {**L, "punteggio": s, "data_vista": today_str, "notificato": True, "note": ""}
+            new_entries.append(entry)
+            notified.append(entry)
         except Exception as e:
-            print(f"WARN: extract failed item id={item.get('id')}: {e}", file=sys.stderr)
+            err_info = {
+                "id": f"immobiliare-{item_id}",
+                "error_type": type(e).__name__,
+                "error_msg": str(e)[:200],
+            }
+            errori_list.append(err_info)
+            print(f"WARN: item {item_id} skipped — {type(e).__name__}: {e}", file=sys.stderr)
             continue
-
-        status, reason = apply_filters(L, db_ids)
-
-        if status == "DUPLICATE":
-            n_duplicate += 1
-            continue
-        if status == "INVALID":
-            n_invalid += 1
-            continue
-
-        if status.startswith("SCARTATO"):
-            note = f"SCARTATO {status[9:].replace('_', ' ').lower()} — {reason}"
-            entry = {**L, "punteggio": None, "data_vista": today_str, "notificato": True, "note": note}
-            new_entries.append(entry)
-            scartati_list.append(entry)
-            continue
-
-        if status == "ESCLUSO":
-            entry = {**L, "punteggio": 0, "data_vista": today_str, "notificato": True, "note": f"ESCLUSO — {reason}"}
-            new_entries.append(entry)
-            esclusi_list.append(entry)
-            continue
-
-        # OK → scoring
-        s = score(L)
-        if s < MIN_SCORE_NOTIFY:
-            entry = {**L, "punteggio": s, "data_vista": today_str, "notificato": False, "note": f"Score {s} — sotto soglia {MIN_SCORE_NOTIFY}"}
-            new_entries.append(entry)
-            n_sotto_soglia += 1
-            continue
-
-        entry = {**L, "punteggio": s, "data_vista": today_str, "notificato": True, "note": ""}
-        new_entries.append(entry)
-        notified.append(entry)
 
     stats = {
         "n_items": len(items),
@@ -482,9 +501,11 @@ def main() -> int:
         "n_esclusi": len(esclusi_list),
         "n_sotto_soglia": n_sotto_soglia,
         "n_notified": len(notified),
+        "n_errori": len(errori_list),
         "notified_list": notified,
         "esclusi_list": esclusi_list,
         "scartati_list": scartati_list,
+        "errori_list": errori_list,
         "email_message_id": None,
     }
 
@@ -510,7 +531,7 @@ def main() -> int:
     # Report
     write_report(stats, today_str)
 
-    print(f"Sessione completata: {stats['n_notified']} notificati, {stats['n_esclusi']} esclusi, {stats['n_scartati']} scartati")
+    print(f"Sessione completata: {stats['n_notified']} notificati, {stats['n_esclusi']} esclusi, {stats['n_scartati']} scartati, {stats.get('n_errori', 0)} errori")
     return 0
 
 
