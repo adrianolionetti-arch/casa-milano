@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-05-31T08:36:12.454340",
-    "ultimo_aggiornamento": "2026-05-31",
-    "totale_annunci": 2095,
+    "ultima_sessione": "2026-06-03T10:48:22.628736",
+    "ultimo_aggiornamento": "2026-06-03",
+    "totale_annunci": 2096,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -27874,6 +27874,29 @@
       "notificato": false,
       "data_vista": "2026-05-29",
       "note": "prezzo 380-450k +1; zona 4 +0.5; mq ≥90 +1; 2+ bagni +0.5; piano 5 +0.5"
+    },
+    {
+      "id": "immobiliare-129533984",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/129533984",
+      "titolo": "Trilocale viale Molise 32/A, Molise - Cuoco, Milano",
+      "prezzo": 365000,
+      "mq": 90,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "1",
+      "ascensore": true,
+      "zona": "Molise - Cuoco",
+      "indirizzo": "Viale Molise 32/A",
+      "descrizione": "Rif: MOL32 - Stai cercando la tua prima casa in una zona ben servita? Questa potrebbe essere quella giusta per te!\n\nIn Viale Molise 32, all’interno di un tranquillo contesto civile con curato giardino condominiale alberato e servizio di portineria mezza giornata (dal lunedì al sabato), proponiamo in vendita:\n\nLUMINOSO TRILOCALE DI 90 mq, situato al PRIMO PIANO ALTO\n\nL’appartamento, in buono stato interno, si distingue per la sua ottima distribuzione degli spazi ed è così composto:\ningresso con disimpegno, ampio e accogliente soggiorno con accesso alla balconata, da cui si gode di una piacevole",
+      "agenzia": "TEMPOCASA Milano Umbria",
+      "foto_url": "https://pic.im-cdn.it/image/1935533736/xxl-c.jpg",
+      "lat": 45.4522,
+      "lon": 9.22423,
+      "punteggio": 3.0,
+      "data_vista": "2026-06-03",
+      "notificato": false,
+      "note": "Score 3.0 — sotto soglia 6.0"
     }
   ]
 }
