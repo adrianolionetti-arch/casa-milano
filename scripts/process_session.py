@@ -81,6 +81,22 @@ def parse_mq(surface_raw) -> int | None:
     return int(digits) if digits else None
 
 
+def to_int(v) -> int | None:
+    """Coerce a int. Apify a volte restituisce bagni/locali come string ('2', '2+', '3').
+    Estrae il primo numero intero ASCII; ritorna None se non c'è."""
+    if v is None:
+        return None
+    if isinstance(v, bool):
+        return int(v)
+    if isinstance(v, int):
+        return v
+    if isinstance(v, float):
+        return int(v)
+    s = str(v)
+    digits = "".join(c for c in s if c in "0123456789")
+    return int(digits) if digits else None
+
+
 def extract(item: dict) -> dict:
     """Mappa item Apify → schema agente (CLAUDE.md Step 3)."""
     props = (item.get("properties") or [{}])[0]
@@ -94,10 +110,10 @@ def extract(item: dict) -> dict:
         "source": "immobiliare",
         "url": item.get("directLink"),
         "titolo": item.get("title") or "",
-        "prezzo": (item.get("price") or {}).get("value"),
+        "prezzo": to_int((item.get("price") or {}).get("value")),
         "mq": parse_mq(props.get("surface")),
-        "locali": props.get("rooms"),
-        "bagni": props.get("bathrooms"),
+        "locali": to_int(props.get("rooms")),
+        "bagni": to_int(props.get("bathrooms")),
         "piano": floor.get("abbreviation"),
         "ascensore": bool(props.get("elevator")) if props.get("elevator") is not None else False,
         "zona": loc.get("microzone") or loc.get("macrozone"),
