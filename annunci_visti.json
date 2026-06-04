@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-06-03T10:48:22.628736",
-    "ultimo_aggiornamento": "2026-06-03",
-    "totale_annunci": 2096,
+    "ultima_sessione": "2026-06-04T09:45:11.614997",
+    "ultimo_aggiornamento": "2026-06-04",
+    "totale_annunci": 2097,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -27897,6 +27897,29 @@
       "data_vista": "2026-06-03",
       "notificato": false,
       "note": "Score 3.0 — sotto soglia 6.0"
+    },
+    {
+      "id": "immobiliare-129465054",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/129465054",
+      "titolo": "Trilocale via Fra' Riccardo Pampuri, Vigentino - Fatima, Milano",
+      "prezzo": 219000,
+      "mq": 85,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "3",
+      "ascensore": false,
+      "zona": "Vigentino - Fatima",
+      "indirizzo": "Via Fra' Riccardo Pampuri",
+      "descrizione": "Proponiamo in vendita un luminoso appartamento di 85 metri quadrati sito al terzo piano.\nL'immobile si compone di un ingresso che conduce al soggiorno con cucina, un balcone, due camere da letto e un bagno finestrato.\nCompleta la proprietà una cantina di pertinenza, utile per riporre eventuali oggetti.\n\nLa posizione dell'immobile è strategica, in una zona residenziale, tranquilla e ricca di aree verdi, scuole, supermercati, negozi e servizi.\nInoltre, l'immobile è comodamente collegato con le tangenziali e con i centri commerciali Fiordaliso e Milanofiori, ben servito dai mezzi di trasporto, co",
+      "agenzia": "Re Casa",
+      "foto_url": "https://pic.im-cdn.it/image/1933855522/xxl-c.jpg",
+      "lat": 45.4253,
+      "lon": 9.2029,
+      "punteggio": 0,
+      "data_vista": "2026-06-04",
+      "notificato": true,
+      "note": "ESCLUSO — no ascensore"
     }
   ]
 }
