@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-06-04T09:45:11.614997",
-    "ultimo_aggiornamento": "2026-06-04",
-    "totale_annunci": 2097,
+    "ultima_sessione": "2026-06-05T09:34:07.144771",
+    "ultimo_aggiornamento": "2026-06-05",
+    "totale_annunci": 2098,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -27918,6 +27918,29 @@
       "lon": 9.2029,
       "punteggio": 0,
       "data_vista": "2026-06-04",
+      "notificato": true,
+      "note": "ESCLUSO — no ascensore"
+    },
+    {
+      "id": "immobiliare-129426416",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/129426416",
+      "titolo": "Trilocale via Vittorio Barzoni 4, Corvetto, Milano",
+      "prezzo": 276000,
+      "mq": 101,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "1",
+      "ascensore": false,
+      "zona": "Corvetto",
+      "indirizzo": "Via Vittorio Barzoni",
+      "descrizione": "Nel cuore pulsante del quartiere Corvetto, in una posizione strategica e perfettamente servita, proponiamo in vendita un elegante trilocale dalle generose metrature, situato al primo piano di uno stabile signorile e ottimamente conservato nelle parti comuni.\n\nGli Spazi Interni: Comfort e Funzionalità:\nL’appartamento, che si presenta in condizioni interne impeccabili, si distingue per la straordinaria luminosità degli ambienti e per un taglio planimetrico razionale e funzionale. La disposizione interna prevede:\n\n- Zona giorno: un ampio e accogliente salone doppio, ideale per momenti di relax e ",
+      "agenzia": "Dhome Real Estate srl",
+      "foto_url": "https://pic.im-cdn.it/image/1932757926/xxl-c.jpg",
+      "lat": 45.4371,
+      "lon": 9.2276,
+      "punteggio": 0,
+      "data_vista": "2026-06-05",
       "notificato": true,
       "note": "ESCLUSO — no ascensore"
     }
