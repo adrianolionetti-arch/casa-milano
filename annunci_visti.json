@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-06-09T09:26:51.761735",
-    "ultimo_aggiornamento": "2026-06-09",
-    "totale_annunci": 2102,
+    "ultima_sessione": "2026-06-10T09:42:27.382750",
+    "ultimo_aggiornamento": "2026-06-10",
+    "totale_annunci": 2103,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -28035,6 +28035,29 @@
       "data_vista": "2026-06-09",
       "notificato": true,
       "note": "SCARTATO keyword — keyword 'venduto'"
+    },
+    {
+      "id": "immobiliare-118905899",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/118905899",
+      "titolo": "Bilocale via Clitumno 8, Parco Trotter, Milano",
+      "prezzo": 395000,
+      "mq": 85,
+      "locali": 2,
+      "bagni": 1,
+      "piano": "4",
+      "ascensore": true,
+      "zona": "Parco Trotter",
+      "indirizzo": "Via Clitumno",
+      "descrizione": "Siamo lieti di introdurvi un nuovo progetto di sviluppo in Via Clitumno n.8.\n\nA pochissimi passi dal Parco Trotter, in via Clitumno n. 8 sorge un nuovo progetto immobiliare che prevede la realizzazione di 12 unità nate dalla costruzione di un nuovo edificio.\nLo stabile, composto da cinque piani fuori terra, è situato all’interno di una corte molto tranquilla e silenziosa in cui sorgeranno posti auto e giardino condominiale che ospiterà 22 alberi medio fusto che faranno da ”quinta” ai muri divisori con terzi. Le unità si compongono di bilocali e trilocali di diverse metrature dotati di tutti i ",
+      "agenzia": "Frimm Academy Milano",
+      "foto_url": "https://pic.im-cdn.it/image/1886539992/xxl-c.jpg",
+      "lat": 45.4928,
+      "lon": 9.2291,
+      "punteggio": 2.0,
+      "data_vista": "2026-06-10",
+      "notificato": false,
+      "note": "Score 2.0 — sotto soglia 6.0"
     }
   ]
 }
