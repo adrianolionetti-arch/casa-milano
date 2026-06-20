@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-06-19T10:14:46.251280",
-    "ultimo_aggiornamento": "2026-06-19",
-    "totale_annunci": 2113,
+    "ultima_sessione": "2026-06-20T08:43:18.542435",
+    "ultimo_aggiornamento": "2026-06-20",
+    "totale_annunci": 2114,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -28288,6 +28288,29 @@
       "data_vista": "2026-06-19",
       "notificato": true,
       "note": "ESCLUSO — piano T senza giardino"
+    },
+    {
+      "id": "immobiliare-129985670",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/129985670",
+      "titolo": "Quadrilocale via San Mamete 64, Quartiere Adriano, Milano",
+      "prezzo": 375000,
+      "mq": 125,
+      "locali": 4,
+      "bagni": 2,
+      "piano": "1",
+      "ascensore": true,
+      "zona": "Quartiere Adriano",
+      "indirizzo": "Via San Mamete",
+      "descrizione": "Ad.ze Quartiere Adriano, Via San Mamete , in contesto residenziale degli anni ’90 con giardino condominiale, servizio di portineria,  ascensore e riscaldamento autonomo,  proponiamo in vendita ampio quadrilocale con tripla esposizione,  situato al primo piano.\nL’immobile si distingue per la razionale distribuzione degli spazi dove l’ingresso conduce al luminoso soggiorno e alla cucina abitabile. Tramite il disimpegno si accede  alla  zona notte che si compone di tre camere da letto di generosa metratura, di cui due con accesso ai balconi che affacciano rispettivamente ad est e ad ovest, garant",
+      "agenzia": "CFC Immobiliare",
+      "foto_url": "https://pic.im-cdn.it/image/1946672208/xxl-c.jpg",
+      "lat": 45.5122,
+      "lon": 9.2537,
+      "punteggio": 0,
+      "data_vista": "2026-06-20",
+      "notificato": true,
+      "note": "ESCLUSO — mq=125 fuori [80,120]"
     }
   ]
 }
