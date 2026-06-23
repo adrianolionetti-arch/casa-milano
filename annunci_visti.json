@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-06-22T11:37:55.847488",
-    "ultimo_aggiornamento": "2026-06-22",
-    "totale_annunci": 2116,
+    "ultima_sessione": "2026-06-23T09:24:41.518795",
+    "ultimo_aggiornamento": "2026-06-23",
+    "totale_annunci": 2117,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -28357,6 +28357,29 @@
       "data_vista": "2026-06-22",
       "notificato": true,
       "note": "ESCLUSO — no ascensore"
+    },
+    {
+      "id": "immobiliare-130067054",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/130067054",
+      "titolo": "Trilocale via ACHILLE MAIOCCHI 31, Morgagni, Milano",
+      "prezzo": 379000,
+      "mq": 85,
+      "locali": 3,
+      "bagni": 2,
+      "piano": "T",
+      "ascensore": true,
+      "zona": "Morgagni",
+      "indirizzo": "Via ACHILLE MAIOCCHI 31",
+      "descrizione": "Rif: MAIOCCHI - Nel cuore di una delle strade più eleganti e apprezzate di Milano, proponiamo in vendita un esclusivo appartamento di circa 85 mq, completamente ristrutturato, nuovo e mai abitato, caratterizzato da un raffinato stile industrial contemporaneo che ne esalta l'unicità e il fascino.\n\nSituato in Via Maiocchi 31, tra Porta Venezia e Città Studi, l'immobile si inserisce in un contesto residenziale di grande pregio, particolarmente ricercato per la sua atmosfera autenticamente milanese, la tranquillità della via alberata e la presenza di numerosi servizi, locali di qualità, ristoranti",
+      "agenzia": "TEMPOCASA Milano Plinio Buenos Aires",
+      "foto_url": "https://pic.im-cdn.it/image/1948728440/xxl-c.jpg",
+      "lat": 45.4766,
+      "lon": 9.2167,
+      "punteggio": 0,
+      "data_vista": "2026-06-23",
+      "notificato": true,
+      "note": "ESCLUSO — piano T senza giardino"
     }
   ]
 }
