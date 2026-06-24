@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-06-23T09:24:41.518795",
-    "ultimo_aggiornamento": "2026-06-23",
-    "totale_annunci": 2117,
+    "ultima_sessione": "2026-06-24T08:54:30.684691",
+    "ultimo_aggiornamento": "2026-06-24",
+    "totale_annunci": 2118,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -28380,6 +28380,29 @@
       "data_vista": "2026-06-23",
       "notificato": true,
       "note": "ESCLUSO — piano T senza giardino"
+    },
+    {
+      "id": "immobiliare-130021936",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/130021936",
+      "titolo": "Trilocale via del Futurismo 31, Santa Giulia, Milano",
+      "prezzo": 398000,
+      "mq": 93,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "S, 8",
+      "ascensore": true,
+      "zona": "Santa Giulia",
+      "indirizzo": "Via del Futurismo",
+      "descrizione": "Nota bene: alcune immagini sono state valorizzate tramite intelligenza artificiale per mostrare possibili soluzioni di arredo e organizzazione degli spazi, senza alterarne proporzioni o misure reali.\n\nSe stai cercando una casa che oggi sia comoda da vivere e domani valga ancora di più, fermati: potresti averla appena trovata.\nSiamo a Santa Giulia, una delle zone più strategiche e in maggiore crescita di Milano, a pochi passi dalla Stazione FS e dalla Metro M3 Rogoredo.\n\nQui la vera parola d’ordine è una sola: tempo. Tempo risparmiato ogni giorno. In circa 8 minuti sei in Duomo con la metropoli",
+      "agenzia": "BORROMEO IMMOBILI",
+      "foto_url": "https://pic.im-cdn.it/image/1947703802/xxl-c.jpg",
+      "lat": 45.4367,
+      "lon": 9.2462,
+      "punteggio": 2.5,
+      "data_vista": "2026-06-24",
+      "notificato": false,
+      "note": "Score 2.5 — sotto soglia 6.0"
     }
   ]
 }
