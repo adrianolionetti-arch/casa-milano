@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-06-26T08:52:19.322241",
-    "ultimo_aggiornamento": "2026-06-26",
-    "totale_annunci": 2118,
+    "ultima_sessione": "2026-06-27T08:27:50.245380",
+    "ultimo_aggiornamento": "2026-06-27",
+    "totale_annunci": 2119,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -28403,6 +28403,29 @@
       "data_vista": "2026-06-24",
       "notificato": false,
       "note": "Score 2.5 — sotto soglia 6.0"
+    },
+    {
+      "id": "immobiliare-130344310",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/130344310",
+      "titolo": "Trilocale via dell'Assunta 17, Vigentino - Fatima, Milano",
+      "prezzo": 375000,
+      "mq": 110,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "1",
+      "ascensore": false,
+      "zona": "Vigentino - Fatima",
+      "indirizzo": "Via dell'Assunta",
+      "descrizione": "In VIA DELL'ASSUNTA 17, all'interno dell'apprezzato e curato quartiere di Fatima, proponiamo in vendita INTERESSANTE SOLUZIONE di 3 LOCALI, di 110 mq commerciali, libera da subito e composta da:\n\ningresso, ampio soggiorno, cucina abitabile con accesso al balcone, 2 camere da letto, bagno finestrato e comodo ripostiglio.\nAd integrare la soluzione vi è un interessante spazio di 40 mq posto al piano seminterrato, ideale per essere utilizzato a seconda delle proprie esigenze (palestra, magazzino, stanza hobby, sala smart working, ecc..).\nCompleta la soluzione l'uso esclusivo di un POSTO AUTO, all'",
+      "agenzia": "Gabetti Franchising Milano - Ripamonti",
+      "foto_url": "https://pic.im-cdn.it/image/1955261056/xxl-c.jpg",
+      "lat": 45.4335,
+      "lon": 9.2041,
+      "punteggio": 0,
+      "data_vista": "2026-06-27",
+      "notificato": true,
+      "note": "ESCLUSO — no ascensore"
     }
   ]
 }
