@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-06-29T10:25:51.829412",
-    "ultimo_aggiornamento": "2026-06-29",
-    "totale_annunci": 2121,
+    "ultima_sessione": "2026-06-30T08:58:36.280196",
+    "ultimo_aggiornamento": "2026-06-30",
+    "totale_annunci": 2122,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -28472,6 +28472,29 @@
       "data_vista": "2026-06-29",
       "notificato": true,
       "note": "SCARTATO sede — indirizzo == sede agenzia"
+    },
+    {
+      "id": "immobiliare-129817482",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/129817482",
+      "titolo": "Trilocale via Bernardino Verro 43, Ripamonti - Fondazione Prada, Milano",
+      "prezzo": 443000,
+      "mq": 80,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "1",
+      "ascensore": false,
+      "zona": "Ripamonti - Fondazione Prada",
+      "indirizzo": "Via Bernardino Verro",
+      "descrizione": "zona bocconi via verro appartamenti di nuova costruzione in classe a4\nfinanziamenti personalizzati\nsi accettano permute\n\nappartamenti di nuova realizzazione ad uso abitazione in classe a4 - via verro - zona bazzi/spadolini - vic.ze università bocconi / via verro : in contesto esclusivo ed immerso nel verde proponiamo :\n\nunita 2 mq 72 loft su due livelli euro 395.000\nunita' 3 mq. 80 trilocale al primo piano euro 443.000\nunita' 3 con annesso locale hobby al piano terra mq. 96 euro 532.000\nunita' 4 mq. 72 bilocale con giardino euro 385.000\nunita' 4 con annesso locale hobby al piano terra mq. 86 e",
+      "agenzia": "IMMOBILIARE BERTELLI di Luca Geom.Bertelli",
+      "foto_url": "https://pic.im-cdn.it/image/1942799548/xxl-c.jpg",
+      "lat": 45.4385,
+      "lon": 9.1928,
+      "punteggio": 0,
+      "data_vista": "2026-06-30",
+      "notificato": true,
+      "note": "ESCLUSO — no ascensore"
     }
   ]
 }
