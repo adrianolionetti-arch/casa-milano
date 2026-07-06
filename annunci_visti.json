@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-07-05T08:42:53.521668",
-    "ultimo_aggiornamento": "2026-07-05",
-    "totale_annunci": 2129,
+    "ultima_sessione": "2026-07-06T09:58:54.227205",
+    "ultimo_aggiornamento": "2026-07-06",
+    "totale_annunci": 2130,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -28656,6 +28656,29 @@
       "data_vista": "2026-07-04",
       "notificato": false,
       "note": "Score 4.0 — sotto soglia 6.0"
+    },
+    {
+      "id": "immobiliare-130590720",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/130590720",
+      "titolo": "Trilocale via Costantino Baroni 190, Gratosoglio, Milano",
+      "prezzo": 300000,
+      "mq": 85,
+      "locali": 3,
+      "bagni": 2,
+      "piano": "4",
+      "ascensore": true,
+      "zona": "Gratosoglio",
+      "indirizzo": "Via Costantino Baroni",
+      "descrizione": "BARONI 190 – LA TUA CASA A PARTIRE DA CIRCA € 1.010,00 AL MESE!\n\nIl nuovo progetto residenziale Oblo’ – Abitare Milano – sorge nel quartiere di Gratosoglio, a Sud di Milano, in una zona al centro di diversi progetti di crescente interesse e iniziative di riqualificazione che prevedono il miglioramento di spazi pubblici e l’implementazione di spazi comunitari.\nLa zona beneficia inoltre del collegamento diretto con il Centro di Milano rendendola una scelta interessante per chi cerca un equilibrio fra vita urbana e tranquillità residenziale. \n\nIn meno di 10 minuti di auto si raggiunge l’Humanitas",
+      "agenzia": "F.I.L. Casa Agency S.r.l.",
+      "foto_url": "https://pic.im-cdn.it/image/1962051528/xxl-c.jpg",
+      "lat": 45.404,
+      "lon": 9.1695,
+      "punteggio": 0,
+      "data_vista": "2026-07-06",
+      "notificato": true,
+      "note": "ESCLUSO — zona esclusa gratosoglio"
     }
   ]
 }
