@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-07-13T08:52:29.259578",
-    "ultimo_aggiornamento": "2026-07-13",
-    "totale_annunci": 2140,
+    "ultima_sessione": "2026-07-14T07:49:23.700815",
+    "ultimo_aggiornamento": "2026-07-14",
+    "totale_annunci": 2141,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -28909,6 +28909,29 @@
       "data_vista": "2026-07-10",
       "notificato": false,
       "note": "Score 3.0 — sotto soglia 6.0"
+    },
+    {
+      "id": "immobiliare-130819238",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/130819238",
+      "titolo": "Trilocale via Gaetano Salvemini, Comasina, Milano",
+      "prezzo": 297000,
+      "mq": 94,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "7",
+      "ascensore": true,
+      "zona": "Comasina",
+      "indirizzo": "Via Gaetano Salvemini",
+      "descrizione": "Milano Affori – Comasina. Panoramico Trilocale di mq. 94 all'ultimo piano. Nelle immediate vicinanze della Stazione MM AFFORI F.N. in Via Gaetano Salvemini, proponiamo in vendita un luminosissimo appartamento di 94 mq commerciali, situato al settimo ed ultimo piano, all'interno di un contesto residenziale recentemente riqualificato.\nL'immobile, grazie alla favorevole esposizione angolare e all'affaccio panoramico, gode di un'eccellente luminosità naturale e di una piacevole vista. \nLa distribuzione degli spazi è razionale e funzionale ed è così composta:\n* ingresso;\n* soggiorno con balcone;\n* ",
+      "agenzia": "Re/Max Vita 3",
+      "foto_url": "https://pic.im-cdn.it/image/1966690004/xxl-c.jpg",
+      "lat": 45.5263,
+      "lon": 9.1672,
+      "punteggio": 5.5,
+      "data_vista": "2026-07-14",
+      "notificato": false,
+      "note": "Score 5.5 — sotto soglia 6.0"
     }
   ]
 }
