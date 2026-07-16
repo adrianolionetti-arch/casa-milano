@@ -9,8 +9,8 @@ Uso:
 
 Env richiesti: GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, GMAIL_REFRESH_TOKEN, GMAIL_FROM.
 Destinatari: adrianolionetti@gmail.com, alessia.curtopelle@gmail.com.
-Stampa il messageId Gmail su stdout in caso di successo; exit code 0.
-Stampa l'errore su stderr; exit code != 0.
+Su successo (exit 0) stampa su stdout un JSON `{"messageId": "...", "threadId": "..."}`.
+Su errore stampa il dettaglio su stderr con exit code != 0.
 """
 import base64
 import json
@@ -71,7 +71,10 @@ def main(subject: str, body_html_path: str) -> int:
         print(f"ERROR: Gmail send failed: {e}", file=sys.stderr)
         return 4
 
-    print(send_resp.get("id", "(no messageId)"))
+    print(json.dumps({
+        "messageId": send_resp.get("id"),
+        "threadId": send_resp.get("threadId"),
+    }))
     return 0
 
 

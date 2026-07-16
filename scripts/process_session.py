@@ -306,7 +306,7 @@ def compose_email(notified: list, stats: dict, today_str: str) -> tuple[str, str
     has_alert = any(a["punteggio"] >= ALERT_SCORE for a in notified)
 
     if n == 0:
-        subject = f"🏠 Sessione completata — nessuna novità oggi"
+        subject = f"🏠 Casa Milano {today_str} — nessuna novità ({stats['n_items']} listing)"
         body = (
             header_button()
             + f"<h2>🏠 Casa Milano — sessione del {today_str}</h2>"
@@ -390,13 +390,17 @@ def write_report(stats: dict, today_str: str) -> None:
     if stats["email_message_id"]:
         lines.append(f"## Email")
         lines.append(f"- messageId: `{stats['email_message_id']}`")
+        if stats.get("email_thread_id"):
+            tid = stats["email_thread_id"]
+            lines.append(f"- threadId: `{tid}`")
+            lines.append(f"- apri thread: https://mail.google.com/mail/u/0/#all/{tid}")
         lines.append("")
     path.write_text("\n".join(lines), encoding="utf-8")
     print(f"Report scritto: {path}")
 
 
-def send_email(subject: str, body_html: str) -> str | None:
-    """Chiama send_email.py e restituisce il messageId o None su failure."""
+def send_email(subject: str, body_html: str) -> tuple[str | None, str | None]:
+    """Chiama send_email.py; ritorna (messageId, threadId) o (None, None) su failure."""
     with tempfile.NamedTemporaryFile("w", suffix=".html", delete=False, encoding="utf-8") as f:
         f.write(body_html)
         body_path = f.name
@@ -406,14 +410,20 @@ def send_email(subject: str, body_html: str) -> str | None:
             capture_output=True, text=True, timeout=60,
         )
         if result.returncode == 0:
-            mid = result.stdout.strip()
-            print(f"Email OK: {mid}")
-            return mid
+            try:
+                parsed = json.loads(result.stdout.strip())
+                mid = parsed.get("messageId")
+                tid = parsed.get("threadId")
+            except (json.JSONDecodeError, AttributeError):
+                # Compat: vecchio send_email.py stampava solo il messageId
+                mid, tid = result.stdout.strip() or None, None
+            print(f"Email OK: {mid} (thread {tid})")
+            return mid, tid
         print(f"Email FAIL ({result.returncode}): {result.stderr[:500]}", file=sys.stderr)
-        return None
+        return None, None
     except Exception as e:
         print(f"Email FAIL exception: {e}", file=sys.stderr)
-        return None
+        return None, None
 
 
 def main() -> int:
@@ -507,6 +517,7 @@ def main() -> int:
         "scartati_list": scartati_list,
         "errori_list": errori_list,
         "email_message_id": None,
+        "email_thread_id": None,
     }
 
     # Update DB
@@ -521,12 +532,13 @@ def main() -> int:
 
     # Email
     subject, body = compose_email(notified, stats, today_str)
-    mid = send_email(subject, body)
+    mid, tid = send_email(subject, body)
     if mid is None:
         # Retry una volta (CLAUDE.md Step 7)
         print("Retry email...", file=sys.stderr)
-        mid = send_email(subject, body)
+        mid, tid = send_email(subject, body)
     stats["email_message_id"] = mid
+    stats["email_thread_id"] = tid
 
     # Report
     write_report(stats, today_str)
