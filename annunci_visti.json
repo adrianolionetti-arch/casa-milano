@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-07-16T07:58:27.824418",
-    "ultimo_aggiornamento": "2026-07-16",
-    "totale_annunci": 2143,
+    "ultima_sessione": "2026-07-17T07:54:19.198040",
+    "ultimo_aggiornamento": "2026-07-17",
+    "totale_annunci": 2144,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -28978,6 +28978,29 @@
       "data_vista": "2026-07-16",
       "notificato": false,
       "note": "Score 2.5 — sotto soglia 6.0"
+    },
+    {
+      "id": "immobiliare-131037034",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/131037034",
+      "titolo": "Bilocale via Giambellino 12, Piazza Napoli, Milano",
+      "prezzo": 395000,
+      "mq": 80,
+      "locali": 2,
+      "bagni": 1,
+      "piano": "1",
+      "ascensore": true,
+      "zona": "Piazza Napoli",
+      "indirizzo": "Via Giambellino",
+      "descrizione": "M4 TOLSTOJ – BOLIVAR LUMINOSO APPARTAMENTO MQ 80. Nel dinamico e sempre più apprezzato quartiere Giambellino, al civico 12 di Via Giambellino, a pochi minuti da Piazza Napoli, proponiamo in vendita un luminoso appartamento di circa 80 mq situato al primo piano di un elegante stabile d’epoca. La posizione rappresenta uno dei principali punti di forza dell’immobile: la zona è oggi servita dalla nuova linea metropolitana M4 con le fermate Tolstoj e Bolivar facilmente raggiungibili, che consentono collegamenti rapidi con il centro storico, l’aeroporto di Milano Linate e le principali aree strategi",
+      "agenzia": "Skyline RE Milano",
+      "foto_url": "https://pic.im-cdn.it/image/1971712030/xxl-c.jpg",
+      "lat": 45.4519,
+      "lon": 9.1518,
+      "punteggio": 1.5,
+      "data_vista": "2026-07-17",
+      "notificato": false,
+      "note": "Score 1.5 — sotto soglia 6.0"
     }
   ]
 }
