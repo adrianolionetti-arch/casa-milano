@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-07-17T07:54:19.198040",
-    "ultimo_aggiornamento": "2026-07-17",
-    "totale_annunci": 2144,
+    "ultima_sessione": "2026-07-18T07:29:12.671952",
+    "ultimo_aggiornamento": "2026-07-18",
+    "totale_annunci": 2145,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -29001,6 +29001,29 @@
       "data_vista": "2026-07-17",
       "notificato": false,
       "note": "Score 1.5 — sotto soglia 6.0"
+    },
+    {
+      "id": "immobiliare-130983700",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/130983700",
+      "titolo": "Quadrilocale via Bernardino Bellincione 10, Quartiere Feltre, Milano",
+      "prezzo": 389000,
+      "mq": 85,
+      "locali": 4,
+      "bagni": 1,
+      "piano": "3",
+      "ascensore": true,
+      "zona": "Quartiere Feltre",
+      "indirizzo": "Via Bernardino Bellincione",
+      "descrizione": "CFC IMMOBILIARE - Telefono: 02.28. 97.05. 40 - 02.28. 97.06. 58 // 366.56. 46.741:\nAd.ze Lambrate, Via Bellincione, in contesto civile risalente agli anni '50, in ottimo stato nelle parti comuni, con ascensore e riscaldamento autonomo, proponiamo in vendita al terzo piano, silenzioso quadrilocale in ottimo stato manutentivo. \nL’ingresso introduce alla zona giorno che si compone di un soggiorno con cucina a vista, con accesso al balcone, tramite Il disimpegno si accede alla zona notte, composta da una camera da letto matrimoniale, due camere da letto, di cui una servita da un balcone e un bagno",
+      "agenzia": "CFC Immobiliare",
+      "foto_url": "https://pic.im-cdn.it/image/1970308560/xxl-c.jpg",
+      "lat": 45.4873,
+      "lon": 9.2387,
+      "punteggio": 2.5,
+      "data_vista": "2026-07-18",
+      "notificato": false,
+      "note": "Score 2.5 — sotto soglia 6.0"
     }
   ]
 }
