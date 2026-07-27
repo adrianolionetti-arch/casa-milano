@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-07-26T08:10:54.498979",
-    "ultimo_aggiornamento": "2026-07-26",
-    "totale_annunci": 2156,
+    "ultima_sessione": "2026-07-27T09:34:22.481886",
+    "ultimo_aggiornamento": "2026-07-27",
+    "totale_annunci": 2157,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -29277,6 +29277,29 @@
       "data_vista": "2026-07-26",
       "notificato": false,
       "note": "Score 2.5 — sotto soglia 6.0"
+    },
+    {
+      "id": "immobiliare-131243550",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/131243550",
+      "titolo": "Trilocale viale espinasse 63, Certosa, Milano",
+      "prezzo": 234000,
+      "mq": 95,
+      "locali": 3,
+      "bagni": 2,
+      "piano": "T",
+      "ascensore": false,
+      "zona": "Certosa",
+      "indirizzo": "Viale espinasse",
+      "descrizione": "Viale Espinasse, vicinissimo ai molteplici servizi di Piazzale Accursio, proponiamo un affascinante loft su due livelli situato in un contesto d'epoca del 1930 con facciata appena rifatta. L'immobile si estende su una superficie di 95 mq, offrendo spazi ben distribuiti e funzionali. L'appartamento è composto da tre locali, tra cui due camere da letto accoglienti e una zona giorno. Sono presenti un bagno con ampia doccia con pavimento in resina e una lavanderia completa per lavatrice e asciugatrice dotata anch'essa di ampia doccia con pavimento in resina. L'unità immobiliare è stata completamen",
+      "agenzia": "Affiliato Tecnocasa: IMMOBILIARE ESPINASSE SAS",
+      "foto_url": "https://pic.im-cdn.it/image/1976452826/xxl-c.jpg",
+      "lat": 45.4971,
+      "lon": 9.1423,
+      "punteggio": null,
+      "data_vista": "2026-07-27",
+      "notificato": true,
+      "note": "SCARTATO sede — indirizzo == sede agenzia"
     }
   ]
 }
