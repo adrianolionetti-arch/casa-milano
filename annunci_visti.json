@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-08-03T09:27:17.005368",
-    "ultimo_aggiornamento": "2026-08-03",
-    "totale_annunci": 2170,
+    "ultima_sessione": "2026-08-04T08:23:46.416229",
+    "ultimo_aggiornamento": "2026-08-04",
+    "totale_annunci": 2171,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -29599,6 +29599,29 @@
       "data_vista": "2026-08-03",
       "notificato": false,
       "note": "Score 3.0 — sotto soglia 6.0"
+    },
+    {
+      "id": "immobiliare-131046474",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/131046474",
+      "titolo": "Trilocale via Gabbro 12, Affori, Milano",
+      "prezzo": 405000,
+      "mq": 90,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "7",
+      "ascensore": true,
+      "zona": "Affori",
+      "indirizzo": "Via Gabbro",
+      "descrizione": "Se state cercando un appartamento luminoso in zona tranquilla, questo immobile fa al caso vostro.Posizionato ad un piano alto con tripla esposizione composto da, ingresso, soggiorno, due camere, cucina abitabile, bagno finestrato, 2 balconi ed ampia cantina. In stabile immerso nel verde, rimesso a nuovo sia internamente che nelle parti comuni. Dotato di ascensore, portineria part-time, giardino condominiale, posto auto condominiale. Nella zona vi sono servizi di ogni genere, mezzi pubblici (capolinea linee 82 e 41) supermercati, centro commerciale Metropolis, farmacia, scuole primarie e second",
+      "agenzia": "Frimm Affiliato Dergano - Mi",
+      "foto_url": "https://pic.im-cdn.it/image/1971928582/xxl-c.jpg",
+      "lat": 45.5163,
+      "lon": 9.1606,
+      "punteggio": 6.0,
+      "data_vista": "2026-08-04",
+      "notificato": true,
+      "note": ""
     }
   ]
 }
