@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-08-09T06:40:17.901297",
-    "ultimo_aggiornamento": "2026-08-09",
-    "totale_annunci": 2182,
+    "ultima_sessione": "2026-08-10T07:14:01.143494",
+    "ultimo_aggiornamento": "2026-08-10",
+    "totale_annunci": 2183,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -29875,6 +29875,29 @@
       "data_vista": "2026-08-09",
       "notificato": false,
       "note": "Score 1.5 — sotto soglia 6.0"
+    },
+    {
+      "id": "immobiliare-129689804",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/129689804",
+      "titolo": "Trilocale via Alessandro Litta Modignani, 111, 20161 Milano Italia, Affori, Milano",
+      "prezzo": 245000,
+      "mq": 103,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "2",
+      "ascensore": true,
+      "zona": "Affori",
+      "indirizzo": "Via Alessandro Litta Modignani, 111, 20161 Milano MI, Italia",
+      "descrizione": "Ampio trilocale di 103 mq con doppia esposizione da personalizzare – Via Alessandro Litta Modignani 111\n\nProponiamo in vendita un ampio trilocale di circa 103 mq, situato al secondo piano di uno stabile dotato di ascensore, in una zona ben servita e ottimamente collegata.\n\nL'appartamento si caratterizza per gli spazi generosi, la funzionale distribuzione degli ambienti e la doppia esposizione, che garantisce luminosità e una piacevole ventilazione naturale durante tutto l'arco della giornata.\n\nL'immobile è composto da un ingresso che conduce ai vari ambienti della casa, una cucina abitabile co",
+      "agenzia": "Dhome Real Estate srl",
+      "foto_url": "https://pic.im-cdn.it/image/1939360386/xxl-c.jpg",
+      "lat": 45.5204,
+      "lon": 9.1542,
+      "punteggio": 7.0,
+      "data_vista": "2026-08-10",
+      "notificato": true,
+      "note": ""
     }
   ]
 }
