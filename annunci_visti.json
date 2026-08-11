@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-08-10T07:14:01.143494",
-    "ultimo_aggiornamento": "2026-08-10",
-    "totale_annunci": 2183,
+    "ultima_sessione": "2026-08-11T06:51:57.518826",
+    "ultimo_aggiornamento": "2026-08-11",
+    "totale_annunci": 2184,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -29898,6 +29898,29 @@
       "data_vista": "2026-08-10",
       "notificato": true,
       "note": ""
+    },
+    {
+      "id": "immobiliare-131461234",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/131461234",
+      "titolo": "Trilocale via del Ricordo 10, Ponte Nuovo, Milano",
+      "prezzo": 330000,
+      "mq": 90,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "1",
+      "ascensore": true,
+      "zona": "Ponte Nuovo",
+      "indirizzo": "Via del Ricordo 10",
+      "descrizione": "Rif: C187 - Rif. C187 -  In una delle zone più tranquille e apprezzate di Crescenzago, precisamente in Via Del Ricordo, proponiamo in vendita un ampio trilocale di 90 mq situato al 1° piano di un contesto condominiale ben curato, circondato da un piacevole giardino condominiale che regala tranquillità e verde a pochi passi da tutti i principali servizi.\n\nL'appartamento si distingue per gli spazi generosi e ben distribuiti e per la tripla esposizione a Nord, Est e Ovest, caratteristica che garantisce ambienti luminosi e ben arieggiati durante tutta la giornata.\n\nL'ingresso conduce ad un comodo ",
+      "agenzia": "Tempocasa Milano - Crescenzago/Rizzoli",
+      "foto_url": "https://pic.im-cdn.it/image/1981693390/xxl-c.jpg",
+      "lat": 45.5109,
+      "lon": 9.245,
+      "punteggio": 3.0,
+      "data_vista": "2026-08-11",
+      "notificato": false,
+      "note": "Score 3.0 — sotto soglia 6.0"
     }
   ]
 }
