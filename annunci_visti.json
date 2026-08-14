@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-08-13T07:14:11.694125",
-    "ultimo_aggiornamento": "2026-08-13",
-    "totale_annunci": 2184,
+    "ultima_sessione": "2026-08-14T07:11:37.040940",
+    "ultimo_aggiornamento": "2026-08-14",
+    "totale_annunci": 2185,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -29921,6 +29921,29 @@
       "data_vista": "2026-08-11",
       "notificato": false,
       "note": "Score 3.0 — sotto soglia 6.0"
+    },
+    {
+      "id": "immobiliare-130110458",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/130110458",
+      "titolo": "Quadrilocale via degli Umiliati 11, Ponte Lambro, Milano",
+      "prezzo": 245000,
+      "mq": 95,
+      "locali": 4,
+      "bagni": 2,
+      "piano": "1",
+      "ascensore": true,
+      "zona": "Ponte Lambro",
+      "indirizzo": "Via degli Umiliati",
+      "descrizione": "A Milano, in una zona residenziale ben servita da servizi di primaria necessità e mezzi di trasporto (autobus di linea urbana 45 e 66) tutti a portata di mano, proponiamo in vendita un luminoso quadrilocale posto al primo piano con ascensore, ideale per famiglie o per chi ha la necessità di avere 3 camere separate in un contesto riservato e funzionale. L’appartamento si sviluppa su una pianta ben distribuita e si compone di ampio soggiorno con accesso al balcone loggiato e protetto da zanzariere esterne, che ne consentono l'utilizzo anche nelle stagioni calde, cucina abitabile separata, tre ca",
+      "agenzia": "Gaetano Clementi",
+      "foto_url": "https://pic.im-cdn.it/image/1949976436/xxl-c.jpg",
+      "lat": 45.4429,
+      "lon": 9.2655,
+      "punteggio": 5.5,
+      "data_vista": "2026-08-14",
+      "notificato": false,
+      "note": "Score 5.5 — sotto soglia 6.0"
     }
   ]
 }
