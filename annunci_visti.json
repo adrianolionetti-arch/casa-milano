@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-08-25T06:31:20.138406",
-    "ultimo_aggiornamento": "2026-08-25",
-    "totale_annunci": 2187,
+    "ultima_sessione": "2026-08-26T06:33:08.841420",
+    "ultimo_aggiornamento": "2026-08-26",
+    "totale_annunci": 2188,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -29990,6 +29990,29 @@
       "data_vista": "2026-08-25",
       "notificato": false,
       "note": "Score 2.5 — sotto soglia 6.0"
+    },
+    {
+      "id": "immobiliare-130714016",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/130714016",
+      "titolo": "Trilocale viale Ungheria 5, Viale Ungheria - Mecenate, Milano",
+      "prezzo": 250000,
+      "mq": 80,
+      "locali": 3,
+      "bagni": 2,
+      "piano": "3",
+      "ascensore": false,
+      "zona": "Viale Ungheria - Mecenate",
+      "indirizzo": "Viale Ungheria",
+      "descrizione": "Rif: UN5P33L - Il luogo dove iniziare un nuovo capitolo della vostra storia.\n\nNel cuore autentico del quartiere Morsenchio, in Viale Ungheria n. 5, l'agenzia Tempocasa Milano Mecenate è lieta di proporre in esclusiva un elegante trilocale di circa 80 mq, completamente ristrutturato e pensato per chi desidera una casa pronta da vivere.\n\nSituato al terzo piano senza ascensore, di un contesto residenziale ricco di ampie aree verdi e servizio di portineria part time dal lunedì al sabato, l'appartamento accoglie con ambienti luminosi, ben distribuiti e studiati per offrire il massimo comfort nella ",
+      "agenzia": "TEMPOCASA Milano Mecenate",
+      "foto_url": "https://pic.im-cdn.it/image/1964189976/xxl-c.jpg",
+      "lat": 45.4459,
+      "lon": 9.2443,
+      "punteggio": 0,
+      "data_vista": "2026-08-26",
+      "notificato": true,
+      "note": "ESCLUSO — no ascensore"
     }
   ]
 }
