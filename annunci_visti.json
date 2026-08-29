@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-08-28T17:56:34.241298",
-    "ultimo_aggiornamento": "2026-08-28",
-    "totale_annunci": 2190,
+    "ultima_sessione": "2026-08-29T12:01:13.078640",
+    "ultimo_aggiornamento": "2026-08-29",
+    "totale_annunci": 2191,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -30059,6 +30059,29 @@
       "data_vista": "2026-08-27",
       "notificato": true,
       "note": "ESCLUSO — no ascensore"
+    },
+    {
+      "id": "immobiliare-131935244",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/131935244",
+      "titolo": "Trilocale via Caduti di Marcinelle 14, Rubattino, Milano",
+      "prezzo": 450000,
+      "mq": 88,
+      "locali": 3,
+      "bagni": 2,
+      "piano": "8",
+      "ascensore": true,
+      "zona": "Rubattino",
+      "indirizzo": "Via Caduti di Marcinelle",
+      "descrizione": "Rubattino/Lambrate – Via Caduti di Marcinelle In un moderno stabile del 2015 proponiamo in vendita un elegante trilocale di 88 mq, completamente ristrutturato e rifinito con materiali di pregio. Situato all'ottavo piano, gode di una doppia esposizione est/ovest che assicura grande luminosità e di due ampi balconi abitabili. L'appartamento è composto da un luminoso soggiorno con accesso al balcone, cucina separata anch'essa con sfogo esterno, camera matrimoniale con bagno en suite e balcone privato, seconda camera e secondo bagno. Le finiture moderne comprendono pavimenti in gres nella zona gio",
+      "agenzia": "mqservizi",
+      "foto_url": "https://pic.im-cdn.it/image/1992944530/xxl-c.jpg",
+      "lat": 45.481,
+      "lon": 9.2496,
+      "punteggio": 3.0,
+      "data_vista": "2026-08-29",
+      "notificato": false,
+      "note": "Score 3.0 — sotto soglia 6.0"
     }
   ]
 }
