@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-09-01T10:51:01.031809",
-    "ultimo_aggiornamento": "2026-09-01",
-    "totale_annunci": 2194,
+    "ultima_sessione": "2026-09-02T10:16:03.017459",
+    "ultimo_aggiornamento": "2026-09-02",
+    "totale_annunci": 2195,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -30151,6 +30151,29 @@
       "data_vista": "2026-09-01",
       "notificato": true,
       "note": "ESCLUSO — zona esclusa quarto oggiaro"
+    },
+    {
+      "id": "immobiliare-130764134",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/130764134",
+      "titolo": "Appartamenti di nuova costruzione a Milano",
+      "prezzo": 209200,
+      "mq": 63,
+      "locali": 24,
+      "bagni": null,
+      "piano": null,
+      "ascensore": false,
+      "zona": "Baggio",
+      "indirizzo": "Via Cusago, 96",
+      "descrizione": "Pensata per le più varie esigenze abitative, Living Milano City è una residenza contemporanea, progettata in ottica di valorizzazione della semplicità degli elementi attraverso un design green.\nUn elegante complesso pensato in un contesto ancora verdeggiante ma inserito nella città.\nTutti i 39 appartamenti ,suddivisi in bilocali, trilocali e quadrilocali, sono circondati dal verde per abitare nel benessere più esclusivo anche una città internazionale, interconnessa e in continuo cambiamento come il capoluogo lombardo. L'ulteriore riqualificazione del quartiere di Baggio con la creazione di ult",
+      "agenzia": "Remax Yes",
+      "foto_url": "https://pic.im-cdn.it/image/1985069696/xxl-c.jpg",
+      "lat": 45.4604,
+      "lon": 9.0795,
+      "punteggio": 0,
+      "data_vista": "2026-09-02",
+      "notificato": true,
+      "note": "ESCLUSO — no ascensore"
     }
   ]
 }
