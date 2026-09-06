@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-09-05T09:42:48.120448",
-    "ultimo_aggiornamento": "2026-09-05",
-    "totale_annunci": 2202,
+    "ultima_sessione": "2026-09-06T09:58:18.660478",
+    "ultimo_aggiornamento": "2026-09-06",
+    "totale_annunci": 2203,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -30335,6 +30335,29 @@
       "data_vista": "2026-09-05",
       "notificato": false,
       "note": "Score 4.0 — sotto soglia 6.0"
+    },
+    {
+      "id": "immobiliare-132087534",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/132087534",
+      "titolo": "Trilocale via Viotti 13, Città Studi, Milano",
+      "prezzo": 385000,
+      "mq": 80,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "2",
+      "ascensore": true,
+      "zona": "Città Studi",
+      "indirizzo": "Via Viotti 13",
+      "descrizione": "Rif: V13 - Stai cercando una soluzione COMODA, LUMINOSA e BEN ORGANIZZATA in piena zona città studi? Abbiamo ciò che fa per te!\n\nIn Via Viotti 13, all’interno di un ELEGANTE contesto SIGNORILE ben curato, proponiamo in VENDITA un appartamento di 80 MQ, situato al SECONDO PIANO, in uno stabile dotato di ASCENSORE!\n\nL’immobile si presenta in BUONE CONDIZIONI e si distingue per la DOPPIA ESPOSIZIONE, che garantisce ambienti luminosi, ben arieggiati e una distribuzione degli spazi particolarmente funzionale.\n\nL’ingresso conduce a un comodo DISIMPEGNO che accompagna ai diversi ambienti della casa. ",
+      "agenzia": "TEMPOCASA Milano Città Studi Pacini",
+      "foto_url": "https://pic.im-cdn.it/image/1996523678/xxl-c.jpg",
+      "lat": 45.4832,
+      "lon": 9.2374,
+      "punteggio": 2.0,
+      "data_vista": "2026-09-06",
+      "notificato": false,
+      "note": "Score 2.0 — sotto soglia 6.0"
     }
   ]
 }
