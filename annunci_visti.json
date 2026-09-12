@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-09-11T10:18:29.790758",
-    "ultimo_aggiornamento": "2026-09-11",
-    "totale_annunci": 2213,
+    "ultima_sessione": "2026-09-12T09:50:59.879840",
+    "ultimo_aggiornamento": "2026-09-12",
+    "totale_annunci": 2214,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -30588,6 +30588,29 @@
       "data_vista": "2026-09-11",
       "notificato": true,
       "note": "ESCLUSO — no ascensore"
+    },
+    {
+      "id": "immobiliare-132254100",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/132254100",
+      "titolo": "Trilocale via Andrea Verrocchio 40, Città Studi, Milano",
+      "prezzo": 399000,
+      "mq": 80,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "R",
+      "ascensore": true,
+      "zona": "Città Studi",
+      "indirizzo": "Via Andrea Verrocchio",
+      "descrizione": "Nel cuore di una delle zone residenziali più apprezzate di Milano, in Via Verrocchio, proponiamo in vendita un affascinante appartamento disposto su due livelli, caratterizzato da spazi ben organizzati, funzionali e accoglienti.\nL’ingresso conduce alla spaziosa zona giorno, composta da soggiorno e cucina abitabile: due ambienti conviviali e piacevoli, pensati per vivere con comfort i momenti della quotidianità. Successivamente troviamo il bagno, recentemente ristrutturato e finestrato, con box doccia di generose dimensioni.\nDi seguito troviamo la prima camera da letto matrimoniale con cabina a",
+      "agenzia": "TEMPOAGENCY – Milano/Plebisciti",
+      "foto_url": "https://pic.im-cdn.it/image/2000491716/xxl-c.jpg",
+      "lat": 45.4742,
+      "lon": 9.2196,
+      "punteggio": 0,
+      "data_vista": "2026-09-12",
+      "notificato": true,
+      "note": "ESCLUSO — piano R senza giardino"
     }
   ]
 }
