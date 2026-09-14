@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-09-13T10:51:05.381438",
-    "ultimo_aggiornamento": "2026-09-13",
-    "totale_annunci": 2216,
+    "ultima_sessione": "2026-09-14T11:19:32.700447",
+    "ultimo_aggiornamento": "2026-09-14",
+    "totale_annunci": 2217,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -30657,6 +30657,29 @@
       "data_vista": "2026-09-13",
       "notificato": true,
       "note": "ESCLUSO — zona esclusa corvetto"
+    },
+    {
+      "id": "immobiliare-132399166",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/132399166",
+      "titolo": "Trilocale via Guido Ucelli di Nemi 3, Ponte Lambro, Milano",
+      "prezzo": 240000,
+      "mq": 117,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "3",
+      "ascensore": true,
+      "zona": "Ponte Lambro",
+      "indirizzo": "Via Guido Ucelli di Nemi",
+      "descrizione": "Nel quartiere Ponte Lambro, in una posizione strategica e ben servita, proponiamo in vendita un luminoso trilocale dagli spazi generosi e ben distribuiti, ideale per famiglie, giovani coppie o per chi desidera investire in una zona di Milano sempre più apprezzata per i suoi collegamenti e i servizi presenti.\nL'appartamento si apre su un ingresso che accompagna alla zona giorno, un ambiente accogliente e luminoso che gode dell'affaccio sul balcone, perfetto per creare uno spazio esterno da vivere nei momenti di relax. La disposizione interna consente una chiara separazione tra la zona living e ",
+      "agenzia": "Casa Elite Group",
+      "foto_url": "https://pic.im-cdn.it/image/2004008700/xxl-c.jpg",
+      "lat": 45.4426,
+      "lon": 9.2645,
+      "punteggio": 5.5,
+      "data_vista": "2026-09-14",
+      "notificato": false,
+      "note": "Score 5.5 — sotto soglia 6.0"
     }
   ]
 }
