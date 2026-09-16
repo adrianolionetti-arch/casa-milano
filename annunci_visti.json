@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-09-15T10:44:13.859060",
-    "ultimo_aggiornamento": "2026-09-15",
-    "totale_annunci": 2220,
+    "ultima_sessione": "2026-09-16T10:32:44.889404",
+    "ultimo_aggiornamento": "2026-09-16",
+    "totale_annunci": 2221,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -30749,6 +30749,29 @@
       "data_vista": "2026-09-15",
       "notificato": true,
       "note": "ESCLUSO — piano R senza giardino"
+    },
+    {
+      "id": "immobiliare-132435350",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/132435350",
+      "titolo": "Trilocale piazzale Vincenzo Cuoco 4, Molise - Cuoco, Milano",
+      "prezzo": 410000,
+      "mq": 100,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "7",
+      "ascensore": true,
+      "zona": "Molise - Cuoco",
+      "indirizzo": "Piazzale Vincenzo Cuoco 4",
+      "descrizione": "Rif: CUOCO4 - Cerchi una casa spaziosa, luminosa e con una vista mozzafiato sullo skyline milanese?\nAl 7° piano di uno stabile civile anni 60', proponiamo in vendita un AMPIO TRILOCALE di c.a. 100mq da personalizzare, caratterizzato da ambienti generosi, ottima luminosità e una splendida vista sulla città.\nL’appartamento è composto da: un comodo ingresso che conduce a un ampio e luminoso soggiorno, ideale per vivere e accogliere i propri ospiti. La cucina è abitabile e separata, dotata di un ampio balcone dal quale è possibile godere di una suggestiva vista sullo skyline milanese, perfetto per",
+      "agenzia": "TEMPOCASA Milano Umbria",
+      "foto_url": "https://pic.im-cdn.it/image/2004825826/xxl-c.jpg",
+      "lat": 45.4509,
+      "lon": 9.22474,
+      "punteggio": 3.5,
+      "data_vista": "2026-09-16",
+      "notificato": false,
+      "note": "Score 3.5 — sotto soglia 6.0"
     }
   ]
 }
