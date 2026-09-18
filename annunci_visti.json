@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-09-17T10:42:36.523184",
-    "ultimo_aggiornamento": "2026-09-17",
-    "totale_annunci": 2223,
+    "ultima_sessione": "2026-09-18T10:18:02.041102",
+    "ultimo_aggiornamento": "2026-09-18",
+    "totale_annunci": 2224,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -30818,6 +30818,29 @@
       "data_vista": "2026-09-17",
       "notificato": true,
       "note": "ESCLUSO — no ascensore"
+    },
+    {
+      "id": "immobiliare-132445702",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/132445702",
+      "titolo": "Trilocale via Paolo Solaroli 6/B, Ripamonti - Fondazione Prada, Milano",
+      "prezzo": 399000,
+      "mq": 94,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "5",
+      "ascensore": true,
+      "zona": "Ripamonti - Fondazione Prada",
+      "indirizzo": "Via Paolo Solaroli",
+      "descrizione": "Rif: T07 - Nelle immediate vicinanze di Via Ripamonti, in una zona ben servita da mezzi pubblici (tram 24, linee 34 e 95), supermercati, negozi, scuole e servizi, proponiamo in vendita esclusiva un luminoso trilocale al quinto piano di uno stabile medio-signorile con ascensore e servizio di portineria.\n\nL'appartamento, caratterizzato da una doppia esposizione interna e da una piacevole vista panoramica, è composto da ingresso con ripostiglio, ampio soggiorno, cucina abitabile con balcone, due camere matrimoniali, bagno finestrato e secondo disimpegno predisposto per la realizzazione di un seco",
+      "agenzia": "TEMPOCASA Milano Ripamonti",
+      "foto_url": "https://pic.im-cdn.it/image/2005040876/xxl-c.jpg",
+      "lat": 45.4364,
+      "lon": 9.1995,
+      "punteggio": 3.5,
+      "data_vista": "2026-09-18",
+      "notificato": false,
+      "note": "Score 3.5 — sotto soglia 6.0"
     }
   ]
 }
