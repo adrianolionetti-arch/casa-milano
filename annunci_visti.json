@@ -2,9 +2,9 @@
   "meta": {
     "creato": "2026-04-24",
     "descrizione": "Database degli annunci già processati. Gestito automaticamente dall'agente.",
-    "ultima_sessione": "2026-09-23T10:31:22.921547",
-    "ultimo_aggiornamento": "2026-09-23",
-    "totale_annunci": 2291,
+    "ultima_sessione": "2026-09-24T10:48:57.780121",
+    "ultimo_aggiornamento": "2026-09-24",
+    "totale_annunci": 2292,
     "last_updated": "2026-05-29",
     "reset": {
       "date": "2026-05-18",
@@ -32382,6 +32382,29 @@
       "data_vista": "2026-09-23",
       "notificato": false,
       "note": "Score 4.0 — sotto soglia 6.0"
+    },
+    {
+      "id": "immobiliare-132631336",
+      "source": "immobiliare",
+      "url": "https://www.immobiliare.it/annunci/132631336",
+      "titolo": "Attico via Giuseppe Ripamonti, Ripamonti - Fondazione Prada, Milano",
+      "prezzo": 385000,
+      "mq": 80,
+      "locali": 3,
+      "bagni": 1,
+      "piano": "5",
+      "ascensore": true,
+      "zona": "Ripamonti - Fondazione Prada",
+      "indirizzo": "Via Giuseppe Ripamonti",
+      "descrizione": "In zona Fondazione Prada, in una posizione comoda e ben collegata, con il tram praticamente sotto casa, proponiamo in vendita un appartamento di grande luminosità, situato all’ultimo piano e caratterizzato da una piacevole vista aperta e da un balcone che accompagna gli ambienti principali della casa.\n\nL’immobile, originariamente concepito come bilocale, è stato trasformato in una soluzione oggi organizzata in tre locali, con una distribuzione degli spazi funzionale e piacevole. L’ingresso si apre sulla zona giorno, dove soggiorno e cucina a vista dialogano con il balcone, creando un ambiente ",
+      "agenzia": "Gabetti Franchising Buccinasco",
+      "foto_url": "https://pic.im-cdn.it/image/2008670484/xxl-c.jpg",
+      "lat": 45.4407,
+      "lon": 9.1997,
+      "punteggio": 2.5,
+      "data_vista": "2026-09-24",
+      "notificato": false,
+      "note": "Score 2.5 — sotto soglia 6.0"
     }
   ]
 }
