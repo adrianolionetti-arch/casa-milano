@@ -69,6 +69,19 @@ BLACKLIST_KEYWORDS = [
     "this property is no longer available", "this listing has been removed",
 ]
 
+# Diritti diversi dalla piena proprietà: il prezzo è basso per forza, e con un
+# punteggio che premia la convenienza finirebbero sistematicamente in cima.
+TIPOLOGIE_ESCLUSE = ("nuda proprietà", "nuda proprieta", "diritto di superficie",
+                     "multiproprietà", "multiproprieta", "usufrutto")
+
+# Aste e vendite giudiziarie. Parole intere: "asta" va cercata con i confini,
+# altrimenti matcha "catastale" e "basta".
+RE_ASTA = re.compile(
+    r"\b(aste|asta)\b|vendita giudiziaria|vendite giudiziarie|procedura esecutiva"
+    r"|delegato alla vendita|\bR\.?G\.?E\.?\b|custode giudiziario",
+    re.IGNORECASE,
+)
+
 MIN_MQ = 99
 MAX_MQ = 120
 MAX_PREZZO = 455_000
@@ -109,8 +122,8 @@ def to_int(v) -> int | None:
     return int(digits) if digits else None
 
 
-def extract(item: dict) -> dict:
-    """Mappa item Apify → schema agente (CLAUDE.md Step 3)."""
+def extract_azzouzana(item: dict) -> dict:
+    """Mappa item dell'actor azzouzana (storico) → schema interno."""
     props = (item.get("properties") or [{}])[0]
     loc = props.get("location") or {}
     photos = (props.get("multimedia") or {}).get("photos") or []
@@ -136,6 +149,122 @@ def extract(item: dict) -> dict:
         "lat": loc.get("latitude"),
         "lon": loc.get("longitude"),
     }
+
+
+def _righe_main_data(item: dict) -> dict:
+    """Appiattisce mainData (blocchi header → righe label/value) in un dizionario."""
+    out = {}
+    for blocco in item.get("mainData") or []:
+        for riga in blocco.get("rows") or []:
+            label = (riga.get("label") or "").strip().lower()
+            if label:
+                out[label] = riga.get("value")
+    return out
+
+
+def _si_no(v) -> bool | None:
+    """'Sì'/'No' → bool. None se il dato non è dichiarato."""
+    if not isinstance(v, str):
+        return None
+    t = v.strip().lower()
+    if t.startswith(("sì", "si")):
+        return True
+    if t.startswith("no"):
+        return False
+    return None
+
+
+def _testo_descrizione(item: dict) -> str:
+    """La descrizione arriva come dict {reference, content}; il testo sta in content."""
+    d = item.get("description")
+    if isinstance(d, dict):
+        return d.get("content") or ""
+    return d or ""
+
+
+def extract_memo23(item: dict) -> dict:
+    """Mappa item dell'actor memo23 → schema interno.
+
+    Payload molto più strutturato del precedente: superficie, piano, bagni,
+    ascensore, balcone e box arrivano da campi dichiarati invece che da
+    ricerche di parole nella descrizione, e creationDate dà la data di
+    pubblicazione reale (prima si tentava una regex sul testo, che sui 60
+    annunci del confronto non ha trovato una sola data).
+    """
+    righe = _righe_main_data(item)
+    geo = item.get("geography") or {}
+    analytics = ((item.get("basicInfo") or {}).get("analytics")) or {}
+    autore = item.get("author") or {}
+    prezzo = item.get("price") or {}
+    media = item.get("media") or {}
+
+    mq = None
+    superficie = righe.get("superficie")
+    if isinstance(superficie, str):
+        m = re.search(r"(\d+(?:[.,]\d+)?)", superficie.replace(".", ""))
+        if m:
+            mq = int(float(m.group(1).replace(",", ".")))
+
+    indirizzo = geo.get("street") or ""
+    if geo.get("streetNumber"):
+        indirizzo = f"{indirizzo} {geo['streetNumber']}"
+    citta = (geo.get("municipality") or {}).get("name")
+    if citta and citta.lower() not in indirizzo.lower():
+        indirizzo = f"{indirizzo}, {citta}".strip(", ")
+
+    data_pub = None
+    ts = item.get("creationDate")
+    if isinstance(ts, (int, float)) and ts > 0:
+        data_pub = datetime.fromtimestamp(ts).date().isoformat()
+
+    immagini = media.get("images") or []
+    foto = None
+    if immagini and isinstance(immagini[0], dict):
+        foto = immagini[0].get("hd") or immagini[0].get("sd") or immagini[0].get("url")
+
+    classe = None
+    for c in ((item.get("energyClass") or {}).get("consumptions") or []):
+        if isinstance(c, dict) and c.get("value"):
+            classe = str(c["value"]).strip().upper()
+            break
+
+    url = item.get("shareUrl") or ""
+    url = url.split("?")[0] or f"https://www.immobiliare.it/annunci/{item.get('id')}/"
+
+    return {
+        "id": f"immobiliare-{item.get('id')}",
+        "source": "immobiliare",
+        "url": url,
+        "titolo": item.get("title") or righe.get("tipologia") or "",
+        "tipologia": righe.get("tipologia"),
+        "prezzo": to_int(prezzo.get("raw")),
+        "mq": mq,
+        "locali": to_int(righe.get("locali")),
+        "bagni": to_int(righe.get("bagni")),
+        "piano": righe.get("piano"),
+        "ascensore": _si_no(righe.get("ascensore")),
+        "zona": analytics.get("microzone") or analytics.get("macrozone"),
+        "indirizzo": indirizzo or None,
+        "descrizione": _testo_descrizione(item)[:1000],
+        "agenzia": autore.get("displayName"),
+        "agenzia_indirizzo": autore.get("displayAddress"),
+        "foto_url": foto,
+        "lat": (geo.get("geolocation") or {}).get("latitude"),
+        "lon": (geo.get("geolocation") or {}).get("longitude"),
+        # campi dichiarati, usati dal punteggio al posto dei match sul testo
+        "data_pubblicazione": data_pub,
+        "balcone": _si_no(righe.get("balcone")) or _si_no(righe.get("terrazzo")),
+        "box": bool(righe.get("box, posti auto")),
+        "classe_energetica": classe,
+        "venduto": bool(item.get("soldTransactionDate")),
+    }
+
+
+def extract(item: dict) -> dict:
+    """Riconosce da solo da quale actor arriva l'item e usa il mapping giusto."""
+    if "basicInfo" in item or "mainData" in item:
+        return extract_memo23(item)
+    return extract_azzouzana(item)
 
 
 def zone_tier(zona: str | None, indirizzo: str | None) -> int:
@@ -230,23 +359,38 @@ def apply_filters(L: dict, db_ids: set[str]) -> tuple[str, str | None]:
     if not L.get("url") or not L.get("prezzo") or not L.get("mq"):
         return ("INVALID", "campi mancanti")
     # REGOLA #0
+    if L.get("venduto"):
+        return ("SCARTATO_KEYWORD", "venduto (soldTransactionDate valorizzato)")
     kw = keyword_gate(L)
     if kw:
         return ("SCARTATO_KEYWORD", f"keyword '{kw}'")
     if agency_hq_match(L):
         return ("SCARTATO_SEDE", "indirizzo == sede agenzia")
-    age = freshness_age_days(L.get("descrizione") or "")
+    age = None
+    if L.get("data_pubblicazione"):
+        try:
+            age = (date.today() - date.fromisoformat(L["data_pubblicazione"])).days
+        except ValueError:
+            age = None
+    if age is None:
+        age = freshness_age_days(L.get("descrizione") or "")
     if age is not None and age > MAX_AGE_DAYS:
         return ("SCARTATO_FRESHNESS", f"pubblicato {age}gg fa")
     # Esclusioni assolute
-    if not L.get("ascensore"):
+    if L.get("ascensore") is None:
+        return ("ESCLUSO", "ascensore non dichiarato")
+    if not L["ascensore"]:
         return ("ESCLUSO", "no ascensore")
     piano = L.get("piano")
     desc_lower = (L.get("descrizione") or "").lower()
     if piano in ("T", "R", "S") and "giardino privato" not in desc_lower:
         return ("ESCLUSO", f"piano {piano} senza giardino")
-    if "asta" in (L.get("titolo") or "").lower() or "asta giudiziaria" in desc_lower:
-        return ("ESCLUSO", "asta")
+    tipologia = (L.get("tipologia") or "").lower()
+    for t in TIPOLOGIE_ESCLUSE:
+        if t in tipologia or t in desc_lower:
+            return ("ESCLUSO", f"diritto parziale: {t}")
+    if RE_ASTA.search((L.get("titolo") or "") + " " + desc_lower):
+        return ("ESCLUSO", "asta o vendita giudiziaria")
     if L["mq"] < MIN_MQ or L["mq"] > MAX_MQ:
         return ("ESCLUSO", f"mq={L['mq']} fuori [{MIN_MQ},{MAX_MQ}]")
     if L["prezzo"] > MAX_PREZZO:
@@ -319,16 +463,23 @@ def score(L: dict) -> float:
 
     # 4. Caratteristiche preferibili (0-2)
     desc = (L.get("descrizione") or "").lower()
-    if any(k in desc for k in ("balcone", "terrazzo", "terrazza")):
+    balcone = L.get("balcone")
+    if balcone is None:
+        balcone = any(k in desc for k in ("balcone", "terrazzo", "terrazza"))
+    if balcone:
         s += 0.5
     if L.get("bagni") and L["bagni"] >= 2:
         s += 0.5
     piano_str = str(L.get("piano") or "")
     if piano_str.isdigit() and int(piano_str) >= 3:
         s += 0.5
-    if any(k in desc for k in ("box auto", "posto auto", "garage")):
+    box = L.get("box")
+    if box is None:
+        box = any(k in desc for k in ("box auto", "posto auto", "garage"))
+    if box:
         s += 0.25
-    if "classe energetica a" in desc or "classe energetica b" in desc:
+    classe = (L.get("classe_energetica") or "").upper()
+    if classe.startswith(("A", "B")) or "classe energetica a" in desc or "classe energetica b" in desc:
         s += 0.25
 
     return round(max(s, 0.0), 2)

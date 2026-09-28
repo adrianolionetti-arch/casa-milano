@@ -25,7 +25,7 @@ from fetch_apify import (  # noqa: E402  riuso della logica di retry
 )
 
 ACTOR_ID = os.environ.get("MEMO23_ACTOR_ID", "p9QZzUdBCGXMDuKad")
-OUTPUT_PATH = "/tmp/memo23_items.json"
+OUTPUT_PATH = os.environ.get("MEMO23_OUTPUT", "/tmp/apify_items.json")
 
 
 def main() -> int:

@@ -23,12 +23,16 @@ jobs:
           fetch-depth: 0
           persist-credentials: true
 
+      # Actor memo23 dal 2026-09-28: a parità di 60 listing restituisce solo
+      # annunci recenti (60 nuovi contro 20 del precedente nel confronto del
+      # 28/09) e dichiara data di pubblicazione, ascensore, bagni e balcone
+      # invece di lasciarli dedurre dal testo.
       - name: Fetch Apify
         id: apify
         env:
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
-          APIFY_ACTOR_ID: sPIR3lEdL9H69xrmi
-        run: python3 scripts/fetch_apify.py
+          MEMO23_ACTOR_ID: p9QZzUdBCGXMDuKad
+        run: python3 scripts/fetch_memo23.py
 
       - name: INFRA email on Apify failure
         if: failure() && steps.apify.outcome == 'failure'

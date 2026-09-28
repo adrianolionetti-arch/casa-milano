@@ -18,13 +18,13 @@ Cron 06:00 UTC → GitHub Actions runner → Claude Code agent (questa istanza)
 
 ### Sorgenti
 
-- **Immobiliare.it** (sorgente primaria): actor `sPIR3lEdL9H69xrmi` (alias `azzouzana~immobiliare-it-listing-page-scraper-by-search-url`). Pricing $0.001/listing.
+- **Immobiliare.it** (sorgente primaria): actor `p9QZzUdBCGXMDuKad` (alias `memo23~immobiliare-scraper`), in produzione dal 2026-09-28. Pricing $0.0007/listing. Sostituisce `sPIR3lEdL9H69xrmi` (azzouzana): nel confronto del 28/09, a parità di 60 listing richiesti, restituiva 60 annunci mai visti contro 20, con data di pubblicazione, ascensore, bagni, balcone e box dichiarati invece che dedotti dal testo. Payload diverso: vedi `extract_memo23()` in `scripts/process_session.py`.
 - **Idealista.it** (sorgente secondaria, opt-in via env `IDEALISTA_ACTOR_ID`): actor `dz_omar~idealista-scraper-api`. Pricing $0.0005/listing.
 
 **Apify plan**: paid (nessun rate limit, nessun cap giornaliero). ~$2-3/mese a 60+60 listing/giorno.
 
 Search URL configurate negli script:
-- Immobiliare: `https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=450000&superficieMinima=80&ordinamento=data_pubblicazione_decrescente` (filtri prezzo/mq direttamente nella URL)
+- Immobiliare: `https://www.immobiliare.it/vendita-case/milano/?prezzoMassimo=455000&superficieMinima=95&ordinamento=data_pubblicazione_decrescente` (filtri prezzo/mq direttamente nella URL)
 - Idealista: `https://www.idealista.it/vendita-case/milano-milano/` (no filtri URL — l'actor dz_omar non digerisce i path-slug. Filtri prezzo/mq applicati in Step 4.)
 
 **Niente fallback**. Se Apify fallisce → email `[INFRA]` esplicita e ABORT. Mai usare WebSearch né WebFetch sui portali (immobiliare.it diretto, gohome.it, tecnocasa.it, idealista.it, casa.it, wikicasa.it, bakeca.it): sono dietro Cloudflare 403 e i candidati senza body verificabile producono notifiche sbagliate.
@@ -165,12 +165,13 @@ Dopo aver normalizzato tutti gli item delle due sorgenti, applica dedupe cross-s
 2. **Validità minima**: se mancano `url`, `prezzo`, o `mq` (post-normalizzazione Step 3) → skip silenzioso
 3. **REGOLA #0** (keyword gate + sede agenzia + freshness) → SKIP HARD se trigger
 4. **Esclusioni assolute** da `criteri.md`:
-   - `ascensore == False` → ESCLUDI
+   - `ascensore == False` → ESCLUDI · `ascensore == None` (non dichiarato) → ESCLUDI, con motivo distinto
    - `piano in ("T","R","S")` senza "giardino privato" in descrizione → ESCLUDI
-   - "asta giudiziaria" / "asta" nel titolo o descrizione → ESCLUDI
-   - `mq < 80` o `mq > 120` → ESCLUDI
-   - `prezzo > 450000` → ESCLUDI
-   - zona in lista esclusione (Quarto Oggiaro, Lorenteggio, Corvetto, Gratosoglio, Stadera, Baggio) → ESCLUDI
+   - asta o vendita giudiziaria (regex `RE_ASTA`: parole intere, RGE, procedura esecutiva) → ESCLUDI
+   - nuda proprietà, usufrutto, diritto di superficie, multiproprietà → ESCLUDI
+   - `mq < 99` o `mq > 120` → ESCLUDI
+   - `prezzo > 455000` → ESCLUDI
+   - zone un tempo escluse (Quarto Oggiaro, Lorenteggio, Corvetto, Gratosoglio, Stadera, Baggio): NON più escluse, −1 punto nel punteggio
    - fuori comune Milano (salvo Sesto S. Giovanni con MM ≤ 5 min) → ESCLUDI
 
 Per gli esclusi: aggiungi a `annunci_visti.json` con `punteggio: 0`, `note: "ESCLUSO — <motivo>"`, `notificato: true`. NON appariranno in dashboard né in email.
@@ -178,15 +179,18 @@ Per gli esclusi: aggiungi a `annunci_visti.json` con `punteggio: 0`, `note: "ESC
 ### Step 5 — Scoring (per i superstiti)
 
 Scala 0–10 come da `criteri.md`:
-- Prezzo: ≤310k +3 | 310–380k +1.5 | 380–450k +1
-- Zona: 1=top +3 | 2=ottima +2 | 3=buona +1 | 4=accettabile +0.5
-- ≥90mq +1 | balcone/terrazzo +0.5 | 2+ bagni +0.5 | piano ≥3 +0.5 | box/posto auto +0.5 | classe energetica A/B +0.5
+- Convenienza (€/mq vs mediana della microzona, da `build_benchmarks()`): −25% +3.5 | −15% +2.75 | −5% +2 | in linea +1.25 | +15% +0.5 | oltre 0
+- Zona: 1=top +3 | 2=ottima +2 | 3=buona +1 | 4=resto di Milano +0.5 | zone penalizzate −1
+- Metratura: lineare da 99 a 120 mq, fino a +1.5
+- balcone/terrazzo +0.5 | 2+ bagni +0.5 | piano ≥3 +0.5 | box/posto auto +0.25 | classe energetica A/B +0.25
+
+Il prezzo non pesa più in valore assoluto: pesava fino a 3 punti pieni solo sotto 310k e, alzati budget e metratura, penalizzava proprio gli immobili cercati.
 
 Riconoscimento zona: confronta `zona` (lowercased) con le liste di `criteri.md` — match esatto su `microzone`, poi fallback su `macrozone`, poi parole-chiave nell'indirizzo.
 
 ### Step 6 — Output DB
 
-**Annunci nuovi con score ≥ 6 ⇒ candidati notifica.**
+**Annunci nuovi con score ≥ 5.5 ⇒ candidati notifica.**
 
 Aggiungi a `annunci_visti.json` con **TUTTI** i campi estratti allo Step 3, anche quelli usati solo per scoring/filtri — servono al chatbot della dashboard per rispondere a domande tipo "ce ne sono con terrazzo?" o "quali al 3° piano?":
 
@@ -224,7 +228,7 @@ Il campo `source` ammette `"immobiliare"` o `"idealista"`. Per gli annunci legac
 
 Pseudocodice:
 ```
-N = numero di NUOVI annunci con score ≥ 6 (NON include scartati/esclusi)
+N = numero di NUOVI annunci con score ≥ 5.5 (NON include scartati/esclusi)
 infra_failed = True se Step 2 ha mandato email INFRA e abortito
 
 if infra_failed:
@@ -236,10 +240,10 @@ elif N == 0:
            S scartati REGOLA #0, E esclusi criteri, link dashboard
 elif any(score ≥ 8):
     subject = f"🏠 [ALERT] {zona top} — €{prezzo} — {mq}mq"
-    body = card HTML completa di tutti i nuovi score ≥ 6
+    body = card HTML completa di tutti i nuovi score ≥ 5.5
 else:  # 1+ nuovi 6-7.9
     subject = f"🏠 [DIGEST] Ricerca casa Milano — {data} — {N} annunci nuovi"
-    body = card HTML di tutti i nuovi score ≥ 6
+    body = card HTML di tutti i nuovi score ≥ 5.5
 
 send_email(subject, body)  # OBBLIGATORIO se non infra_failed
 ```
@@ -262,7 +266,7 @@ Destinatari: `adrianolionetti@gmail.com`, `alessia.curtopelle@gmail.com` (entram
   <a href="$DASHBOARD_URL" style="display:inline-block;background:#0071e3;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-size:16px;font-weight:600;box-shadow:0 2px 6px rgba(0,113,227,0.25);">📊 Apri la dashboard →</a>
 </div>
 <h2>🏠 Casa Milano — sessione del <data></h2>
-<p>Nessun annuncio nuovo con score ≥ 6 oggi.</p>
+<p>Nessun annuncio nuovo con score ≥ 5.5 oggi.</p>
 <ul>
   <li>Apify: <X> listing recuperati</li>
   <li>Duplicati riconosciuti: <K></li>
@@ -271,7 +275,7 @@ Destinatari: `adrianolionetti@gmail.com`, `alessia.curtopelle@gmail.com` (entram
 </ul>
 ```
 
-**Corpo HTML** per ogni annuncio nuovo score ≥ 6 (le card vanno DOPO l'header pulsante):
+**Corpo HTML** per ogni annuncio nuovo score ≥ 5.5 (le card vanno DOPO l'header pulsante):
 ```html
 <div style="margin:20px 0;padding:16px;border:1px solid #eee;border-radius:8px;">
   <img src="<foto_url>" style="width:100%;max-width:500px;border-radius:6px;margin-bottom:12px">
@@ -307,7 +311,7 @@ Lo script stampa il `messageId` su stdout in caso di successo, errore su stderr 
 python3 scripts/build_dashboard.py
 ```
 
-Lo script legge `annunci_visti.json`, applica i filtri (score ≥ 6, ultimi 30gg, URL match `^https://www\.immobiliare\.it/annunci/\d+/?$`, escludi `SCARTATO`/`ESCLUSO`), e scrive `index.html`. Non interpretarne la logica — chiamalo e basta.
+Lo script legge `annunci_visti.json`, applica i filtri (score ≥ 5.5, ultimi 30gg, URL match `^https://www\.immobiliare\.it/annunci/\d+/?$`, escludi `SCARTATO`/`ESCLUSO`), e scrive `index.html`. Non interpretarne la logica — chiamalo e basta.
 
 ### Step 9 — Report
 
