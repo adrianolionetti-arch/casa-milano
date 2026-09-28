@@ -27,7 +27,7 @@ GITHUB_REPO = "adrianolionetti-arch/casa-milano"
 
 URL_REGEX = re.compile(r"^https://www\.immobiliare\.it/annunci/\d+/?$")
 DAYS_WINDOW = 30
-MIN_SCORE = 6.0
+MIN_SCORE = 5.5
 
 CHATBOT_MODEL = "claude-haiku-4-5"
 CHATBOT_SYSTEM_PROMPT = """Sei "Casa Milano Assistant", un assistente che aiuta Adriano Lionetti e Alessia Curtopelle a esplorare la dashboard di annunci immobiliari a Milano.

@@ -26,7 +26,7 @@ import urllib.request
 
 SEARCH_URL = (
     "https://www.immobiliare.it/vendita-case/milano/"
-    "?prezzoMassimo=450000&superficieMinima=80"
+    "?prezzoMassimo=455000&superficieMinima=95"
     "&ordinamento=data_pubblicazione_decrescente"
 )
 MAX_LISTINGS = 60

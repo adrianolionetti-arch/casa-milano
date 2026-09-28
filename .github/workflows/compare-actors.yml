@@ -1,0 +1,47 @@
+name: Confronto actor Apify
+
+# Manuale: fa girare l'actor in produzione (azzouzana) e il candidato
+# (memo23) sullo stesso search URL e confronta gli output. Non tocca
+# annunci_visti.json, non manda email, non committa nulla.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  confronto:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Fetch actor in produzione (azzouzana)
+        continue-on-error: true
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          APIFY_ACTOR_ID: sPIR3lEdL9H69xrmi
+        run: python3 scripts/fetch_apify.py
+
+      - name: Fetch actor candidato (memo23)
+        continue-on-error: true
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+        run: python3 scripts/fetch_memo23.py
+
+      - name: Confronto
+        run: python3 scripts/compare_actors.py | tee /tmp/confronto.md
+
+      - name: Salva output grezzi
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: confronto-actor
+          path: |
+            /tmp/apify_items.json
+            /tmp/memo23_items.json
+            /tmp/confronto.md
+          if-no-files-found: warn
+          retention-days: 7

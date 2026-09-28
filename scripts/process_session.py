@@ -18,6 +18,7 @@ Exit code:
 import json
 import os
 import re
+import statistics
 import subprocess
 import sys
 import tempfile
@@ -49,10 +50,13 @@ ZONE_TIER = {
     "porta vittoria": 3, "prati": 3, "certosa": 3,
 }
 
-EXCLUDED_ZONES = {
+# Zone un tempo escluse in modo assoluto. Dal 2026-09-28 tutta Milano è in
+# gioco: restano penalizzate nel punteggio (malus) invece che filtrate via.
+ZONE_MALUS = {
     "quarto oggiaro", "lorenteggio", "corvetto",
     "gratosoglio", "stadera", "baggio",
 }
+MALUS_ZONA = 1.0
 
 BLACKLIST_KEYWORDS = [
     "venduto", "venduta", "vendute", "venduti",
@@ -65,12 +69,20 @@ BLACKLIST_KEYWORDS = [
     "this property is no longer available", "this listing has been removed",
 ]
 
-MIN_MQ = 80
+MIN_MQ = 99
 MAX_MQ = 120
-MAX_PREZZO = 450_000
-MIN_SCORE_NOTIFY = 6.0
-ALERT_SCORE = 8.0
+MAX_PREZZO = 455_000
+MIN_SCORE_NOTIFY = 5.5
+ALERT_SCORE = 7.0
 MAX_AGE_DAYS = 45
+
+# Benchmark €/mq per microzona, calcolati a runtime dallo storico in
+# annunci_visti.json (mediana per zona, min 5 osservazioni). Popolati da
+# build_benchmarks() all'avvio: il metro di giudizio si aggiorna da solo
+# man mano che il database cresce.
+BENCH_MIN_OBS = 5
+BENCH: dict[str, float] = {}
+CITY_MEDIAN_PPSM = 3_667.0  # fallback, sovrascritto da build_benchmarks()
 
 
 def parse_mq(surface_raw) -> int | None:
@@ -141,12 +153,12 @@ def zone_tier(zona: str | None, indirizzo: str | None) -> int:
     return 4
 
 
-def is_in_excluded_zone(zona: str | None, indirizzo: str | None) -> str | None:
-    """Se zona o indirizzo matcha lista esclusa, restituisce il nome zona; altrimenti None."""
+def zona_penalizzata(zona: str | None, indirizzo: str | None) -> str | None:
+    """Se zona o indirizzo matcha la lista a malus, restituisce il nome zona."""
     for z in (zona, indirizzo):
         if z:
             zl = z.lower()
-            for ex in EXCLUDED_ZONES:
+            for ex in ZONE_MALUS:
                 if ex in zl:
                     return ex
     return None
@@ -239,29 +251,73 @@ def apply_filters(L: dict, db_ids: set[str]) -> tuple[str, str | None]:
         return ("ESCLUSO", f"mq={L['mq']} fuori [{MIN_MQ},{MAX_MQ}]")
     if L["prezzo"] > MAX_PREZZO:
         return ("ESCLUSO", f"prezzo={L['prezzo']} > {MAX_PREZZO}")
-    ex_zone = is_in_excluded_zone(L.get("zona"), L.get("indirizzo"))
-    if ex_zone:
-        return ("ESCLUSO", f"zona esclusa {ex_zone}")
     return ("OK", None)
 
 
+def build_benchmarks(db: dict) -> None:
+    """Popola BENCH/CITY_MEDIAN_PPSM con le mediane €/mq per microzona.
+
+    Usa tutto lo storico di annunci_visti.json: ogni zona con almeno
+    BENCH_MIN_OBS osservazioni ha un proprio benchmark, le altre ricadono
+    sulla mediana cittadina.
+    """
+    global CITY_MEDIAN_PPSM
+    per: dict[str, list[float]] = {}
+    for a in db.get("annunci", []):
+        prezzo, mq, zona = a.get("prezzo"), a.get("mq"), a.get("zona")
+        if not isinstance(prezzo, int) or not isinstance(mq, int) or mq <= 0 or not zona:
+            continue
+        per.setdefault(zona.strip().lower(), []).append(prezzo / mq)
+    tutti = [v for vals in per.values() for v in vals]
+    if tutti:
+        CITY_MEDIAN_PPSM = statistics.median(tutti)
+    BENCH.clear()
+    BENCH.update({z: statistics.median(v) for z, v in per.items() if len(v) >= BENCH_MIN_OBS})
+    print(f"benchmark €/mq: {len(BENCH)} zone, mediana città {CITY_MEDIAN_PPSM:.0f}")
+
+
+def benchmark_ppsm(L: dict) -> float:
+    """€/mq di riferimento per la zona dell'annuncio (fallback: mediana città)."""
+    zona = (L.get("zona") or "").strip().lower()
+    return BENCH.get(zona, CITY_MEDIAN_PPSM)
+
+
 def score(L: dict) -> float:
-    """Calcola punteggio 0-10 da criteri.md."""
+    """Punteggio 0-10.
+
+    Impianto rivisto il 2026-09-28. Il vecchio schema assegnava fino a 3 punti
+    al prezzo assoluto (pieni solo sotto 310k): alzando budget e metratura
+    penalizzava proprio gli immobili che ora cerchiamo. Al suo posto pesa la
+    CONVENIENZA, cioè lo scarto del €/mq rispetto alla mediana della zona.
+    """
     s = 0.0
-    p = L["prezzo"]
-    if p <= 310_000:
-        s += 3
-    elif p <= 380_000:
-        s += 1.5
-    else:
-        s += 1  # <=450k (già filtrato sopra)
 
-    tier = zone_tier(L.get("zona"), L.get("indirizzo"))
-    s += {1: 3, 2: 2, 3: 1, 4: 0.5}[tier]
+    # 1. Convenienza €/mq vs mediana di zona (0-3.5)
+    ppsm = L["prezzo"] / L["mq"]
+    bench = benchmark_ppsm(L)
+    dev = (ppsm - bench) / bench if bench else 0.0
+    if dev <= -0.25:
+        s += 3.5   # affare vero: -25% o meglio
+    elif dev <= -0.15:
+        s += 2.75
+    elif dev <= -0.05:
+        s += 2.0
+    elif dev <= 0.05:
+        s += 1.25  # in linea col mercato di zona
+    elif dev <= 0.15:
+        s += 0.5
+    # sopra +15% rispetto alla zona: nessun punto
 
-    if L.get("mq") and L["mq"] >= 90:
-        s += 1
+    # 2. Zona, preferenza corridoio nord (0-3)
+    s += {1: 3, 2: 2, 3: 1, 4: 0.5}[zone_tier(L.get("zona"), L.get("indirizzo"))]
+    if zona_penalizzata(L.get("zona"), L.get("indirizzo")):
+        s -= MALUS_ZONA
 
+    # 3. Metratura dentro il range: premia il grande (0-1.5)
+    frazione = (L["mq"] - MIN_MQ) / max(MAX_MQ - MIN_MQ, 1)
+    s += round(min(max(frazione, 0.0), 1.0) * 1.5 * 2) / 2
+
+    # 4. Caratteristiche preferibili (0-2)
     desc = (L.get("descrizione") or "").lower()
     if any(k in desc for k in ("balcone", "terrazzo", "terrazza")):
         s += 0.5
@@ -271,11 +327,11 @@ def score(L: dict) -> float:
     if piano_str.isdigit() and int(piano_str) >= 3:
         s += 0.5
     if any(k in desc for k in ("box auto", "posto auto", "garage")):
-        s += 0.5
+        s += 0.25
     if "classe energetica a" in desc or "classe energetica b" in desc:
-        s += 0.5
+        s += 0.25
 
-    return round(s, 1)
+    return round(max(s, 0.0), 2)
 
 
 def fmt_eur(v) -> str:
@@ -430,6 +486,7 @@ def main() -> int:
     with open(DB_PATH) as f:
         db = json.load(f)
     db_ids = {a.get("id") for a in db.get("annunci", []) if a.get("id")}
+    build_benchmarks(db)
 
     today = date.today()
     today_str = today.isoformat()
