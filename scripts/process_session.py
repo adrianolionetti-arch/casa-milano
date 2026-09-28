@@ -235,7 +235,11 @@ def extract_memo23(item: dict) -> dict:
         "id": f"immobiliare-{item.get('id')}",
         "source": "immobiliare",
         "url": url,
-        "titolo": item.get("title") or righe.get("tipologia") or "",
+        # item["title"] da solo è generico ("Appartamento"): ci aggiungiamo via
+        # e zona, come faceva il titolo dell'actor precedente.
+        "titolo": ", ".join(
+            x for x in (item.get("title") or "Immobile", indirizzo or None, analytics.get("microzone")) if x
+        ),
         "tipologia": righe.get("tipologia"),
         "prezzo": to_int(prezzo.get("raw")),
         "mq": mq,
@@ -517,13 +521,13 @@ def compose_email(notified: list, stats: dict, today_str: str) -> tuple[str, str
         body = (
             header_button()
             + f"<h2>🏠 Casa Milano — sessione del {today_str}</h2>"
-            + "<p>Nessun annuncio nuovo con score ≥ 6 oggi.</p>"
+            + f"<p>Nessun annuncio nuovo con score ≥ {MIN_SCORE_NOTIFY} oggi.</p>"
             + "<ul>"
             + f"<li>Apify: {stats['n_items']} listing recuperati</li>"
             + f"<li>Duplicati riconosciuti: {stats['n_duplicate']}</li>"
             + f"<li>Scartati REGOLA #0: {stats['n_scartati']}</li>"
             + f"<li>Esclusi per criteri: {stats['n_esclusi']}</li>"
-            + f"<li>Sotto soglia (score < 6): {stats['n_sotto_soglia']}</li>"
+            + f"<li>Sotto soglia (score &lt; {MIN_SCORE_NOTIFY}): {stats['n_sotto_soglia']}</li>"
             + "</ul>"
         )
     elif has_alert:
@@ -538,7 +542,7 @@ def compose_email(notified: list, stats: dict, today_str: str) -> tuple[str, str
         subject = f"🏠 [DIGEST] Ricerca casa Milano — {today_str} — {n} {'annuncio' if n == 1 else 'annunci'} nuov{'o' if n == 1 else 'i'}"
         body = (
             header_button()
-            + f"<h2>🏠 DIGEST — {n} {'annuncio' if n == 1 else 'annunci'} con score ≥ 6</h2>"
+            + f"<h2>🏠 DIGEST — {n} {'annuncio' if n == 1 else 'annunci'} con score ≥ {MIN_SCORE_NOTIFY}</h2>"
             + "\n".join(render_card_html(a) for a in sorted(notified, key=lambda x: -x["punteggio"]))
         )
     return subject, body
@@ -559,9 +563,9 @@ def write_report(stats: dict, today_str: str) -> None:
         f"| Non validi | {stats['n_invalid']} |",
         f"| Scartati REGOLA #0 | {stats['n_scartati']} |",
         f"| Esclusi per criteri | {stats['n_esclusi']} |",
-        f"| Sotto soglia (score < 6) | {stats['n_sotto_soglia']} |",
+        f"| Sotto soglia (score < {MIN_SCORE_NOTIFY}) | {stats['n_sotto_soglia']} |",
         f"| Errori processamento (skip) | {stats.get('n_errori', 0)} |",
-        f"| **Notificati (score ≥ 6)** | **{stats['n_notified']}** |",
+        f"| **Notificati (score ≥ {MIN_SCORE_NOTIFY})** | **{stats['n_notified']}** |",
         "",
     ]
     if stats.get("errori_list"):
