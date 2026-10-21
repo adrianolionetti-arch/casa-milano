@@ -1,0 +1,56 @@
+name: Diagnostica credenziali Gmail
+
+# Manuale. Dice quale client OAuth sta usando la pipeline e se il refresh
+# token è ancora valido, senza mandare email né toccare il database.
+# Del client_id stampa solo la coda: serve a riconoscerlo nella Cloud
+# Console, dove gli ID sono comunque visibili in chiaro.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnostica:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Quale client OAuth, e il refresh token è vivo?
+        env:
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.parse, urllib.request
+
+          cid = os.environ["GMAIL_CLIENT_ID"]
+          progetto, _, resto = cid.partition("-")
+          print(f"numero progetto: {progetto}")
+          print(f"client_id: inizia per '{resto[:4]}' (confronta con la colonna ID client)")
+
+          dati = urllib.parse.urlencode({
+              "client_id": cid,
+              "client_secret": os.environ["GMAIL_CLIENT_SECRET"],
+              "refresh_token": os.environ["GMAIL_REFRESH_TOKEN"],
+              "grant_type": "refresh_token",
+          }).encode()
+          req = urllib.request.Request("https://oauth2.googleapis.com/token", data=dati)
+          with urllib.request.urlopen(req, timeout=30) as r:
+              token = json.load(r)["access_token"]
+          print("refresh token: valido, access token ottenuto")
+
+          # tokeninfo dice a quale client appartiene davvero il token emesso
+          with urllib.request.urlopen(
+              "https://oauth2.googleapis.com/tokeninfo?access_token=" + token, timeout=30
+          ) as r:
+              info = json.load(r)
+          aud = info.get("aud", "")
+          print(f"il token è emesso per il client che inizia per '{aud.partition('-')[2][:4]}'")
+          print(f"account: {info.get('email')}")
+          print(f"scope: {info.get('scope')}")
+          PY
