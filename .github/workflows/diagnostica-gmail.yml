@@ -1,37 +1,54 @@
 name: Diagnostica credenziali Gmail
 
-# Manuale. Dice quale client OAuth sta usando la pipeline e se il refresh
+# Manuale. Dice QUALE client OAuth sta usando la pipeline e se il refresh
 # token è ancora valido, senza mandare email né toccare il database.
-# Del client_id stampa solo la coda: serve a riconoscerlo nella Cloud
-# Console, dove gli ID sono comunque visibili in chiaro.
+#
+# Il confronto avviene qui sul runner: in output finisce solo il nome del
+# client, mai un pezzo di client_id o di token.
 
 on:
   workflow_dispatch:
-
-permissions:
-  contents: read
+    inputs:
+      client_noti:
+        description: "Prefissi noti, formato prefisso=nome separati da virgola"
+        required: false
+        default: "kk8d=casa-milano-web (Applicazione web),s5vk=casa-milano (Desktop)"
 
 jobs:
   diagnostica:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Quale client OAuth, e il refresh token è vivo?
+      - name: Riconosci il client e verifica il refresh token
         env:
           GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
           GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
           GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+          CLIENT_NOTI: ${{ inputs.client_noti }}
         run: |
           python3 - <<'PY'
           import json, os, urllib.parse, urllib.request
 
+          noti = {}
+          for voce in os.environ.get("CLIENT_NOTI", "").split(","):
+              pre, _, nome = voce.partition("=")
+              if pre.strip() and nome.strip():
+                  noti[pre.strip().lower()] = nome.strip()
+
+          def riconosci(client_id: str) -> str:
+              coda = client_id.partition("-")[2].lower()
+              for pre, nome in noti.items():
+                  if coda.startswith(pre):
+                      return nome
+              return "NON RICONOSCIUTO (nessun prefisso corrisponde)"
+
           cid = os.environ["GMAIL_CLIENT_ID"]
-          progetto, _, resto = cid.partition("-")
-          print(f"numero progetto: {progetto}")
-          print(f"client_id: inizia per '{resto[:4]}' (confronta con la colonna ID client)")
+          print(f"Client configurato nei secret → {riconosci(cid)}")
 
           dati = urllib.parse.urlencode({
               "client_id": cid,
@@ -39,18 +56,21 @@ jobs:
               "refresh_token": os.environ["GMAIL_REFRESH_TOKEN"],
               "grant_type": "refresh_token",
           }).encode()
-          req = urllib.request.Request("https://oauth2.googleapis.com/token", data=dati)
-          with urllib.request.urlopen(req, timeout=30) as r:
-              token = json.load(r)["access_token"]
-          print("refresh token: valido, access token ottenuto")
+          try:
+              req = urllib.request.Request("https://oauth2.googleapis.com/token", data=dati)
+              with urllib.request.urlopen(req, timeout=30) as r:
+                  token = json.load(r)["access_token"]
+          except urllib.error.HTTPError as e:
+              corpo = json.loads(e.read() or b"{}")
+              print(f"Refresh token → RIFIUTATO: {corpo.get('error')} / {corpo.get('error_description')}")
+              raise SystemExit(1)
+          print("Refresh token → valido, access token ottenuto")
 
-          # tokeninfo dice a quale client appartiene davvero il token emesso
+          # tokeninfo: a quale client appartiene davvero il token emesso
           with urllib.request.urlopen(
               "https://oauth2.googleapis.com/tokeninfo?access_token=" + token, timeout=30
           ) as r:
               info = json.load(r)
-          aud = info.get("aud", "")
-          print(f"il token è emesso per il client che inizia per '{aud.partition('-')[2][:4]}'")
-          print(f"account: {info.get('email')}")
-          print(f"scope: {info.get('scope')}")
+          print(f"Il token emesso appartiene a → {riconosci(info.get('aud', ''))}")
+          print(f"Permesso di inviare email → {'sì' if 'gmail.send' in info.get('scope', '') else 'NO'}")
           PY
