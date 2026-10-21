@@ -72,5 +72,10 @@ jobs:
           ) as r:
               info = json.load(r)
           print(f"Il token emesso appartiene a → {riconosci(info.get('aud', ''))}")
-          print(f"Permesso di inviare email → {'sì' if 'gmail.send' in info.get('scope', '') else 'NO'}")
+          # Non solo gmail.send: anche gmail.modify e mail.google.com
+          # comprendono l'invio, ed è uno di quelli che usa questo client.
+          scope = info.get("scope", "")
+          abilitanti = ("gmail.send", "gmail.modify", "gmail.compose", "mail.google.com")
+          concessi = [s for s in abilitanti if s in scope]
+          print(f"Permesso di inviare email → {'sì (' + ', '.join(concessi) + ')' if concessi else 'NO'}")
           PY
