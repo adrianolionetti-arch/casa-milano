@@ -140,7 +140,10 @@ def extract_azzouzana(item: dict) -> dict:
         "locali": to_int(props.get("rooms")),
         "bagni": to_int(props.get("bathrooms")),
         "piano": floor.get("abbreviation"),
-        "ascensore": bool(props.get("elevator")) if props.get("elevator") is not None else False,
+        # None quando il dato non c'è: nei giorni di ripiego su questo actor
+        # il motivo di scarto resta onesto ("ascensore non dichiarato")
+        # invece di diventare un "no ascensore" che nessuno ha dichiarato.
+        "ascensore": bool(props["elevator"]) if props.get("elevator") is not None else None,
         "zona": loc.get("microzone") or loc.get("macrozone"),
         "indirizzo": loc.get("address"),
         "descrizione": (props.get("description") or "")[:1000],

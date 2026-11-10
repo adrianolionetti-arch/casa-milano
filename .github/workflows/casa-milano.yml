@@ -27,12 +27,37 @@ jobs:
       # annunci recenti (60 nuovi contro 20 del precedente nel confronto del
       # 28/09) e dichiara data di pubblicazione, ascensore, bagni e balcone
       # invece di lasciarli dedurre dal testo.
-      - name: Fetch Apify
-        id: apify
+      #
+      # Dal 10/11 non è più l'unica fonte: fra il 4 e il 10 novembre ha
+      # restituito dataset vuoti in tre giornate su sette, lasciando la
+      # sessione senza dati. Se cede, si riprova con l'actor precedente —
+      # extract() in process_session.py riconosce da solo i due formati,
+      # quindi a valle non cambia nulla.
+      - name: Fetch Apify (memo23)
+        id: apify_memo23
+        continue-on-error: true
         env:
           APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
           MEMO23_ACTOR_ID: p9QZzUdBCGXMDuKad
         run: python3 scripts/fetch_memo23.py
+
+      - name: Fetch Apify (ripiego su azzouzana)
+        id: apify_fallback
+        if: steps.apify_memo23.outcome == 'failure'
+        continue-on-error: true
+        env:
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          APIFY_ACTOR_ID: sPIR3lEdL9H69xrmi
+        run: |
+          echo "memo23 non ha prodotto dati, riprovo con l'actor precedente"
+          python3 scripts/fetch_apify.py
+
+      - name: Nessuna fonte disponibile
+        id: apify
+        if: steps.apify_memo23.outcome == 'failure' && steps.apify_fallback.outcome != 'success'
+        run: |
+          echo "::error::Entrambi gli actor Apify non hanno restituito listing"
+          exit 1
 
       - name: INFRA email on Apify failure
         if: failure() && steps.apify.outcome == 'failure'
